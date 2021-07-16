@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0025 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0025 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>28-Nov-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-4</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-25-unnesting-cases">EEP 25: Unnesting cases</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Erlang ‘case’ expressions should adopt/adapt an idea from
+Algol 68 that in Erlang would strictly generalise ‘cond’.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Currently a ‘case’ expression has the form</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">'case'</span> <span class="nv">Expression</span> <span class="n">'of'</span>
+      <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span>
+ <span class="p">{</span><span class="n">';'</span> <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span><span class="p">}...</span>
+<span class="n">'end'</span>
+</code></pre></div></div>
+
+<p>It is well known that Algol 68 had</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">..</span> <span class="n">then</span> <span class="p">..</span> <span class="p">{</span><span class="n">elif</span> <span class="p">..</span> <span class="n">then</span> <span class="p">..}...</span> <span class="p">[</span><span class="n">else</span> <span class="p">..]</span> <span class="n">fi</span>
+</code></pre></div></div>
+
+<p>expressions.  It is less well known that it had a similar
+construction for case expression,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="p">..</span> <span class="n">in</span> <span class="p">...</span> <span class="p">{</span><span class="n">ouse</span> <span class="p">..</span> <span class="n">in</span> <span class="p">..}...</span> <span class="p">[</span><span class="n">out</span> <span class="p">..]</span> <span class="n">esac</span>
+</code></pre></div></div>
+
+<p>where “ouse” (from “OUt caSE”) let you iterate the case
+matching process and only need one ‘esac’.</p>
+
+<p>This proposal adopts the Algol 68 idea.
+The revised form is</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">'case'</span> <span class="nv">Expression</span> <span class="n">'of'</span>
+      <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span>
+ <span class="p">{</span><span class="n">';'</span> <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span><span class="p">}...</span>
+<span class="p">{</span><span class="n">';'</span> <span class="n">'or'</span> <span class="n">'case'</span> <span class="nv">Expression</span> <span class="n">'of'</span>	
+      <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span>
+ <span class="p">{</span><span class="n">';'</span> <span class="nv">Pattern</span> <span class="p">[</span><span class="n">'when'</span> <span class="nv">Guard</span><span class="p">]</span> <span class="n">'-&gt;'</span> <span class="nv">Expression</span><span class="p">}...}...</span>
+<span class="n">'end'</span>
+</code></pre></div></div>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Consider this example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">suffix</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nb">is_function</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">is_list</span><span class="p">(</span><span class="nv">Suffix</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="nf">suffix_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">suffix_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="k">case</span> <span class="nf">equal</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">)</span>
+  <span class="k">of</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+   <span class="p">;</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="k">case</span> <span class="nv">List</span>
+		<span class="k">of</span> <span class="p">[_|</span><span class="nv">Tail</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nf">suffix_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">)</span>
+		 <span class="p">;</span> <span class="p">[]</span>       <span class="o">-&gt;</span> <span class="n">false</span>
+	      <span class="k">end</span>
+<span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>With this proposal we could write</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">suffix_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="k">case</span> <span class="nf">equal</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">List</span><span class="p">)</span>
+  <span class="k">of</span> <span class="n">true</span>     <span class="o">-&gt;</span> <span class="n">true</span>
+<span class="p">;</span> <span class="ow">or</span> <span class="k">case</span> <span class="nv">List</span>
+      <span class="k">of</span> <span class="p">[_|</span><span class="nv">Tail</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nf">suffix_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">)</span>
+   <span class="p">;</span> <span class="p">[]</span>       <span class="o">-&gt;</span> <span class="n">false</span>
+<span class="k">end</span><span class="p">.</span>
+   
+</code></pre></div></div>
+<p>where all the alternatives to be selected have the same
+indentation.</p>
+
+<p>The old proposal for a Lisp-like ‘cond’ is no longer really
+needed.  Instead of</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">cond</span>
+    <span class="nv">C1</span> <span class="o">-&gt;</span> <span class="nv">B1</span>
+  <span class="p">;</span> <span class="nv">C2</span> <span class="o">-&gt;</span> <span class="nv">B2</span>
+  <span class="p">...</span>
+  <span class="p">;</span> <span class="nv">Cn</span> <span class="o">-&gt;</span> <span class="nv">Bn</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>one writes</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span>      <span class="nv">C1</span> <span class="k">of</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="nv">B1</span>
+<span class="p">;</span> <span class="ow">or</span> <span class="k">case</span> <span class="nv">C2</span> <span class="k">of</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="nv">B2</span>
+<span class="p">...</span>
+<span class="p">;</span> <span class="ow">or</span> <span class="k">case</span> <span class="nv">Cn</span> <span class="k">of</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="nv">Bn</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>What one loses here is the check that a result that is not
+‘true’ must be ‘false’, but that job can these days be done
+by the Dialyzer.  This is certainly clumsier than ‘cond’,
+but it achieves the main aim, that of selecting from a bunch
+of choices at the same logical (and therefore at the same
+indentation) level by means of a series of Boolean-valued
+expressions, but it is strictly more general.  It allows you
+to combine Boolean-valued expressions with guards (including
+any future generalisations of guards), and it allows you to
+make a choice based on any kind of pattern matching, not just
+Boolean.</p>
+
+<p>This is clumsier than ‘cond’, but over-using Boolean when some
+more intention-revealing enumeration should be used is an
+anti-pattern that has been recognised for over 20 years.  If
+‘cond’ existed, there would be a strong pressure for people
+to write functions that return a Boolean result when something
+else might be more useful, just so they could use ‘cond’.<br />
+As an example, suppose that we want to continue if the voltage
+is nominal, shut the device off if the voltage is low and there
+is not an emergency, or set the speed slow if the voltage is
+low and there is an emergency.</p>
+
+<p>With cond:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">cond</span> <span class="nf">voltage_nominal</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">continue_operations</span><span class="p">()</span>
+   <span class="p">;</span> <span class="nf">in_emergency</span><span class="p">()</span>    <span class="o">-&gt;</span> <span class="nf">set_speed_slow</span><span class="p">()</span>
+   <span class="p">;</span> <span class="n">true</span>              <span class="o">-&gt;</span> <span class="nf">shut_device_down</span><span class="p">()</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With case:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span>      <span class="nf">voltage</span><span class="p">()</span> <span class="k">of</span> <span class="n">nominal</span>  <span class="o">-&gt;</span> <span class="nf">continue_operations</span><span class="p">()</span>
+<span class="p">;</span> <span class="ow">or</span> <span class="k">case</span> <span class="nf">status</span><span class="p">()</span> <span class="k">of</span> <span class="n">emergency</span> <span class="o">-&gt;</span> <span class="nf">set_speed_slow</span><span class="p">()</span>
+                    <span class="p">;</span> <span class="n">normal</span>    <span class="o">-&gt;</span> <span class="nf">shut_device_down</span><span class="p">()</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>When expressed this way, I for one find it easier to realise
+that “low” is not the opposite of “nominal”; a voltage that is
+not nominal might be high.  So we really should have</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span>      <span class="nf">voltage</span><span class="p">()</span> <span class="k">of</span> <span class="n">nominal</span>   <span class="o">-&gt;</span> <span class="nf">continue_operations</span><span class="p">()</span>
+                     <span class="p">;</span> <span class="n">high</span>      <span class="o">-&gt;</span> <span class="nv">WHAT</span> <span class="nv">DO</span> <span class="nv">WE</span> <span class="nv">DO</span> <span class="nv">HERE</span><span class="o">?</span>
+<span class="p">;</span> <span class="ow">or</span> <span class="k">case</span> <span class="nf">status</span><span class="p">()</span>  <span class="k">of</span> <span class="n">emergency</span> <span class="o">-&gt;</span> <span class="nf">set_speed_slow</span><span class="p">()</span>
+		     <span class="p">;</span> <span class="n">normal</span>    <span class="o">-&gt;</span> <span class="nf">shut_device_down</span><span class="p">()</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>So an approach that gives you the “flat” structure of ‘cond’
+while subtly encouraging the multiway thinking of ‘case’ has
+merit.  You could say that I am not so much for ‘ouse’ as
+against ‘cond’ and over-use of Boolean.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>I read one too many “why doesn’t Erlang have an if” e-message,
+and suddently remember “Algol 68 could do that with ‘case’”.</p>
+
+<p>The main issue is how to spell ‘ouse’ in Erlang.  My first
+preference was for ‘or case’, but that can’t work.  I do not
+love “; or case”, and would be very happy to see something
+better.  Indeed, “; case” might do the job, I just felt that
+that was a bit too error-prone.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>All existing Erlang code remains acceptable with unchanged
+semantics.  The implementation will be entirely in the parser,
+so even tools that examine ASTs will be unaffected.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>None yet.  It will be entirely in the parser.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

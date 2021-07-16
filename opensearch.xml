@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+	xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <Description>Search Erlang website</Description>
+  <SearchForm>https://erlang.github.io/erlang-org/</SearchForm>
+  <moz:SearchForm>https://erlang.github.io/erlang-org/</moz:SearchForm>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Language>en</Language>
+
+  <ShortName>erlang.org</ShortName>
+  <Url rel="self" type="application/opensearchdescription+xml" href="https://erlang.github.io/erlang-org/opensearch.xml" />
+  <Url method="get" type="text/html"
+      template="https://duckduckgo.com/?q=site%3Ahttps://erlang.github.io/erlang-org/+{searchTerms}" />
+  <Image width="16" height="16">https://erlang.github.io/erlang-org/favicon.ico</Image>
+</OpenSearchDescription>

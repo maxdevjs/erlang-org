@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:erl="http://erlang.org" xmlns:fn="http://www.w3.org/2005/02/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="../otp_doc.css" type="text/css">
+<title>Erlang -- Upcoming Potential Incompatibilities</title>
+</head>
+<body>
+<div id="container">
+<script id="js" type="text/javascript" language="JavaScript" src="../js/flipmenu/flipmenu.js"></script><script id="js2" type="text/javascript" src="../js/erlresolvelinks.js"></script><script language="JavaScript" type="text/javascript">
+            <!--
+              function getWinHeight() {
+                var myHeight = 0;
+                if( typeof( window.innerHeight ) == 'number' ) {
+                  //Non-IE
+                  myHeight = window.innerHeight;
+                } else if( document.documentElement && ( document.documentElement.clientWidth ||
+                                                         document.documentElement.clientHeight ) ) {
+                  //IE 6+ in 'standards compliant mode'
+                  myHeight = document.documentElement.clientHeight;
+                } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+                  //IE 4 compatible
+                  myHeight = document.body.clientHeight;
+                }
+                return myHeight;
+              }
+
+              function setscrollpos() {
+                var objf=document.getElementById('loadscrollpos');
+                 document.getElementById("leftnav").scrollTop = objf.offsetTop - getWinHeight()/2;
+              }
+
+              function addEvent(obj, evType, fn){
+                if (obj.addEventListener){
+                obj.addEventListener(evType, fn, true);
+                return true;
+              } else if (obj.attachEvent){
+                var r = obj.attachEvent("on"+evType, fn);
+                return r;
+              } else {
+                return false;
+              }
+             }
+
+             addEvent(window, 'load', setscrollpos);
+
+             //--></script><div id="leftnav"><div class="leftnav-tube">
+<div class="erlang-logo-wrapper"><a href="../index.html"><img alt="Erlang Logo" src="../erlang-logo.png" class="erlang-logo"></a></div>
+<p class="section-title">General Information</p>
+<p class="section-subtitle">User's Guide</p>
+<p class="section-version">Version 12.0.3</p>
+<ul class="panel-sections">
+<li><a href="users_guide.html">User's Guide</a></li>
+<li><a href="../pdf/otp-system-documentation.pdf">PDF</a></li>
+<li><a href="../index.html">Top</a></li>
+</ul>
+<ul class="expand-collapse-items">
+<li><a href="javascript:openAllFlips()">Expand All</a></li>
+<li><a href="javascript:closeAllFlips()">Contract All</a></li>
+</ul>
+<h3>Chapters</h3>
+<ul class="flipMenu" imagePath="../js/flipmenu">
+<li id="no" title="Deprecations" expanded="false">Deprecations<ul>
+<li><a href="deprecations.html">
+              Top of chapter
+            </a></li>
+<li title="Introduction"><a href="deprecations.html#introduction">Introduction</a></li>
+<li title="OTP 24"><a href="deprecations.html#otp-24">OTP 24</a></li>
+<li title="OTP 23"><a href="deprecations.html#otp-23">OTP 23</a></li>
+<li title="OTP 22"><a href="deprecations.html#otp-22">OTP 22</a></li>
+<li title="OTP 20"><a href="deprecations.html#otp-20">OTP 20</a></li>
+<li title="OTP 19"><a href="deprecations.html#otp-19">OTP 19</a></li>
+<li title="OTP 18"><a href="deprecations.html#otp-18">OTP 18</a></li>
+<li title="OTP 16"><a href="deprecations.html#otp-16">OTP 16</a></li>
+<li title="OTP 12"><a href="deprecations.html#otp-12">OTP 12</a></li>
+</ul>
+</li>
+<li id="no" title="Removed Functionality" expanded="false">Removed Functionality<ul>
+<li><a href="removed.html">
+              Top of chapter
+            </a></li>
+<li title="Introduction"><a href="removed.html#introduction">Introduction</a></li>
+<li title="OTP 24"><a href="removed.html#otp-24">OTP 24</a></li>
+<li title="OTP 23"><a href="removed.html#otp-23">OTP 23</a></li>
+<li title="OTP 22"><a href="removed.html#otp-22">OTP 22</a></li>
+<li title="OTP 20"><a href="removed.html#otp-20">OTP 20</a></li>
+<li title="OTP 19"><a href="removed.html#otp-19">OTP 19</a></li>
+</ul>
+</li>
+<li id="no" title="Scheduled for Removal" expanded="false">Scheduled for Removal<ul>
+<li><a href="scheduled_for_removal.html">
+              Top of chapter
+            </a></li>
+<li title="Introduction"><a href="scheduled_for_removal.html#introduction">Introduction</a></li>
+<li title="OTP 27"><a href="scheduled_for_removal.html#otp-27">OTP 27</a></li>
+<li title="OTP 26"><a href="scheduled_for_removal.html#otp-26">OTP 26</a></li>
+<li title="OTP 25"><a href="scheduled_for_removal.html#otp-25">OTP 25</a></li>
+</ul>
+</li>
+<li id="loadscrollpos" title="Upcoming Potential Incompatibilities" expanded="true">Upcoming Potential Incompatibilities<ul>
+<li><a href="upcoming_incompatibilities.html">
+              Top of chapter
+            </a></li>
+<li title="Introduction"><a href="upcoming_incompatibilities.html#introduction">Introduction</a></li>
+<li title="OTP 25"><a href="upcoming_incompatibilities.html#otp-25">OTP 25</a></li>
+<li title="OTP 26"><a href="upcoming_incompatibilities.html#otp-26">OTP 26</a></li>
+</ul>
+</li>
+</ul>
+</div></div>
+<div id="content">
+<div class="innertube">
+<h1>4 Upcoming Potential Incompatibilities</h1>
+  
+  <h3><span onMouseOver="document.getElementById('ghlink-introduction-idm758').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-introduction-idm758').style.visibility = 'hidden';"><a class="title_link" name="introduction">4.1 
+          Introduction</a><span id="ghlink-introduction-idm758" class="ghlink-after"><a href="#introduction" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L32" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h3>
+    
+    <p>This document lists planned upcoming potential incompatibilities in
+    Erlang/OTP.</p>
+  
+
+  <h3><span onMouseOver="document.getElementById('ghlink-otp-25-idm761').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-otp-25-idm761').style.visibility = 'hidden';"><a class="title_link" name="otp-25">4.2 
+          OTP 25</a><span id="ghlink-otp-25-idm761" class="ghlink-after"><a href="#otp-25" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L38" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h3>
+    
+    <h4><span onMouseOver="document.getElementById('ghlink-distribution-flags-will-become-mandatory-idm763').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-distribution-flags-will-become-mandatory-idm763').style.visibility = 'hidden';"><a class="title_link" name="distribution-flags-will-become-mandatory">Distribution flags will become mandatory</a><span id="ghlink-distribution-flags-will-become-mandatory-idm763" class="ghlink-after"><a href="#distribution-flags-will-become-mandatory" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L40" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h4>
+      
+      <p>In OTP 25, more <span class="bold_code bc-13"><a href="../apps/erts/erl_dist_protocol.html#dflags">distribution
+      flags</a></span> will become mandatory. That is, Erlang nodes
+      will refuse to connect to nodes not implementing all of the
+      mandatory distribution flags. If you implement the Erlang
+      distribution protocol yourself, you will need to implement
+      support for all mandatory distribution flags in order to
+      communicate with Erlang nodes running OTP 25.</p>
+      <p>The following distribution flags will become mandatory in OTP
+      25:</p>
+      <dl>
+        <dt><strong><span class="code">DFLAG_BIT_BINARIES</span></strong></dt>
+        <dd>Support for bitstrings.</dd>
+        <dt><strong><span class="code">DFLAG_EXPORT_PTR_TAG</span></strong></dt>
+        <dd>Support for external funs (<span class="code">fun Module:Name/Arity</span>).</dd>
+        <dt><strong><span class="code">DFLAG_MAP_TAGS</span></strong></dt>
+        <dd>Support for maps.</dd>
+        <dt><strong><span class="code">DFLAG_NEW_FLOATS</span></strong></dt>
+        <dd>Support for the new encoding of floats.</dd>
+        <dt><strong><span class="code">DFLAG_FUN_TAGS</span></strong></dt>
+        <dd>Support for funs, but only in the new format
+        (<span class="code">NEW_FUN_EXT</span>) because <span class="code">DFLAG_NEW_FUN_TAGS</span> is also
+        mandatory.</dd>
+      </dl>
+    
+  
+
+  <h3><span onMouseOver="document.getElementById('ghlink-otp-26-idm787').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-otp-26-idm787').style.visibility = 'hidden';"><a class="title_link" name="otp-26">4.3 
+          OTP 26</a><span id="ghlink-otp-26-idm787" class="ghlink-after"><a href="#otp-26" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L69" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h3>
+    
+    <h4><span onMouseOver="document.getElementById('ghlink-the-distribution-flag-dflag_v4_nc-will-become-mandatory-idm789').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-the-distribution-flag-dflag_v4_nc-will-become-mandatory-idm789').style.visibility = 'hidden';"><a class="title_link" name="the-distribution-flag-dflag_v4_nc-will-become-mandatory">The distribution flag DFLAG_V4_NC will become mandatory</a><span id="ghlink-the-distribution-flag-dflag_v4_nc-will-become-mandatory-idm789" class="ghlink-after"><a href="#the-distribution-flag-dflag_v4_nc-will-become-mandatory" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L71" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h4>
+      
+      <p>As of OTP 26, the distribution flag <span class="bold_code bc-13"><a href="../apps/erts/erl_dist_protocol.html#DFLAG_V4_NC">DFLAG_V4_NC</a></span>
+      will become mandatory. If you implement the Erlang distribution
+      protocol yourself, you will need to implement support for
+      <span class="code">DFLAG_V4_NC</span> in order to communicate with Erlang nodes
+      running OTP 26.</p>
+    
+
+    <h4><span onMouseOver="document.getElementById('ghlink-the-new-link-protocol-will-become-mandatory-idm794').style.visibility = 'visible';" onMouseOut="document.getElementById('ghlink-the-new-link-protocol-will-become-mandatory-idm794').style.visibility = 'hidden';"><a class="title_link" name="the-new-link-protocol-will-become-mandatory">The new link protocol will become mandatory</a><span id="ghlink-the-new-link-protocol-will-become-mandatory-idm794" class="ghlink-after"><a href="#the-new-link-protocol-will-become-mandatory" title="Link to this place!"><span class="paperclip-after"></span></a><a href="https://github.com/erlang/otp/edit/maint/system/doc/general_info/upcoming_incompatibilities.xml#L81" title="Found an issue with the documentation? Fix it by clicking here!"><span class="pencil-after"></span></a></span></span></h4>
+      
+      <p>
+	As of OTP 26, the <span class="bold_code bc-13"><a href="../apps/erts/erl_dist_protocol.html#new_link_protocol">new link
+	protocol</a></span> will become mandatory. That is, Erlang
+	nodes will then refuse to connect to nodes not implementing
+	the new link protocol. If you implement the Erlang
+	distribution yourself, you are, however, encouraged to
+	implement the new link protocol as soon as possible since the
+	old protocol can cause links to enter an inconsistent state.
+      </p>
+    
+
+  
+</div>
+<div class="footer">
+<hr>
+<p>Copyright © 2019-2021 Ericsson AB. All Rights Reserved.</p>
+</div>
+</div>
+</div>
+<script type="text/javascript">window.__otpTopDocDir = '../js/';</script><script type="text/javascript" src="../js/highlight.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0039 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0039 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Yurii Rashkovskii &lt;yrashk(at)gmail(dot)com&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>2-Jul-2011</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R15A</dd>
+                        
+                        
+                        <dt>Post-History:</dt>
+                        <dd>2-Jul-2011</dd>
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-39-scoped-group-leaders">EEP 39: Scoped Group Leaders</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Scoped group leaders is an extension of the existing group leader
+mechanism that allows one to use the group leader mechanism beyond
+its original intent (which is I/O only).</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Every process is given a “dictionary” of group leaders, with one
+<code class="language-plaintext highlighter-rouge">io</code> group leader defined by default, representing the only group
+leader that exists currently in Erlang. Every process created is
+given a copy of the dictionary exactly as before.</p>
+
+<p>Two new functions have been added to the <code class="language-plaintext highlighter-rouge">erlang</code> module.</p>
+
+<p>Firstly, scoped group leader retrieval:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="nv">Scope</span> <span class="p">::</span> <span class="nf">atom</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">'undefined'</span> <span class="p">|</span> <span class="nf">pid</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>This function retrieves the group leader for the scope <code class="language-plaintext highlighter-rouge">Scope</code>.  Existing
+argument-free function <code class="language-plaintext highlighter-rouge">erlang:group_leader/0</code> is now implemented as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">io</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Secondly, scoped group leader setup:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="nv">Scope</span> <span class="p">::</span> <span class="nf">atom</span><span class="p">(),</span> <span class="nv">GroupLeader</span> <span class="p">::</span> <span class="nf">pid</span><span class="p">(),</span>
+                                     <span class="nv">Proc</span> <span class="p">::</span> <span class="nf">pid</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This function sets the group leader for scope the <code class="language-plaintext highlighter-rouge">Scope</code> to the <code class="language-plaintext highlighter-rouge">GroupLeader</code>
+for a process <code class="language-plaintext highlighter-rouge">Proc</code>.  The existing function <code class="language-plaintext highlighter-rouge">erlang:group_leader/2</code> is
+now implemented as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="nv">GroupLeader</span><span class="p">,</span> <span class="nv">Proc</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Process information available through <code class="language-plaintext highlighter-rouge">erlang:process_info/1</code> and
+<code class="language-plaintext highlighter-rouge">erlang:process_info/2</code> has been extended with a new key, <code class="language-plaintext highlighter-rouge">group_leaders</code>.
+It contains a proplist of group leaders associated with the process given.
+The list will at the very least contain the tuple <code class="language-plaintext highlighter-rouge">{io, &lt;0.24.0&gt;}</code>
+Note: this group leader is currently the default one in every single process.</p>
+
+<p>Distribution mechanism(s) get extended to support these scoped group leaders
+as well, so processes spawned on remote nodes get the whole list of group
+leaders copied.</p>
+
+<h2 id="example">Example</h2>
+
+<p>In this example, we’ll set a group leader for the scope of <code class="language-plaintext highlighter-rouge">test</code>
+and we’ll retrieve it from the current and the child processes.
+Also, we’ll retrieve the <code class="language-plaintext highlighter-rouge">io</code> scoped group leader using both the
+original and the new API:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="nf">self</span><span class="p">(),</span> <span class="nf">self</span><span class="p">()).</span>
+<span class="n">true</span>
+<span class="mi">2</span><span class="o">&gt;</span>  <span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">().</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="mi">3</span><span class="o">&gt;</span> <span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">io</span><span class="p">).</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="mi">4</span><span class="o">&gt;</span> <span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">test</span><span class="p">).</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">31</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="mi">5</span><span class="o">&gt;</span> <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p~n</span><span class="s">"</span><span class="p">,[</span><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">()])</span> <span class="k">end</span><span class="p">),</span> <span class="n">ok</span><span class="p">.</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="n">ok</span>
+<span class="mi">6</span><span class="o">&gt;</span> <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p~n</span><span class="s">"</span><span class="p">,[</span><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">io</span><span class="p">)])</span> <span class="k">end</span><span class="p">),</span> <span class="n">ok</span><span class="p">.</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="n">ok</span>
+<span class="mi">7</span><span class="o">&gt;</span> <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p~n</span><span class="s">"</span><span class="p">,[</span><span class="nn">erlang</span><span class="p">:</span><span class="nb">group_leader</span><span class="p">(</span><span class="n">test</span><span class="p">)])</span> <span class="k">end</span><span class="p">),</span> <span class="n">ok</span><span class="p">.</span>
+<span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">31</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="n">ok</span>
+<span class="mi">8</span><span class="o">&gt;</span> <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p~n</span><span class="s">"</span><span class="p">,[</span><span class="nn">erlang</span><span class="p">:</span><span class="nb">process_info</span><span class="p">(</span><span class="nf">self</span><span class="p">())])</span> <span class="k">end</span><span class="p">),</span> <span class="n">ok</span><span class="p">.</span>
+<span class="p">[{</span><span class="n">current_function</span><span class="p">,{</span><span class="n">erl_eval</span><span class="p">,</span><span class="n">do_apply</span><span class="p">,</span><span class="mi">5</span><span class="p">}},</span>
+ <span class="p">{</span><span class="n">initial_call</span><span class="p">,{</span><span class="n">erlang</span><span class="p">,</span><span class="nb">apply</span><span class="p">,</span><span class="mi">2</span><span class="p">}},</span>
+ <span class="p">{</span><span class="n">status</span><span class="p">,</span><span class="n">running</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">message_queue_len</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">messages</span><span class="p">,[]},</span>
+ <span class="p">{</span><span class="n">links</span><span class="p">,[]},</span>
+ <span class="p">{</span><span class="n">dictionary</span><span class="p">,[]},</span>
+ <span class="p">{</span><span class="n">trap_exit</span><span class="p">,</span><span class="n">false</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">error_handler</span><span class="p">,</span><span class="n">error_handler</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">priority</span><span class="p">,</span><span class="n">normal</span><span class="p">},</span>
+ <span class="p">{</span><span class="nb">group_leader</span><span class="p">,</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">group_leaders</span><span class="p">,[{</span><span class="n">test</span><span class="p">,</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">31</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">},{</span><span class="n">io</span><span class="p">,</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">24</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">}]},</span>
+ <span class="p">{</span><span class="n">total_heap_size</span><span class="p">,</span><span class="mi">233</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">heap_size</span><span class="p">,</span><span class="mi">233</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">stack_size</span><span class="p">,</span><span class="mi">24</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">reductions</span><span class="p">,</span><span class="mi">93</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">garbage_collection</span><span class="p">,[{</span><span class="n">min_bin_vheap_size</span><span class="p">,</span><span class="mi">46368</span><span class="p">},</span>
+                      <span class="p">{</span><span class="n">min_heap_size</span><span class="p">,</span><span class="mi">233</span><span class="p">},</span>
+                      <span class="p">{</span><span class="n">fullsweep_after</span><span class="p">,</span><span class="mi">65535</span><span class="p">},</span>
+                      <span class="p">{</span><span class="n">minor_gcs</span><span class="p">,</span><span class="mi">0</span><span class="p">}]},</span>
+ <span class="p">{</span><span class="n">suspending</span><span class="p">,[]}]</span>
+<span class="n">ok</span>
+</code></pre></div></div>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>The I/O system is not the only domain where the concept of group leaders
+comes in handy.  Implicit configurations, security groups and many other
+problems could benefit from being able to extend the standard group leader
+mechanism.</p>
+
+<p>One of the potential uses of this technique could be an extension of the
+I/O leader paradigm into Web Development, with a <code class="language-plaintext highlighter-rouge">web</code> group leader
+represented as an HTTP connection, WebSocket, or Session.  With this simple
+approach one can use the same technique used by I/O primitives to allow
+transparent and/or multiplexed access to other HTTP communication channels,
+within either local or remote processes.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>We have chosen to extend the existing API instead of introducing a new one
+simply because we believe this concept to be a natural evolution of the
+group leaders concept with which people are already familiar.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>The proposed changes keep existing API’s intact and only provide some new
+functions for this pre-described functionality.  While this change maintains
+backwards compatibility, the existing behaviour’s are not altered and newly
+introduced behaviour’s are fashioned to mimic existing ones.</p>
+
+<p>The Proplist returned by <code class="language-plaintext highlighter-rouge">erlang:process_info/1</code> has all pre-existing keys
+unmodified and features, with the addition of a new key called <code class="language-plaintext highlighter-rouge">group_leaders</code>.
+In the unlikely event that code exists which relies on a specific set of keys
+used in this proplist, no backwards compatibility issues should exist.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>There is no reference implementation at this point.  However, a proof
+of concept implementation is <a href="https://github.com/spawngrid/otp/tree/group_leader_scope">available</a>.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

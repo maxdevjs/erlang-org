@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0017 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0017 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>23-Jul-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-4</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-17-fix-andalso-and-orelse">EEP 17: Fix andalso and orelse</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Erlang 5.1 added the ability to use ‘andalso’, ‘orelse’,
+‘and’, and ‘or’ in guards.  However, the semantics for
+‘andalso’ and ‘orelse’ differs from that in other related
+languages, causing confusion and inefficiency.</p>
+
+<p>I propose making ‘andalso’ and ‘orelse’ work like Lisp
+AND and OR respectively.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Currently, (E1 andalso E2) as an expression acts like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span>
+ <span class="k">of</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span>
+  <span class="p">;</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="k">case</span> <span class="nv">E2</span> 
+               <span class="k">of</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span>
+                <span class="p">;</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+             <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>except that in my tests the former raises <code class="language-plaintext highlighter-rouge">{badarg,NonBool}</code>
+exceptions and the latter raises <code class="language-plaintext highlighter-rouge">{case_clause,NonBool}</code> ones.</p>
+
+<p>This should be changed to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span>
+  <span class="k">of</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span>
+   <span class="p">;</span> <span class="n">true</span>   <span class="o">-&gt;</span> <span class="nv">E2</span>
+<span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Currently, (E1 orelse E2) as an expression acts like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span>
+  <span class="k">of</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+   <span class="p">;</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="k">case</span> <span class="nv">E2</span>
+                <span class="k">of</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+                 <span class="p">;</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span>
+              <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>except that in my tests the former raises <code class="language-plaintext highlighter-rouge">{badarg,NonBool}</code>
+exceptions and the latter raises <code class="language-plaintext highlighter-rouge">{case_clause,NonBool}</code> ones.</p>
+
+<p>This should be changed to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span>
+  <span class="k">of</span> <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+   <span class="p">;</span> <span class="n">false</span> <span class="o">-&gt;</span> <span class="nv">E2</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>There is apparently a folklore belief that using ‘andalso’ (or
+‘orelse’) in a guard will somehow give you better code than using
+‘,’ (or ‘;’).  On the contrary, you will get rather worse code.
+See “Motivation” for an example.  This should change.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">guard</span> <span class="p">::</span><span class="o">=</span> <span class="n">gconj</span> <span class="p">{</span><span class="n">';'</span> <span class="n">gconj</span><span class="p">}</span><span class="o">*</span>
+<span class="n">gconj</span> <span class="p">::</span><span class="o">=</span> <span class="n">gtest</span> <span class="p">{</span><span class="n">','</span> <span class="n">gtest</span><span class="p">}</span><span class="o">*</span>
+<span class="n">gtest</span> <span class="p">::</span><span class="o">=</span> <span class="n">'('</span> <span class="n">guard</span> <span class="n">')'</span> <span class="p">|</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>First, we allow ‘,’ and ‘;’ to nest, using parentheses.
+Second, we rule that as outer operators in a guard, the
+only difference between ‘,’ and ‘andalso’ is precedence,
+and the only difference between ‘;’ and ‘orelse’ is also
+precedence.  In a guard test like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">is_atom</span><span class="p">(</span><span class="nv">X</span> <span class="ow">andalso</span> <span class="nv">Y</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>the ‘andalso’ cannot be replaced by ‘,’, but whenever one
+COULD be replaced by the other, they should have the same effect.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<h3 id="cultural-consistency">Cultural consistency</h3>
+
+<ul>
+  <li>Common Lisp</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="n">defun</span> <span class="n">member</span><span class="o">-</span><span class="nf">p</span> <span class="p">(</span><span class="nv">X</span> <span class="nv">Xs</span><span class="p">)</span>
+      <span class="p">(</span><span class="ow">and</span> <span class="p">(</span><span class="n">consp</span> <span class="nv">Xs</span><span class="p">)</span>
+           <span class="p">(</span><span class="ow">or</span> <span class="p">(</span><span class="n">equal</span> <span class="nv">X</span> <span class="p">(</span><span class="n">first</span> <span class="nv">Xs</span><span class="p">))</span>
+               <span class="p">(</span><span class="n">member</span><span class="o">-</span><span class="n">p</span> <span class="nv">X</span> <span class="p">(</span><span class="n">rest</span> <span class="nv">Xs</span><span class="p">)))))</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Scheme</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="nf">define</span> <span class="p">(</span><span class="n">member</span><span class="o">?</span> <span class="nv">X</span> <span class="nv">Xs</span><span class="p">)</span>
+      <span class="p">(</span><span class="ow">and</span> <span class="p">(</span><span class="n">pair</span><span class="o">?</span> <span class="nv">Xs</span><span class="p">)</span>
+           <span class="p">(</span><span class="ow">or</span> <span class="p">(</span><span class="n">equal</span><span class="o">?</span> <span class="nv">X</span> <span class="p">(</span><span class="n">car</span> <span class="nv">Xs</span><span class="p">))</span>
+               <span class="p">(</span><span class="n">member</span><span class="o">?</span> <span class="nv">X</span> <span class="p">(</span><span class="n">cdr</span> <span class="nv">Xs</span><span class="p">)))))</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Standard ML</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">fun</span> <span class="nf">is_member</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span> <span class="o">=</span>
+        <span class="ow">not</span> <span class="p">(</span><span class="n">null</span> <span class="n">xs</span><span class="p">)</span> <span class="ow">andalso</span> <span class="p">(</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">hd</span> <span class="n">xs</span> <span class="ow">orelse</span> <span class="nf">is_member</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tl</span> <span class="n">xs</span><span class="p">))</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Haskell</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">x</span> <span class="err">`</span><span class="n">is_member_of</span><span class="err">`</span> <span class="n">xs</span> <span class="o">=</span>
+       <span class="ow">not</span> <span class="p">(</span><span class="n">null</span> <span class="n">xs</span><span class="p">)</span> <span class="err">&amp;&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">head</span> <span class="n">xs</span> <span class="p">||</span> <span class="n">x</span> <span class="err">`</span><span class="n">is_member_of</span><span class="err">`</span> <span class="n">tail</span> <span class="n">xs</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Dylan</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">I</span> <span class="n">don</span><span class="err">'</span><span class="n">t</span> <span class="n">know</span> <span class="nv">Dylan</span> <span class="n">syntax</span> <span class="n">well</span> <span class="n">enough</span> <span class="n">to</span> <span class="n">finish</span> <span class="n">this</span>
+<span class="n">example</span><span class="p">,</span> <span class="n">but</span> <span class="nv">I</span> <span class="n">do</span> <span class="n">know</span> <span class="n">that</span> <span class="n">'&amp;'</span> <span class="ow">and</span> <span class="n">'|'</span> <span class="n">in</span> <span class="nv">Dylan</span> <span class="n">are</span> <span class="n">exactly</span>
+<span class="n">like</span> <span class="nv">AND</span> <span class="ow">and</span> <span class="nv">OR</span> <span class="n">in</span> <span class="nv">Common</span> <span class="nv">Lisp</span> <span class="n">except</span> <span class="n">for</span> <span class="n">syntax</span><span class="p">.</span>  <span class="p">(</span><span class="nv">They</span> <span class="n">are</span>
+<span class="n">documented</span> <span class="n">as</span> <span class="n">allowing</span> <span class="n">the</span> <span class="n">right</span> <span class="n">operand</span> <span class="n">to</span> <span class="n">return</span> <span class="n">anything</span><span class="p">,</span>
+<span class="n">including</span> <span class="n">multiple</span> <span class="n">values</span><span class="p">.)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Python</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">def</span> <span class="nf">is_member</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+        <span class="n">return</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="nf">is_member</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">I</span><span class="err">'</span><span class="n">m</span> <span class="ow">not</span> <span class="n">perfectly</span> <span class="n">sure</span> <span class="n">about</span> <span class="n">this</span><span class="p">,</span> <span class="n">but</span> <span class="n">the</span> <span class="n">reference</span> <span class="n">manual</span>
+<span class="n">is</span> <span class="n">very</span> <span class="n">explicit</span> <span class="n">that</span> <span class="n">the</span> <span class="n">second</span> <span class="n">operand</span> <span class="k">of</span> <span class="n">'and'</span> <span class="ow">or</span> <span class="n">'or'</span> <span class="n">can</span>
+<span class="n">be</span> <span class="n">anything</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Smalltalk</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Doing</span> <span class="n">this</span> <span class="n">example</span> <span class="n">this</span> <span class="n">way</span> <span class="n">in</span> <span class="nv">Smalltalk</span> <span class="n">requires</span> <span class="n">considerable</span>
+<span class="n">pain</span> <span class="n">in</span> <span class="n">going</span> <span class="n">against</span> <span class="n">the</span> <span class="n">grain</span> <span class="k">of</span> <span class="nv">Smalltalk</span><span class="p">,</span> <span class="n">however</span> <span class="n">the</span>
+<span class="n">'and:'</span> <span class="ow">and</span> <span class="n">'or:'</span> <span class="n">selectors</span> <span class="n">in</span> <span class="nv">Smalltalk</span> <span class="nv">DO</span> <span class="n">check</span> <span class="n">that</span> <span class="n">their</span>
+<span class="n">first</span> <span class="n">argument</span> <span class="n">is</span> <span class="nv">Boolean</span> <span class="ow">and</span> <span class="nv">DON</span><span class="err">'</span><span class="nv">T</span> <span class="n">check</span> <span class="n">anything</span> <span class="nf">about</span> <span class="p">(</span><span class="n">the</span>
+<span class="n">result</span> <span class="k">of</span><span class="p">)</span> <span class="n">their</span> <span class="n">second</span> <span class="n">argument</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In all of these, the “and” and “or” operations work exactly the
+same way, and in the languages whose implementations support tail
+recursion (Common Lisp, Scheme, Standard ML, Haskell), the
+function shown above is tail recursive.  (I could have added more
+languages to the list.)</p>
+
+<p>Erlang stands out.  The behaviour of ‘andalso’ is surprising, and
+the fact that ‘andalso’ and ‘orelse’ block tail recursion is quite
+astonishing.  I am all in favour of giving programmers shocks that
+teach them something useful about programming, but this one is not
+a useful lesson.  Testing both arguments of ‘and’ and ‘or’ makes
+sense, because the code executed for those operators always GETS
+the values of both operands.  But ‘andalso’ and ‘orelse’ only test
+their second operand SOME of the time.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">X</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span>    <span class="c">% checked error
+</span><span class="nv">X</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span>     <span class="c">% unchecked error
+</span></code></pre></div></div>
+
+<p>There doesn’t seem to be much point in checking SOME of the time,
+especially when it does something as dramatic as blocking tail
+recursion.</p>
+
+<h3 id="guards-code">Guards code</h3>
+
+<p>As for guards, here is a small example</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="nn">math</span><span class="p">:</span><span class="nf">sqrt</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>This compiles to the following rather obvious code:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">function</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">1</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">func_info</span><span class="p">,{</span><span class="n">atom</span><span class="p">,</span><span class="n">bar</span><span class="p">},{</span><span class="n">atom</span><span class="p">,</span><span class="n">f</span><span class="p">},</span><span class="mi">1</span><span class="p">}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">2</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">test</span><span class="p">,</span><span class="n">is_ge</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">1</span><span class="p">},[{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">integer</span><span class="p">,</span><span class="mi">0</span><span class="p">}]}.</span>
+    <span class="p">{</span><span class="n">test</span><span class="p">,</span><span class="n">is_lt</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">1</span><span class="p">},[{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">integer</span><span class="p">,</span><span class="mi">1</span><span class="p">}]}.</span>
+    <span class="p">{</span><span class="n">call_ext_only</span><span class="p">,</span><span class="mi">1</span><span class="p">,{</span><span class="n">extfunc</span><span class="p">,</span><span class="n">math</span><span class="p">,</span><span class="n">sqrt</span><span class="p">,</span><span class="mi">1</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<p>Some people expect ‘andalso’ to do as well or better.
+I expected it to do the same, and this EEP requires it to.
+Here’s the source code:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">g</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="nn">math</span><span class="p">:</span><span class="nf">sqrt</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>and here are the BEAM instructions:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">function</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">3</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">func_info</span><span class="p">,{</span><span class="n">atom</span><span class="p">,</span><span class="n">bar</span><span class="p">},{</span><span class="n">atom</span><span class="p">,</span><span class="n">g</span><span class="p">},</span><span class="mi">1</span><span class="p">}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">4</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">allocate</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">move</span><span class="p">,{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">}}.</span>
+    <span class="p">{</span><span class="n">test</span><span class="p">,</span><span class="n">is_ge</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">5</span><span class="p">},[{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">integer</span><span class="p">,</span><span class="mi">0</span><span class="p">}]}.</span>
+    <span class="p">{</span><span class="n">bif</span><span class="p">,</span><span class="n">'&lt;'</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">7</span><span class="p">},[{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">integer</span><span class="p">,</span><span class="mi">1</span><span class="p">}],{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">}}.</span>
+    <span class="p">{</span><span class="n">jump</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">6</span><span class="p">}}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">5</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">move</span><span class="p">,{</span><span class="n">atom</span><span class="p">,</span><span class="n">false</span><span class="p">},{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">}}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">6</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">test</span><span class="p">,</span><span class="n">is_eq_exact</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">7</span><span class="p">},[{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">atom</span><span class="p">,</span><span class="n">true</span><span class="p">}]}.</span>
+    <span class="p">{</span><span class="n">move</span><span class="p">,{</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">}}.</span>
+    <span class="p">{</span><span class="n">call_ext_last</span><span class="p">,</span><span class="mi">1</span><span class="p">,{</span><span class="n">extfunc</span><span class="p">,</span><span class="n">math</span><span class="p">,</span><span class="n">sqrt</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span><span class="mi">1</span><span class="p">}.</span>
+  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">7</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">move</span><span class="p">,{</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="n">x</span><span class="p">,</span><span class="mi">0</span><span class="p">}}.</span>
+    <span class="p">{</span><span class="n">deallocate</span><span class="p">,</span><span class="mi">1</span><span class="p">}.</span>
+    <span class="p">{</span><span class="n">jump</span><span class="p">,{</span><span class="n">f</span><span class="p">,</span><span class="mi">3</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<p>It not only does a lot more work, it even allocates a stack
+frame that the traditional code does not.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>There are several ways to deal with the surprising behaviour
+of ‘andalso’ and ‘orelse’.</p>
+
+<ol>
+  <li>Leave things the way they are.</li>
+</ol>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">manual</span> <span class="n">should</span> <span class="n">have</span> <span class="n">lots</span> <span class="k">of</span> <span class="n">warnings</span> <span class="n">added</span><span class="p">,</span>
+<span class="n">saying</span> <span class="ow">not</span> <span class="n">to</span> <span class="n">use</span> <span class="n">these</span> <span class="n">operators</span><span class="p">,</span> <span class="n">because</span> <span class="n">they</span> <span class="n">block</span>
+<span class="n">tail</span> <span class="n">recursion</span> <span class="ow">and</span> <span class="n">are</span> <span class="n">inefficient</span> <span class="n">in</span> <span class="n">guards</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">It</span> <span class="n">is</span> <span class="n">reasonable</span> <span class="n">to</span> <span class="n">address</span> <span class="n">other</span> <span class="n">issues</span> <span class="n">first</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">just</span>
+<span class="n">will</span> <span class="ow">not</span> <span class="n">do</span> <span class="n">long</span> <span class="n">term</span><span class="p">.</span>  <span class="nv">You</span> <span class="n">don</span><span class="err">'</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">rush</span> <span class="n">around</span>
+<span class="n">bandaging</span> <span class="n">everyone</span> <span class="n">you</span> <span class="n">meet</span><span class="p">,</span> <span class="n">but</span> <span class="n">you</span> <span class="n">shouldn</span><span class="err">'</span><span class="n">t</span> <span class="n">build</span> <span class="n">pit</span>
+<span class="n">traps</span> <span class="n">in</span> <span class="n">front</span> <span class="k">of</span> <span class="n">them</span> <span class="n">either</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Remove them from the language.</li>
+</ol>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">I</span> <span class="n">would</span> <span class="n">prefer</span> <span class="n">this</span><span class="p">.</span>  <span class="nv">And</span> <span class="n">that</span> <span class="n">goes</span> <span class="n">double</span> <span class="n">for</span> <span class="n">'and'</span> <span class="ow">and</span> <span class="n">'or'</span><span class="p">,</span>
+<span class="n">which</span> <span class="n">seem</span> <span class="n">to</span> <span class="n">be</span> <span class="n">completely</span> <span class="n">pointless</span><span class="p">,</span> <span class="n">as</span> <span class="n">well</span> <span class="n">as</span> <span class="n">confusing</span><span class="p">.</span>
+<span class="nv">I</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">think</span> <span class="n">this</span> <span class="n">would</span> <span class="n">be</span> <span class="n">practical</span> <span class="n">politics</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Add new operators with sensible semantics.</li>
+</ol>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">But</span> <span class="n">what</span> <span class="n">would</span> <span class="n">we</span> <span class="n">call</span> <span class="n">them</span><span class="o">?</span>  <span class="n">'and'</span> <span class="ow">and</span> <span class="n">'or'</span> <span class="n">are</span> <span class="n">taken</span><span class="p">,</span>
+<span class="ow">and</span> <span class="n">both</span> <span class="n">'|'</span> <span class="ow">and</span> <span class="n">'||'</span> <span class="n">are</span> <span class="n">used</span> <span class="n">for</span> <span class="n">something</span> <span class="n">else</span><span class="p">.</span>  <span class="nv">Above</span>
+<span class="n">all</span><span class="p">,</span> <span class="n">'andalso'</span> <span class="ow">and</span> <span class="n">'orelse'</span> <span class="n">would</span> <span class="n">still</span> <span class="n">be</span> <span class="n">there</span><span class="p">,</span> <span class="ow">and</span> <span class="n">still</span>
+<span class="n">be</span> <span class="nf">surprising</span> <span class="p">(</span><span class="n">in</span> <span class="n">a</span> <span class="n">bad</span> <span class="n">way</span><span class="p">).</span>  <span class="nv">We</span> <span class="n">have</span> <span class="n">too</span> <span class="n">many</span> <span class="n">ways</span> <span class="n">to</span>
+<span class="n">spell</span> <span class="s">"or"</span> <span class="n">as</span> <span class="n">it</span> <span class="n">is</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Fix them.</li>
+</ol>
+
+<p>As for the recommendation that ‘,’ and ‘;’ should nest,
+I want Erlang to be simple to think.  If ‘andalso’ and ‘orelse’
+are to act like ‘,’ and ‘;’ in guards – which I’ve argued
+above – then clearly ‘,’ and ‘;’ should act like ‘andalso’
+and ‘orelse’ in guards.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Any code that ran without raising exceptions will continue
+to produce the same results, except for running faster.</p>
+
+<p>Code that did raise exceptions may raise different exceptions
+elsewhere later, or may quietly complete in unexpected ways.
+I believe it to be unlikely that anyone deliberately relied
+on (E1 andelse 0) raising an exception.</p>
+
+<p>Code that was previously broken because these operators have
+such surprising behaviour will now work in more cases.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>None.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

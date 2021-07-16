@@ -1,0 +1,3228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Otp 22.3 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Otp 22.3 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/downloads.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <!-- convert page.release to string -->
+
+
+
+
+<div class="container body border-top pt-4">
+    <main class="main">
+        <div class="header pe-lg-4">
+            <h1>Erlang/OTP 22.3</h1>
+            This release of Erlang/OTP can be built from
+            <a href="/erlang-org/docs/22/installation_guide/INSTALL.html">source</a> or
+            installed using <a href="https://erlang-solutions.com/downloads">pre-built packages</a> for your OS or
+            third-party tools (such as <a href="https://github.com/kerl/kerl">kerl</a>
+            or <a href="https://github.com/asdf-vm/asdf-erlang">asdf</a>).
+            <div>
+                <code class="docker">
+                    docker run -it erlang:22.3
+                </code>
+            </div>
+        </div>
+        <div class="links">
+            
+            <!--
+    See the comment in _default.scss for how the responsive collapse work
+-->
+<div class="card collapse-expand-md">
+    <div class="card-header navbar-light">
+        <button class="float-start navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#downloadCardBody" aria-controls="downloadCardBody" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="row text-center">
+            <div class="col-xl">
+                <strong>Latest version is 22.3.4.20</strong>
+            </div>
+            <div class="col-xl-2">
+                <a href="https://github.com/erlang/otp/releases/tag/OTP-22.3.4.20">
+                    <img src="/erlang-org/assets/img/GitHub-Mark-32px.png" alt="View on github.com"></a>
+            </div>
+        </div>
+    </div>
+    <div id="downloadCardBody" class="collapse navbar-collapse">
+        <div class="card-body d-grid gap-2">
+            <!-- Download source button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-22.3.4.20/otp_src_22.3.4.20.tar.gz" class="btn btn-primary w-75">
+        Download source
+    </a>
+</div>
+            <!-- Download windows button group -->
+            <div class="btn-group">
+    
+    
+    <a href="" class="btn btn-primary w-75">
+        Download Windows installer
+    </a>
+</div>
+            <!-- Download Release notes button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-22.3.4.20/OTP-22.3.4.20.README" class="btn btn-primary w-75">
+        Download Release notes
+    </a>
+</div>
+            <!-- View/Download docs button group -->
+            <div class="btn-group">
+    
+    
+    <a href="/erlang-org/docs/22" class="btn btn-primary w-75">
+        View documentation
+    </a>
+</div>
+        </div>
+    </div>
+</div>
+        </div>
+        <div class="content">
+            
+            <div class="row">
+                <div class="col">
+                    <!-- <h3>General Information</h3> -->
+                    <table class="table d-inline-flex">
+                        <tbody>
+                            <tr>
+                                
+                                <td>Patch Package</td>
+                                <td>OTP 22.3</td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Git Tag</td>
+                                <td><a href="https://github.com/erlang/otp/releases/tag/OTP-22.3">OTP-22.3</a></td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>2020-03-16</td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <td>Issue Id</td>
+                                <td>
+                                    <div class="trouble-ids">
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-439
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-452
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-455
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-459
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1070">ERL-1070</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1099">ERL-1099</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1110">ERL-1110</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1127">ERL-1127</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1135">ERL-1135</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1140">ERL-1140</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1147">ERL-1147</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1151">ERL-1151</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1175">ERL-1175</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1182">ERL-1182</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1191">ERL-1191</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-795">ERL-795</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-814">ERL-814</a>
+
+
+
+                                        </div>
+                                        
+                                        <div>
+                                            
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-991">ERL-991</a>
+
+
+
+                                        </div>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>System</td>
+                                <td>OTP</td>
+                            </tr>
+                            <tr>
+                                <td>Release</td>
+                                <td>22</td>
+                            </tr>
+                            <tr>
+                                <td>Application</td>
+                                <td>
+                                    <div class="trouble-ids">
+                                        
+                                        <div>
+                                            <a href="#asn1-5.0.10">asn1-5.0.10</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#common_test-1.18.2">common_test-1.18.2</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#compiler-7.5.3">compiler-7.5.3</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#crypto-4.6.5">crypto-4.6.5</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#diameter-2.2.3">diameter-2.2.3</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#erl_interface-3.13.2">erl_interface-3.13.2</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#erts-10.7">erts-10.7</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#eunit-2.4.1">eunit-2.4.1</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#hipe-3.19.3">hipe-3.19.3</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#kernel-6.5.2">kernel-6.5.2</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#megaco-3.18.8">megaco-3.18.8</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#mnesia-4.16.3">mnesia-4.16.3</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#public_key-1.7.2">public_key-1.7.2</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#sasl-3.4.2">sasl-3.4.2</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#snmp-5.5">snmp-5.5</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#ssh-4.9">ssh-4.9</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#ssl-9.6">ssl-9.6</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#stdlib-3.12">stdlib-3.12</a>
+                                        </div>
+                                        
+                                        <div>
+                                            <a href="#tools-3.3.1">tools-3.3.1</a>
+                                        </div>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row row-cols-1 g-4">
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>Highlights <a name="highlights" href="#highlights">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-15856"></a>
+            <dt class="border-bottom">OTP-15856</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Implementation of the key and initialization vector update feature, and general hardening of TLS 1.3.
+            </p>
+            
+            <p>
+                There are cryptographic limits on the amount of plaintext which can be safely encrypted under a given set of keys.
+            </p>
+            
+            <p>
+                This change enforces those limits by triggering automatic key updates on TLS 1.3 connections.
+            </p>
+            
+            
+            <a name="OTP-16253"></a>
+            <dt class="border-bottom">OTP-16253</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add support for TLS 1.3 Session Tickets (stateful and stateless). This allows session resumption using keying material from a previous successful handshake.
+            </p>
+            
+            
+            <a name="OTP-16309"></a>
+            <dt class="border-bottom">OTP-16309</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, sasl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                A socket &quot;registry&quot; has been added making it possible to list current open sockets.
+            </p>
+            
+            
+            <a name="OTP-16485"></a>
+            <dt class="border-bottom">OTP-16485</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssh</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The new functions ssh:set_sock_opts/2 and ssh:get_sock_opts/2 sets and reads option values for the underlying TCP stream.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                <div class="col">
+                    
+
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>asn1-5.0.10 <a name="asn1-5.0.10" href="#asn1-5.0.10">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The asn1-5.0.10 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16542"></a>
+            <dt class="border-bottom">OTP-16542</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>asn1</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2159</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix &#39;DEFAULT&#39; with &#39;OCTET STRING&#39; and &#39;SEQUENCE OF CHOICE&#39; with extensions.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of asn1-5.0.10: erts-7.0, kernel-3.0,
+ stdlib-2.0
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>common_test-1.18.2 <a name="common_test-1.18.2" href="#common_test-1.18.2">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The common_test-1.18.2 application can be applied independently of
+ other applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16039"></a>
+            <dt class="border-bottom">OTP-16039</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>common_test</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-795">ERL-795</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Document incl_apps cover option
+            </p>
+            
+            
+            <a name="OTP-16340"></a>
+            <dt class="border-bottom">OTP-16340</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>common_test</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The ct_property_test has now a report function for results of stateful testing.
+            </p>
+            
+            
+            <a name="OTP-16364"></a>
+            <dt class="border-bottom">OTP-16364</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>common_test</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2480</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Don&#39;t hide error reasons from user
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of common_test-1.18.2: compiler-6.0,
+ crypto-3.6, debugger-4.1, erts-7.0, ftp-1.0.0, inets-6.0, kernel-4.0,
+ observer-2.1, runtime_tools-1.8.16, sasl-2.4.2, snmp-5.1.2, ssh-4.0,
+ stdlib-3.5, syntax_tools-1.7, tools-2.8, xmerl-1.3.8
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>compiler-7.5.3 <a name="compiler-7.5.3" href="#compiler-7.5.3">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The compiler-7.5.3 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16350"></a>
+            <dt class="border-bottom">OTP-16350</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>compiler</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                A &#39;receive&#39; with an &#39;after 0&#39; clause would prevent the optimization that can avoid scanning the entire receive queue when matching on a newly created reference.
+            </p>
+            
+            
+            <a name="OTP-16418"></a>
+            <dt class="border-bottom">OTP-16418</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>compiler, hipe</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                HiPE can again handle modules with catch and try constructs.
+            </p>
+            
+            
+            <a name="OTP-16515"></a>
+            <dt class="border-bottom">OTP-16515</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>compiler</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed a bug in bit-syntax optimization that could crash the compiler.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of compiler-7.5.3: crypto-3.6, erts-9.0,
+ hipe-3.12, kernel-4.0, stdlib-2.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>crypto-4.6.5 <a name="crypto-4.6.5" href="#crypto-4.6.5">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The crypto-4.6.5 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16428"></a>
+            <dt class="border-bottom">OTP-16428</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>crypto</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2511</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed potential memory leaks involving calls to the crypto ng_api.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of crypto-4.6.5: erts-9.0, kernel-5.3,
+ stdlib-3.4
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>diameter-2.2.3 <a name="diameter-2.2.3" href="#diameter-2.2.3">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The diameter-2.2.3 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16548"></a>
+            <dt class="border-bottom">OTP-16548</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>diameter</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1191">ERL-1191</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add the &#39;first&#39; tuple to type diameter:peer_filter/0. The filter was added in OTP-17.5.6.8 and OTP-18.3, but neither release updated the type specification.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of diameter-2.2.3: erts-10.0, kernel-3.2,
+ ssl-9.0, stdlib-2.4
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>erl_interface-3.13.2 <a name="erl_interface-3.13.2" href="#erl_interface-3.13.2">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The erl_interface-3.13.2 application can be applied independently of
+ other applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16412"></a>
+            <dt class="border-bottom">OTP-16412</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erl_interface</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2503</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix link error &quot;multiple definition of `ei_default_socket_callbacks&#39;&quot; for gcc version 10 or when built with gcc option -fno-common. Error exists since OTP-21.3.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>erts-10.7 <a name="erts-10.7" href="#erts-10.7">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            Note! The erts-10.7 application *cannot* be applied independently of
+       other applications on an arbitrary OTP 22 installation.
+
+       On a full OTP 22 installation, also the following runtime
+       dependency has to be satisfied:
+       -- kernel-6.5.1 (first satisfied in OTP 22.2)
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16059"></a>
+            <dt class="border-bottom">OTP-16059</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                gen_udp:recv(S, N, 0) corrupted the internal state for the socket so after receive with {active, once} it always returned {error, timeout}, and wasted the received UDP packets. This bug has now been fixed.
+            </p>
+            
+            <p>
+                Reported and pinpointed by Alexander Petrovsky.
+            </p>
+            
+            
+            <a name="OTP-16381"></a>
+            <dt class="border-bottom">OTP-16381</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The atom esock_atom_user and esock_atom_kernel was never actually created. This has now been corrected.
+            </p>
+            
+            
+            <a name="OTP-16384"></a>
+            <dt class="border-bottom">OTP-16384</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed bug in socket module that could potentially lead to scheduler deadlocks.
+            </p>
+            
+            
+            <a name="OTP-16399"></a>
+            <dt class="border-bottom">OTP-16399</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix bug causing VM crash if down or stop callback of a NIF resource is called after the NIF module has been purged. The fix will postpone unloading until all such resource objects have been garbage collected.
+            </p>
+            
+            
+            <a name="OTP-16404"></a>
+            <dt class="border-bottom">OTP-16404</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1127">ERL-1127</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed bug in ets:update_counter/4, when called with an invalid UpdateOp and a Key that does not exist, causing ets:info(T,size) to return incorrect values. Bug exists since OTP-19.0.2.
+            </p>
+            
+            
+            <a name="OTP-16417"></a>
+            <dt class="border-bottom">OTP-16417</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix potential heap corrupting bugs when a process calls a BIF that blocks other normal schedulers and then writes to its own heap without the main process lock. A NIF running on a dirty scheduler trying to interact with such a process could corrupt its heap. The fixed BIFs were related to code loading and tracing.
+            </p>
+            
+            
+            <a name="OTP-16438"></a>
+            <dt class="border-bottom">OTP-16438</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed bug in erlang:list_to_ref/1 when called with a reference created by a remote note. Function list_to_ref/1 is intended for debugging and not to be used in application programs. Bug exist since OTP 20.0.
+            </p>
+            
+            
+            <a name="OTP-16440"></a>
+            <dt class="border-bottom">OTP-16440</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, kernel</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The prim_net nif (net/kernel) made use of an undefined atom, notsup. This has now been corrected.
+            </p>
+            
+            
+            <a name="OTP-16481"></a>
+            <dt class="border-bottom">OTP-16481</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Corrected the valid range of the erl command line argument +SDio &lt;NumberOfDirtyIoSchedulers&gt; from 0..1024 to 1..1024. +SDio 0 was erroneously allowed which just caused the VM to crash on the first dirty I/O job scheduled.
+            </p>
+            
+            
+            <a name="OTP-16491"></a>
+            <dt class="border-bottom">OTP-16491</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, kernel</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix a crash when attempting to log faults when loading files during early boot.
+            </p>
+            
+            
+            <a name="OTP-16153"></a>
+            <dt class="border-bottom">OTP-16153</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                For socket, not all send and receive flags are supported on all platforms. In order to (at least) simplify testing, the socket:supports/0,1,2,3 functions has been extended with send_flags and recv_flags items, which indicates what the current platform can manage.
+            </p>
+            
+            
+            <a name="OTP-16212"></a>
+            <dt class="border-bottom">OTP-16212</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1070">ERL-1070</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add a &quot;full featured&quot; version of getifaddrs in the net module.
+            </p>
+            
+            
+            <a name="OTP-16306"></a>
+            <dt class="border-bottom">OTP-16306</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-439
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The options busy_limits_port and busy_limits_msgq have been added to the BIF erlang:open_port/2. The busy_limits_port option can be used for controlling the busy state of a port executing the spawn_driver or the fd_driver. The busy_limits_msgq option can be used for controlling the busy state of the port message queue.
+            </p>
+            
+            
+            <a name="OTP-16309"></a>
+            <dt class="border-bottom">OTP-16309</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, sasl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                *** HIGHLIGHT ***
+            </p>
+            
+            <p>
+                A socket &quot;registry&quot; has been added making it possible to list current open sockets.
+            </p>
+            
+            
+            <a name="OTP-16387"></a>
+            <dt class="border-bottom">OTP-16387</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The counters managed by the socket nif has been extended. Their &quot;size&quot; has been increased from 32 bit to 64. Two max package size (for read and write) has been added. And four accept counters has been added.
+            </p>
+            
+            
+            <a name="OTP-16420"></a>
+            <dt class="border-bottom">OTP-16420</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2513</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add gcc option -fno-common to detect accidental name clashes of global variables.
+            </p>
+            
+            
+            <a name="OTP-16427"></a>
+            <dt class="border-bottom">OTP-16427</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                New dynamic lock checker that verifies locking orders and detects potential deadlock bugs in drivers and NIFs. Enabled together with the old static lock checker (for ERTS internal locks) in emulator started with -emu_type debug or built with configuration option --enable-lock-checking.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of erts-10.7: kernel-6.5.1, sasl-3.3,
+ stdlib-3.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>eunit-2.4.1 <a name="eunit-2.4.1" href="#eunit-2.4.1">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The eunit-2.4.1 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16380"></a>
+            <dt class="border-bottom">OTP-16380</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>eunit</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-991">ERL-991</a>
+
+
+, 
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2316</a>
+
+
+, 
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2487</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Backport of PR-2316: Strip control codes from eunit_surefire output to avoid generation of invalid xml
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of eunit-2.4.1: erts-9.0, kernel-5.3,
+ stdlib-3.4
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>hipe-3.19.3 <a name="hipe-3.19.3" href="#hipe-3.19.3">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The hipe-3.19.3 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16418"></a>
+            <dt class="border-bottom">OTP-16418</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>compiler, hipe</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                HiPE can again handle modules with catch and try constructs.
+            </p>
+            
+            
+            <a name="OTP-16475"></a>
+            <dt class="border-bottom">OTP-16475</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>hipe</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1175">ERL-1175</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                When the return value for try/catch was ignored, the native code compiler could crash.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of hipe-3.19.3: compiler-5.0, erts-9.3,
+ kernel-5.3, stdlib-3.4, syntax_tools-1.6.14
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>kernel-6.5.2 <a name="kernel-6.5.2" href="#kernel-6.5.2">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            Note! The kernel-6.5.2 application *cannot* be applied independently
+       of other applications on an arbitrary OTP 22 installation.
+
+       On a full OTP 22 installation, also the following runtime
+       dependency has to be satisfied:
+       -- erts-10.6 (first satisfied in OTP 22.2)
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16414"></a>
+            <dt class="border-bottom">OTP-16414</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>kernel</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-452
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The DNS resolver `inet_res` has been fixed to return the last intermediate error when subsequent requests times out.
+            </p>
+            
+            
+            <a name="OTP-16440"></a>
+            <dt class="border-bottom">OTP-16440</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, kernel</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The prim_net nif (net/kernel) made use of an undefined atom, notsup. This has now been corrected.
+            </p>
+            
+            
+            <a name="OTP-16491"></a>
+            <dt class="border-bottom">OTP-16491</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, kernel</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix a crash when attempting to log faults when loading files during early boot.
+            </p>
+            
+            
+            <a name="OTP-16493"></a>
+            <dt class="border-bottom">OTP-16493</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>kernel</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-459
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix crash in logger when logging to a remote node during boot.
+            </p>
+            
+            
+            <a name="OTP-16458"></a>
+            <dt class="border-bottom">OTP-16458</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>kernel</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2525</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Improved net_kernel debug functionality.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of kernel-6.5.2: erts-10.6, sasl-3.0,
+ stdlib-3.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>megaco-3.18.8 <a name="megaco-3.18.8" href="#megaco-3.18.8">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The megaco-3.18.8 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16449"></a>
+            <dt class="border-bottom">OTP-16449</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>megaco</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The documented function megaco:get_sdp_record_from_PropertGroup/2 was a wrapper for megaco_sdp:get_sdp_record_from_PropertGroup/2 but did not actually exist. This has now been fixed.
+            </p>
+            
+            
+            <a name="OTP-16158"></a>
+            <dt class="border-bottom">OTP-16158</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>megaco</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Test suite completely reworked. Add (timestamp) utility functions for debugging and testing.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of megaco-3.18.8: asn1-3.0, debugger-4.0,
+ erts-7.0, et-1.5, kernel-3.0, runtime_tools-1.8.14, stdlib-2.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>mnesia-4.16.3 <a name="mnesia-4.16.3" href="#mnesia-4.16.3">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The mnesia-4.16.3 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16468"></a>
+            <dt class="border-bottom">OTP-16468</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>mnesia</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1151">ERL-1151</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed a timing issue in uninstall fallback functionality.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of mnesia-4.16.3: erts-9.0, kernel-5.3,
+ stdlib-3.4
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>public_key-1.7.2 <a name="public_key-1.7.2" href="#public_key-1.7.2">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The public_key-1.7.2 application can be applied independently of
+ other applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16528"></a>
+            <dt class="border-bottom">OTP-16528</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>public_key, ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add support for key exchange with Edward curves and PSS-RSA padding in signature verification.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of public_key-1.7.2: asn1-3.0, crypto-3.8,
+ erts-6.0, kernel-3.0, stdlib-3.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>sasl-3.4.2 <a name="sasl-3.4.2" href="#sasl-3.4.2">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The sasl-3.4.2 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16309"></a>
+            <dt class="border-bottom">OTP-16309</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>erts, sasl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                *** HIGHLIGHT ***
+            </p>
+            
+            <p>
+                A socket &quot;registry&quot; has been added making it possible to list current open sockets.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of sasl-3.4.2: erts-10.2, kernel-5.3,
+ stdlib-3.4, tools-2.6.14
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>snmp-5.5 <a name="snmp-5.5" href="#snmp-5.5">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The snmp-5.5 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16447"></a>
+            <dt class="border-bottom">OTP-16447</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>snmp</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+ERIERL-455
+
+
+, 
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="#OTP-16382">OTP-16382</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                A simple supervision of the snmp manager net-if process has been added. Also, a way to forcibly restart the net-if process has been added. This could be useful if the net-if process hangs for some reason.
+            </p>
+            
+            
+            <a name="OTP-16450"></a>
+            <dt class="border-bottom">OTP-16450</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>snmp</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Misc documentation corrections
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of snmp-5.5: crypto-3.3, erts-6.0,
+ kernel-3.0, mnesia-4.12, runtime_tools-1.8.14, stdlib-2.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>ssh-4.9 <a name="ssh-4.9" href="#ssh-4.9">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            Note! The ssh-4.9 application *cannot* be applied independently of
+       other applications on an arbitrary OTP 22 installation.
+
+       On a full OTP 22 installation, also the following runtime
+       dependency has to be satisfied:
+       -- crypto-4.6.4 (first satisfied in OTP 22.2.2)
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16377"></a>
+            <dt class="border-bottom">OTP-16377</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssh</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Unicode problems for ssh_sftp:write fixed.
+            </p>
+            
+            
+            <a name="OTP-16353"></a>
+            <dt class="border-bottom">OTP-16353</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssh</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Changes to the internal api of the experimental ssh_dbg tool.
+            </p>
+            
+            
+            <a name="OTP-16485"></a>
+            <dt class="border-bottom">OTP-16485</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssh</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                *** HIGHLIGHT ***
+            </p>
+            
+            <p>
+                The new functions ssh:set_sock_opts/2 and ssh:get_sock_opts/2 sets and reads option values for the underlying TCP stream.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of ssh-4.9: crypto-4.6.4, erts-9.0,
+ kernel-5.3, public_key-1.6.1, stdlib-3.4.1
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>ssl-9.6 <a name="ssl-9.6" href="#ssl-9.6">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            Note! The ssl-9.6 application *cannot* be applied independently of
+       other applications on an arbitrary OTP 22 installation.
+
+       On a full OTP 22 installation, also the following runtime
+       dependency has to be satisfied:
+       -- public_key-1.7.2 (first satisfied in OTP 22.3)
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16258"></a>
+            <dt class="border-bottom">OTP-16258</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Correct handling of TLS record limit in TLS-1.3. The max value differs from previous versions. Also the payload data max record check was broken, that is record overflow problems could occur if user sent large amounts of data.
+            </p>
+            
+            
+            <a name="OTP-16348"></a>
+            <dt class="border-bottom">OTP-16348</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1110">ERL-1110</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Correct close handling for DTLS
+            </p>
+            
+            
+            <a name="OTP-16352"></a>
+            <dt class="border-bottom">OTP-16352</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1099">ERL-1099</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix ssl:getstat/1-2 to also work for DTLS sockets
+            </p>
+            
+            
+            <a name="OTP-16425"></a>
+            <dt class="border-bottom">OTP-16425</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Correct internal handling och socket active mode to avoid reviving TCP data aimed for a downgraded TLS socket.
+            </p>
+            
+            
+            <a name="OTP-16437"></a>
+            <dt class="border-bottom">OTP-16437</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1135">ERL-1135</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                When using the host name as fallback for SNI (server name indication) strip a possible trailing dot that is allowed in a host name but not in the SNI. Also if the server receives a SNI with a trailing dot send an UNRECOGNIZED_NAME alert.
+            </p>
+            
+            
+            <a name="OTP-16479"></a>
+            <dt class="border-bottom">OTP-16479</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Immediately remove session entries if handshake is abruptly closed at transport level.
+            </p>
+            
+            
+            <a name="OTP-15856"></a>
+            <dt class="border-bottom">OTP-15856</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                *** HIGHLIGHT ***
+            </p>
+            
+            <p>
+                Implementation of the key and initialization vector update feature, and general hardening of TLS 1.3.
+            </p>
+            
+            <p>
+                There are cryptographic limits on the amount of plaintext which can be safely encrypted under a given set of keys.
+            </p>
+            
+            <p>
+                This change enforces those limits by triggering automatic key updates on TLS 1.3 connections.
+            </p>
+            
+            
+            <a name="OTP-16253"></a>
+            <dt class="border-bottom">OTP-16253</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                *** HIGHLIGHT ***
+            </p>
+            
+            <p>
+                Add support for TLS 1.3 Session Tickets (stateful and stateless). This allows session resumption using keying material from a previous successful handshake.
+            </p>
+            
+            
+            <a name="OTP-16528"></a>
+            <dt class="border-bottom">OTP-16528</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>public_key, ssl</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Add support for key exchange with Edward curves and PSS-RSA padding in signature verification.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of ssl-9.6: crypto-4.2, erts-10.0,
+ inets-5.10.7, kernel-6.0, public_key-1.7.2, stdlib-3.5
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>stdlib-3.12 <a name="stdlib-3.12" href="#stdlib-3.12">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            Note! The stdlib-3.12 application *cannot* be applied independently
+       of other applications on an arbitrary OTP 22 installation.
+
+       On a full OTP 22 installation, also the following runtime
+       dependency has to be satisfied:
+       -- erts-10.6.2 (first satisfied in OTP 22.2.2)
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16322"></a>
+            <dt class="border-bottom">OTP-16322</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix type specification for uri_string:normalize/2 that may also return error().
+            </p>
+            
+            
+            <a name="OTP-16351"></a>
+            <dt class="border-bottom">OTP-16351</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Improve error handling in uri_string:normalize/2. This change fixes a crash when the input URI has faulty percent-encoding.
+            </p>
+            
+            
+            <a name="OTP-16435"></a>
+            <dt class="border-bottom">OTP-16435</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix minor bugs in the Erlang pretty printer (erl_pp).
+            </p>
+            
+            
+            <a name="OTP-16439"></a>
+            <dt class="border-bottom">OTP-16439</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fix the Erlang parser regarding consecutive unary operators.
+            </p>
+            
+            
+            <a name="OTP-16514"></a>
+            <dt class="border-bottom">OTP-16514</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1182">ERL-1182</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Let calendar:rfc3339_to_system_time() crash when the time offset is missing.
+            </p>
+            
+            
+            <a name="OTP-16321"></a>
+            <dt class="border-bottom">OTP-16321</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Implement uri_string:resolve/{2,3} that can be used to resolve a URI reference against a base URI.
+            </p>
+            
+            
+            <a name="OTP-16477"></a>
+            <dt class="border-bottom">OTP-16477</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>stdlib</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://github.com/erlang/otp/pull/">PR-2531</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                In gen_statem it is now possible to change the callback module for a running server. See gen_statem&#39;s documentation for change_callback_module, push_callback_module, and pop_callback_module.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of stdlib-3.12: compiler-5.0, crypto-3.3,
+ erts-10.6.2, kernel-6.0, sasl-3.0
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                
+                
+                
+                <div class="col">
+                    
+                    
+
+<div class="card">
+    <div class="card-header">
+        <h4>tools-3.3.1 <a name="tools-3.3.1" href="#tools-3.3.1">#</a></h4>
+    </div>
+    <div class="card-body">
+        
+        <p>
+            The tools-3.3.1 application can be applied independently of other
+ applications on a full OTP 22 installation.
+        </p>
+        
+        <dl class="px-4">
+            
+            <a name="OTP-16356"></a>
+            <dt class="border-bottom">OTP-16356</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>tools</dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                An Emacs warning due to lacking type in defcustom declaration has been fixed.
+            </p>
+            
+            
+            <a name="OTP-16472"></a>
+            <dt class="border-bottom">OTP-16472</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>tools</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1140">ERL-1140</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Improve emacs indentation.
+            </p>
+            
+            
+            <a name="OTP-16476"></a>
+            <dt class="border-bottom">OTP-16476</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>tools</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-1147">ERL-1147</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                The cover tool could generate instrumented code for a module that would cause warnings to be issued.
+            </p>
+            
+            
+            <a name="OTP-16498"></a>
+            <dt class="border-bottom">OTP-16498</dt>
+            <dd>
+                <dl class="dl-single">
+                    <dt>Application(s): </dt>
+                    <dd>tools</dd>
+                    
+                    <dt>Related Id(s): </dt>
+                    <dd>
+                        
+                        
+                        
+
+<!-- convert to int and then to string -->
+
+<!-- check if only 1 '-' in id and if second part is int -->
+
+
+
+<a href="https://bugs.erlang.org/browse/ERL-814">ERL-814</a>
+
+
+
+                        
+                    </dd>
+                    
+                </dl>
+            </dd>
+            
+            
+            <p>
+                Fixed generated fprof analysis format to also handle data in maps.
+            </p>
+            
+            
+        </dl>
+        
+        <p>
+            Full runtime dependencies of tools-3.3.1: compiler-5.0, erts-9.1,
+ kernel-5.4, runtime_tools-1.8.14, stdlib-3.4
+        </p>
+        
+    </div>
+</div>
+
+                </div>
+                
+                
+                <div class="col">
+                    
+                    
+
+                </div>
+            </div>
+            
+        </div>
+        <aside class="sidebar text-muted collapse-expand-lg">
+    <div class="border-bottom navbar-light d-flex py-3">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarToggle"
+            aria-controls="sidebarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <strong class="text-nowrap h6 ps-3">All releases</strong>
+    </div>
+    <div id="sidebarToggle" class="collapse navbar-collapse">
+        <nav>
+            <ul class="nav flex-column text-nowrap">
+                
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/24" class="nav-link" role="button">
+                        Erlang/OTP 24</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/23" class="nav-link" role="button">
+                        Erlang/OTP 23</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/22" class="nav-link" role="button" aria-expanded="true">
+                        Erlang/OTP 22</a>
+                    <ul class="nav flex-column">
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.20">22.3.4.20</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.19">22.3.4.19</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.18">22.3.4.18</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.17">22.3.4.17</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.16">22.3.4.16</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.15">22.3.4.15</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.14">22.3.4.14</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.13">22.3.4.13</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.12.1">22.3.4.12.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.12">22.3.4.12</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.11">22.3.4.11</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.10">22.3.4.10</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.9">22.3.4.9</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.8">22.3.4.8</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.7">22.3.4.7</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.6">22.3.4.6</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.5">22.3.4.5</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.4">22.3.4.4</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.3">22.3.4.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.2">22.3.4.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4.1">22.3.4.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.4">22.3.4</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.3">22.3.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.2">22.3.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3.1">22.3.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.3">22.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.8">22.2.8</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.7">22.2.7</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.6">22.2.6</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.5">22.2.5</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.4">22.2.4</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.3">22.2.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.2">22.2.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2.1">22.2.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.2">22.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.8.1">22.1.8.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.8">22.1.8</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.7">22.1.7</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.6">22.1.6</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.5">22.1.5</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.4">22.1.4</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.3">22.1.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.2">22.1.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1.1">22.1.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.1">22.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.7">22.0.7</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.6">22.0.6</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.5">22.0.5</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.4">22.0.4</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.3">22.0.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.2">22.0.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0.1">22.0.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-22.0">22.0</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/21" class="nav-link" role="button">
+                        Erlang/OTP 21</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/20" class="nav-link" role="button">
+                        Erlang/OTP 20</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/19" class="nav-link" role="button">
+                        Erlang/OTP 19</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/18" class="nav-link" role="button">
+                        Erlang/OTP 18</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/17" class="nav-link" role="button">
+                        Erlang/OTP 17</a>
+                    
+                </li>
+                
+            </ul>
+            <small>There is a file containing MD5 checksums for all files in the
+                <a href="http://erlang.org/download">download directory</a>,
+                also reachable through
+                <code>rsync rsync.erlang.org::erlang-download</code></small>
+        </nav>
+    </div>
+</aside>
+    </main>
+</div>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

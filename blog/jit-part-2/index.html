@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Further adventures in the JIT - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Further adventures in the JIT - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-8 offset-lg-2">
+            <article class="card mb-4">
+    <div class="card-header">
+        <h3><a href="/erlang-org/blog/jit-part-2/">Further adventures in the JIT</a></h3>
+        <div class="date">November 10, 2020
+             · by John Högberg
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        
+        
+        <p>This post continues our <a href="http://blog.erlang.org/a-first-look-at-the-jit/">adventures in the JIT</a>, digging a bit deeper into the
+implementation details.</p>
+
+<p>While writing things in machine code (assembler) gives you great freedom it
+comes at the cost of having to invent almost everything yourself, and there’s
+no clever compiler to help you catch mistakes. For example, if you call a
+function in a certain manner and said function doesn’t expect that, you’ll
+crash your OS process at best or spend hours chasing a <a href="https://en.wikipedia.org/wiki/Heisenbug">heisenbug</a> at worst.</p>
+
+<p>Hence, <em>conventions</em> are always front and center when writing assembler, so we
+need to visit some of the ones we’ve chosen before moving on.</p>
+
+<p>The most important one concerns registers, and we base it on the system calling
+convention to make it easier to call C code. I’ve included tables for the
+SystemV convention used on Linux below. The registers differ on other systems
+like Windows, but the principle is the same on all of them.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Register</th>
+      <th style="text-align: center">Name</th>
+      <th style="text-align: center">Callee save</th>
+      <th style="text-align: right">Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RDI</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG1</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right">First argument</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RSI</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG2</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RDX</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG3</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RCX</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG4</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">R8</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG5</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">R9</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">ARG6</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right">Sixth argument</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RAX</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">RET</code></td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: right">Function return value</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Thus, if we want to call a C function with two arguments, we move the first
+into <code class="language-plaintext highlighter-rouge">ARG1</code> and the second into <code class="language-plaintext highlighter-rouge">ARG2</code> before calling it, and we’ll have the
+result in <code class="language-plaintext highlighter-rouge">RET</code> when it returns.</p>
+
+<p>Beyond saying which registers are used to pass arguments, calling conventions
+also say which registers retain their value over function calls. These are
+called “callee save” registers, since the called function needs to save and
+restore them if they’re modified.</p>
+
+<p>In these registers, we keep commonly-used data that rarely (if ever) changes in
+C code, helping us avoid saving and restoring them whenever we call C code:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Register</th>
+      <th style="text-align: center">Name</th>
+      <th style="text-align: center">Callee save</th>
+      <th style="text-align: right">Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RBP</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">active_code_ix</code></td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: right">Active code index</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">R13</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">c_p</code></td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: right">Current process</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">R15</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">HTOP</code></td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: right">Top of the current process’ heap</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">R14</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">FCALLS</code></td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: right">Reduction counter</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RBX</code></td>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">registers</code></td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: right">BEAM register structure</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We also keep the current process’ stack in <code class="language-plaintext highlighter-rouge">RSP</code>, the <em>machine stack pointer</em>,
+to allow <code class="language-plaintext highlighter-rouge">call</code> and <code class="language-plaintext highlighter-rouge">ret</code> instructions in Erlang code.</p>
+
+<p>The downside of this is that we can no longer call arbitrary C code as it may
+assume a much larger stack, requiring us to swap back and forth between a “C
+stack” and the “Erlang stack”.</p>
+
+<p>In my previous post we called a C function (<a href="https://github.com/erlang/otp/blob/030472803bc6646c47c3d5847125a4bb8f9af4d1/erts/emulator/beam/jit/instr_msg.cpp#L460-L469"><code class="language-plaintext highlighter-rouge">timeout</code></a>) without doing any of
+this, which was a bit of a white lie. It used to be done that way before we
+changed how the stack works, but it’s still pretty simple as you can see below:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">BeamModuleAssembler</span><span class="o">::</span><span class="n">emit_timeout</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cm">/* Swap to the C stack. */</span>
+    <span class="n">emit_enter_runtime</span><span class="p">();</span>
+
+    <span class="cm">/* Call the `timeout` C function.
+     *
+     * runtime_call compiles down to a single `call`
+     * instruction in optimized builds, and has a few
+     * assertions in debug builds to prevent mistakes
+     * like forgetting to switch stacks. */</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG1</span><span class="p">,</span> <span class="n">c_p</span><span class="p">);</span>
+    <span class="n">runtime_call</span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">timeout</span><span class="p">);</span>
+
+    <span class="cm">/* Swap back to the Erlang stack. */</span>
+    <span class="n">emit_leave_runtime</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Swapping the stack is very cheap because of a trick we use when setting up
+<code class="language-plaintext highlighter-rouge">registers</code>: by allocating the structure on the <em>C stack</em> we can compute the
+address of said stack from <code class="language-plaintext highlighter-rouge">registers</code>, which avoids having to reserve a
+precious callee save register and is much faster than having it saved in memory
+somewhere.</p>
+
+<p>With the conventions out of the way we can start looking at code again. Let’s
+pick a larger instruction this time, <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/macros.tab#L77-L88"><code class="language-plaintext highlighter-rouge">test_heap</code></a>, which allocates heap
+memory:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">BeamModuleAssembler</span><span class="o">::</span><span class="n">emit_test_heap</span><span class="p">(</span><span class="k">const</span> <span class="n">ArgVal</span> <span class="o">&amp;</span><span class="n">Needed</span><span class="p">,</span>
+                                         <span class="k">const</span> <span class="n">ArgVal</span> <span class="o">&amp;</span><span class="n">Live</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">words_needed</span> <span class="o">=</span> <span class="p">(</span><span class="n">Needed</span><span class="p">.</span><span class="n">getValue</span><span class="p">()</span> <span class="o">+</span> <span class="n">S_RESERVED</span><span class="p">);</span>
+    <span class="n">Label</span> <span class="n">after_gc_check</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">newLabel</span><span class="p">();</span>
+
+    <span class="cm">/* Do we have enough free space already? */</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">lea</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">x86</span><span class="o">::</span><span class="n">qword_ptr</span><span class="p">(</span><span class="n">HTOP</span><span class="p">,</span> <span class="n">words_needed</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Eterm</span><span class="p">)));</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">cmp</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">jbe</span><span class="p">(</span><span class="n">after_gc_check</span><span class="p">);</span>
+
+    <span class="cm">/* No, we need to GC.
+     *
+     * Switch to the C stack, and update the process
+     * structure with our current stack (E) and heap
+     * (HTOP) pointers so the C code can use them. */</span>
+    <span class="n">emit_enter_runtime</span><span class="o">&lt;</span><span class="n">Update</span><span class="o">::</span><span class="n">eStack</span> <span class="o">|</span> <span class="n">Update</span><span class="o">::</span><span class="n">eHeap</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="cm">/* Call the GC, passing how many words we need and
+     * how many X registers we use. */</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">imm</span><span class="p">(</span><span class="n">words_needed</span><span class="p">));</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG4</span><span class="p">,</span> <span class="n">imm</span><span class="p">(</span><span class="n">Live</span><span class="p">.</span><span class="n">getValue</span><span class="p">()));</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG1</span><span class="p">,</span> <span class="n">c_p</span><span class="p">);</span>
+    <span class="n">load_x_reg_array</span><span class="p">(</span><span class="n">ARG3</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG5</span><span class="p">,</span> <span class="n">FCALLS</span><span class="p">);</span>
+    <span class="n">runtime_call</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">(</span><span class="n">erts_garbage_collect_nobump</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="n">FCALLS</span><span class="p">,</span> <span class="n">RET</span><span class="p">);</span>
+
+    <span class="cm">/* Swap back to the Erlang stack, reading the new
+     * values for E and HTOP from the process structure. */</span>
+    <span class="n">emit_leave_runtime</span><span class="o">&lt;</span><span class="n">Update</span><span class="o">::</span><span class="n">eStack</span> <span class="o">|</span> <span class="n">Update</span><span class="o">::</span><span class="n">eHeap</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">after_gc_check</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>While this isn’t too complicated it’s still a rather large amount of code:
+since all instructions are emitted directly into their modules, small
+inefficiencies like this tend to bloat the modules rather quickly. Beyond using
+more RAM, this wastes precious instruction cache so we’ve spent a lot of time
+and effort on reducing code size.</p>
+
+<p>Our most common method of reducing code size is to break out as much of the
+instruction as possible into a globally shared part. Let’s see how we can apply
+this technique:</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">BeamModuleAssembler</span><span class="o">::</span><span class="n">emit_test_heap</span><span class="p">(</span><span class="k">const</span> <span class="n">ArgVal</span> <span class="o">&amp;</span><span class="n">Needed</span><span class="p">,</span>
+                                         <span class="k">const</span> <span class="n">ArgVal</span> <span class="o">&amp;</span><span class="n">Live</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">int</span> <span class="n">words_needed</span> <span class="o">=</span> <span class="p">(</span><span class="n">Needed</span><span class="p">.</span><span class="n">getValue</span><span class="p">()</span> <span class="o">+</span> <span class="n">S_RESERVED</span><span class="p">);</span>
+    <span class="n">Label</span> <span class="n">after_gc_check</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">newLabel</span><span class="p">();</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">lea</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">x86</span><span class="o">::</span><span class="n">qword_ptr</span><span class="p">(</span><span class="n">HTOP</span><span class="p">,</span> <span class="n">words_needed</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Eterm</span><span class="p">)));</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">cmp</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">E</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">jbe</span><span class="p">(</span><span class="n">after_gc_check</span><span class="p">);</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG4</span><span class="p">,</span> <span class="n">imm</span><span class="p">(</span><span class="n">Live</span><span class="p">.</span><span class="n">getValue</span><span class="p">()));</span>
+
+    <span class="cm">/* Call the global "garbage collect" fragment. */</span>
+    <span class="n">fragment_call</span><span class="p">(</span><span class="n">ga</span><span class="o">-&gt;</span><span class="n">get_garbage_collect</span><span class="p">());</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">after_gc_check</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* This is the global part of the instruction. Since we
+ * know it will only be called from the module code above,
+ * we're free to assume that ARG4 is the number of live
+ * registers and that ARG2 is (HTOP + bytes needed). */</span>
+<span class="kt">void</span> <span class="n">BeamGlobalAssembler</span><span class="o">::</span><span class="n">emit_garbage_collect</span><span class="p">()</span> <span class="p">{</span>
+    <span class="cm">/* Convert ARG2 to "words needed" by subtracting
+     * HTOP and dividing it by 8.
+     *
+     * This saves us from having to explicitly pass
+     * "words needed" in the module code above. */</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">HTOP</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">shr</span><span class="p">(</span><span class="n">ARG2</span><span class="p">,</span> <span class="n">imm</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+
+    <span class="n">emit_enter_runtime</span><span class="o">&lt;</span><span class="n">Update</span><span class="o">::</span><span class="n">eStack</span> <span class="o">|</span> <span class="n">Update</span><span class="o">::</span><span class="n">eHeap</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="cm">/* ARG2 and ARG4 have already been set earlier. */</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG1</span><span class="p">,</span> <span class="n">c_p</span><span class="p">);</span>
+    <span class="n">load_x_reg_array</span><span class="p">(</span><span class="n">ARG3</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">mov</span><span class="p">(</span><span class="n">ARG5</span><span class="p">,</span> <span class="n">FCALLS</span><span class="p">);</span>
+    <span class="n">runtime_call</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">(</span><span class="n">erts_garbage_collect_nobump</span><span class="p">);</span>
+    <span class="n">a</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="n">FCALLS</span><span class="p">,</span> <span class="n">RET</span><span class="p">);</span>
+
+    <span class="n">emit_leave_runtime</span><span class="o">&lt;</span><span class="n">Update</span><span class="o">::</span><span class="n">eStack</span> <span class="o">|</span> <span class="n">Update</span><span class="o">::</span><span class="n">eHeap</span><span class="o">&gt;</span><span class="p">();</span>
+
+    <span class="n">a</span><span class="p">.</span><span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>While we had to write about as much code, the part that is copied into the
+module is significantly smaller.</p>
+
+<p>In our next post we’ll take a break from implementation details and look at the
+history behind this JIT.</p>
+
+        
+    </div>
+</article>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-c.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-bash.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

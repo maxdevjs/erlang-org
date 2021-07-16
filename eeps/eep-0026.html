@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0026 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0026 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Björn Gustavsson &lt;bjorn(at)erlang(dot)org&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Accepted/R13A Proposal is to be implemented in OTP release R13A</dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>28-Jan-2009</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-5</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-26-make-andalso-and-orelse-tail-recursive">EEP 26: Make andalso and orelse tail-recursive</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Erlang 5.1 added the ability to use ‘andalso’, ‘orelse’,
+‘and’, and ‘or’ in guards.  However, the semantics for
+‘andalso’ and ‘orelse’ differs from that in other related
+languages, causing confusion and inefficiency.</p>
+
+<p>I propose making ‘andalso’ and ‘orelse’ tail-recursive.</p>
+
+<p>This EEP is partly based on Richard O’Keefe’s <a href="eep-0017.md" title="Richard O'Keefe: EEP 17 - Fix andalso and orelse">EEP 17</a>,
+but has a narrower scope.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Currently, <code class="language-plaintext highlighter-rouge">(E1 andalso E2)</code> as an expression acts like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span> <span class="k">of</span>
+   <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+   <span class="n">true</span>  <span class="o">-&gt;</span> <span class="k">case</span> <span class="nv">E2</span> <span class="k">of</span>
+   	   <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+       <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+   <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>except that the former raises <code class="language-plaintext highlighter-rouge">{badarg,NonBool}</code> exceptions and the
+latter raises <code class="language-plaintext highlighter-rouge">{case_clause,NonBool}</code> ones.</p>
+
+<p>This should be changed to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span> <span class="k">of</span>
+   <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+   <span class="n">true</span>  <span class="o">-&gt;</span> <span class="nv">E2</span>
+<span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Currently, <code class="language-plaintext highlighter-rouge">(E1 orelse E2)</code> as an expression acts like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span> <span class="k">of</span>
+    <span class="n">true</span> <span class="o">-&gt;</span> <span class="n">true</span>
+    <span class="n">false</span> <span class="o">-&gt;</span> <span class="k">case</span> <span class="nv">E2</span> <span class="k">of</span>
+        <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+        <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>except that the former raises <code class="language-plaintext highlighter-rouge">{badarg,NonBool}</code> exceptions and the
+latter raises <code class="language-plaintext highlighter-rouge">{case_clause,NonBool}</code> ones.</p>
+
+<p>This should be changed to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span> <span class="k">of</span>
+    <span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span><span class="p">;</span>
+    <span class="n">false</span> <span class="o">-&gt;</span> <span class="nv">E2</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>To unlock the full potential of ‘andalso’/’orelse’ in Erlang.</p>
+
+<p>Given the current implementation, you either have to make
+rewrite code that is naturally written using AND and OR
+operators using ‘case’, or only use ‘andalso’/’orelse’ when
+you know that your lists are relatively short.</p>
+
+<p>For instance, the function <code class="language-plaintext highlighter-rouge">all/2</code> that returns ‘true’ if
+all elements of a list satisfies a predicate and ‘false’
+otherwise, can be written like this:</p>
+
+<p>all(Pred, [Hd|Tail]) -&gt;</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="ow">and</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">);</span>
+</code></pre></div></div>
+<p>all(_, []) -&gt;</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In each recursion, we test that the current element Hd
+satisfies the predicate AND that the rest of the list also
+matches the predicate. The code reads almost like English.</p>
+
+<p>Of course, ‘and’ evaluates both of its operand, so the entire
+list will be traversed even if the first element of the list
+fails to satisfy the predicate. Furthermore, ‘and’ is not
+tail-recursive, so the function will use stack space
+proportional to the length of the list.</p>
+
+<p>To avoid the traversing the rest of the list if one element
+fails to satisfy the predicate, we can use ‘andalso’:</p>
+
+<p>all(Pred, [Hd|Tail]) -&gt;</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="ow">andalso</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">);</span>
+</code></pre></div></div>
+<p>all(_, []) -&gt;</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>As soon as <code class="language-plaintext highlighter-rouge">Pred(Hd)</code> returns false, the recursion will
+stop and the rest of the list need not be traversed.
+Since ‘andalso’ is not tail-recursive, however, the
+function will need stack space proportional to the number
+of list elements that are traversed.</p>
+
+<p>To see more clearly that ‘andalso’ is not tail-recursive,
+here is <code class="language-plaintext highlighter-rouge">all/1</code> with ‘andalso’ expanded out to a nested
+‘case’ expression (as it would be in R12B-5):</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="p">[</span><span class="nv">Hd</span><span class="p">|</span><span class="nv">Tail</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+        <span class="n">true</span>  <span class="o">-&gt;</span> <span class="k">case</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">)</span> <span class="k">of</span>
+    	<span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+		<span class="n">true</span>  <span class="o">-&gt;</span> <span class="n">true</span>
+	    <span class="k">end</span>
+    <span class="k">end</span><span class="p">;</span>
+<span class="nf">all</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+    <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>To make <code class="language-plaintext highlighter-rouge">all/1</code> tail-recursive in R12B-5, you would have
+to write a ‘case’ expression yourself:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="p">[</span><span class="nv">Hd</span><span class="p">|</span><span class="nv">Tail</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+        <span class="n">true</span>  <span class="o">-&gt;</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">;</span>
+<span class="nf">all</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+    <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>If this EEP is accepted, in R13B we could write like
+this</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="p">[</span><span class="nv">Hd</span><span class="p">|</span><span class="nv">Tail</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="ow">andalso</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">);</span>
+<span class="nf">all</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+    <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>and the <code class="language-plaintext highlighter-rouge">all/1</code> function would be tail-recursive.</p>
+
+<p>In my opinion, the latter is easier to read and write.
+The ‘case’ expression is mostly boiler-plate code
+where ‘true’ and ‘false’ must be correctly spelled
+several times. (Misspellings like ‘ture’ and ‘flase’
+are quite common, but are in most cases found the
+first time the program is tested.)</p>
+
+<p>It could be argued that because Erlang has clearly defined truth
+values (unlike some other languages where 0 is false and
+everything else true), all operators that operate on booleans
+should make sure that their arguments are booleans.</p>
+
+<p>Testing both arguments of ‘and’ and ‘or’ makes
+sense, because the code executed for those operators always GETS
+the values of both operands.  But ‘andalso’ and ‘orelse’ only test
+their second operand SOME of the time.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">X</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span>    <span class="c">% checked error
+</span><span class="nv">X</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span>     <span class="c">% unchecked error
+</span></code></pre></div></div>
+
+<p>There doesn’t seem to be much point in checking SOME of the time,
+especially when it does something as dramatic as blocking tail
+recursion.</p>
+
+<p>Richard O’Keefe’s motivation in <a href="eep-0017.md" title="Richard O'Keefe: EEP 17 - Fix andalso and orelse">EEP 17</a> is “Cultural consistency”
+with other languages. See <a href="eep-0017.md" title="Richard O'Keefe: EEP 17 - Fix andalso and orelse">EEP 17</a>.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>Surprisingly (for me), the subject of this EEP turned out to
+be controversial.</p>
+
+<p>I will start this rationale by listing some of the more serious
+arguments against this proposal and my counter-arguments, and
+finish with the arguments for this proposal.</p>
+
+<p>One argument against is to be that the new construct
+will be confusing for users. ‘andalso’/’orelse’ can no longer
+be described as a “boolean operator”, but is now a “control
+structure”.</p>
+
+<p>Yes, ‘andalso’/’orelse’ is no longer a boolean operator in the
+sense that it no longer GUARANTEES that it returns a boolean.
+However, using ‘andalso’/’orelse’ as a ‘case’ expression</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E1</span> <span class="ow">orelse</span> <span class="nv">E2</span> <span class="k">of</span>
+    <span class="n">true</span> <span class="o">-&gt;</span> <span class="p">....;</span>
+    <span class="n">false</span> <span class="o">-&gt;</span> <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>works in the same way as before. Most users certainly will not
+notice any difference.  And if an operator is not allowed to not
+evaluate both of its arguments, it certainly wasn’t an operator
+before either.</p>
+
+<p>Another argument against is that ‘andalso’/’orelse’ can be
+used in one-liners to write “ugly code”, such as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Debug</span> <span class="ow">andalso</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"..."</span><span class="p">,</span> <span class="p">[...])</span>
+</code></pre></div></div>
+
+<p>instead of</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span>
+    <span class="nv">Debug</span> <span class="o">-&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"..."</span><span class="p">,</span> <span class="p">[...]);</span>
+    <span class="n">true</span> <span class="o">-&gt;</span> <span class="n">ok</span>
+<span class="k">end</span>
+    
+</code></pre></div></div>
+<p>The code might be “ugly” (according to someone’s taste or
+some definition of “ugly”), but the one-liner is not hard
+to understand and I don’t see how it could turn into a
+code-maintenance problem.</p>
+
+<p>The main argument for making ‘andalso’/’orelse’ tail-recursive:
+The current implementation is dangerous. You could very easily
+write non-tail-recursive code, for instance</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="p">[</span><span class="nv">Hd</span><span class="p">|</span><span class="nv">Tail</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="ow">andalso</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">);</span>
+<span class="nf">all</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+    <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>without realizing it and introduce serious performance
+problems. (Which has happened in <a href="http://www.erlang.org/pipermail/erlang-questions/2008-November/039935.html" title="Mikael Pettersson: e-mail to erlang-questions">practice</a>).</p>
+
+<p>If you cannot use ‘andalso’/’orelse’ in this way, these
+operators become pretty useless. (Some would say
+<a href="http://www.erlang.org/pipermail/erlang-questions/2008-November/039935.html" title="Mikael Pettersson: e-mail to erlang-questions">“utterly useless”</a>.) You have to rewrite
+beautiful code (in my opinion) to uglier code (in
+comparison, in my opinion) and more error-prone
+code (misspelling of ‘true’/’false’ in the boiler-plate
+code):</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="p">[</span><span class="nv">Hd</span><span class="p">|</span><span class="nv">Tail</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">Pred</span><span class="p">(</span><span class="nv">Hd</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">false</span> <span class="o">-&gt;</span> <span class="n">false</span><span class="p">;</span>
+        <span class="n">true</span>  <span class="o">-&gt;</span> <span class="nf">all</span><span class="p">(</span><span class="nv">Pred</span><span class="p">,</span> <span class="nv">Tail</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">;</span>
+<span class="nf">all</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+   <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Any code that ran without raising exceptions will continue
+to produce the same results, except for running faster.</p>
+
+<p>Code that did raise exceptions may raise different exceptions
+elsewhere later, or may quietly complete in unexpected ways.
+I believe it to be unlikely that anyone deliberately relied
+on <code class="language-plaintext highlighter-rouge">(E1 andalso 0)</code> raising an exception.</p>
+
+<p>Code that was previously broken because these operators have
+such surprising behavior will now work in more cases.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>The proposed change has been implemented and run in our
+daily builds without finding any code in Erlang/OTP that
+needed to be updated. One test case in the compiler test
+suite that that test ‘andalso’/’orelse’ needed to be updated.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.
+[EmacsVar]: &lt;&gt; “Local Variables:”
+[EmacsVar]: &lt;&gt; “mode: indented-text”
+[EmacsVar]: &lt;&gt; “indent-tabs-mode: nil”
+[EmacsVar]: &lt;&gt; “sentence-end-double-space: t”
+[EmacsVar]: &lt;&gt; “fill-column: 70”
+[EmacsVar]: &lt;&gt; “coding: utf-8”
+[EmacsVar]: &lt;&gt; “End:”</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

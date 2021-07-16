@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0013 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0013 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>09-Jul-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-4</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-13--enum-declarations">EEP 13: -enum declarations</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Erlang programs often need to process data streams using data
+formats devised without reference to Erlang.  For this reason
+OTP supports ASN.1 and CORBA, amongst other interface techniques.
+Binary data streams often contain “symbolic” values that are
+represented in the original description by some kind of
+enumeration declaration, often literally a C “enum” declaration.</p>
+
+<p>This EEP proposes an “<code class="language-plaintext highlighter-rouge">-enum</code>” declaration for Erlang for
+convenient mapping between atoms on one side of an interface and
+integers on the other, especially in the bit syntax.</p>
+
+<p>This replaces some uses of the preprocessor with something that
+permits the clearer expression of the programmer’s intent.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>A new form of declaration is added, four new guard BIFs, and a
+new type specifier for bit syntax.</p>
+
+<h2 id="declaration">Declaration</h2>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">'-'</span> <span class="n">'enum'</span> <span class="n">'('</span> <span class="n">identifier</span><span class="o">-</span><span class="ow">and</span><span class="o">-</span><span class="nb">size</span> <span class="n">','</span> <span class="n">'{'</span> <span class="n">enum</span><span class="o">-</span><span class="n">binding</span>
+    <span class="p">{</span><span class="n">','</span> <span class="n">enum</span><span class="o">-</span><span class="n">binding</span><span class="p">}</span><span class="o">*</span> <span class="n">')'</span> <span class="n">'.'</span>
+</code></pre></div></div>
+
+<p>where identifier-and-size is</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span> <span class="p">:</span> <span class="nb">size</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span> <span class="o">/</span> <span class="n">type</span><span class="o">-</span><span class="n">specifier</span><span class="o">-</span><span class="n">list</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span> <span class="p">:</span> <span class="nb">size</span> <span class="o">/</span> <span class="n">type</span><span class="o">-</span><span class="n">specifier</span><span class="o">-</span><span class="n">list</span>
+</code></pre></div></div>
+
+<p>and enum-binding is</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span> <span class="n">'='</span> <span class="n">constant</span><span class="o">-</span><span class="n">integer</span><span class="o">-</span><span class="n">expression</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">identifier</span>
+</code></pre></div></div>
+
+<p>size and type-specifier-list are as in the bit syntax,
+except that the type-specifier-list may not include a Type.
+If the size is missing, it will be the first of [8,16,32,64]
+that is compatible with the integer values, as described later.
+If the size is present, it must be an integer that is compatible 
+with the integer values.  Signedness, if present, must agree
+with the integer values.</p>
+
+<h2 id="example">Example</h2>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="p">{</span><span class="n">red</span><span class="p">,</span><span class="n">orange</span><span class="p">,</span><span class="n">yellow</span><span class="p">,</span><span class="n">green</span><span class="p">,</span><span class="n">blue</span><span class="p">}).</span>
+<span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="nn">fruit</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span>  <span class="p">{</span><span class="n">quandong</span><span class="p">,</span><span class="n">lime</span><span class="p">,</span><span class="n">banana</span><span class="p">,</span><span class="n">orange</span><span class="p">,</span><span class="n">apple</span><span class="p">}).</span>
+</code></pre></div></div>
+
+<p>The identifier following the left parenthesis is called the
+“enumeration identifier” and the identifiers bound by the
+bindings are called “enumerals”.</p>
+
+<p>After <code class="language-plaintext highlighter-rouge">-include</code> and <code class="language-plaintext highlighter-rouge">-if</code> processing, there should be at most one
+enum declaration for any identifier.  The identifier must not
+be one of</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">integer</span> <span class="p">|</span> <span class="nb">float</span> <span class="p">|</span> <span class="n">binary</span> <span class="p">|</span> <span class="n">bytes</span> <span class="p">|</span> <span class="n">bitstring</span> <span class="p">|</span> <span class="n">bits</span>
+</code></pre></div></div>
+
+<p>Such a declaration only has significance within the constructs
+defined in this EEP; the only existing notation which is affected
+is the bit syntax.</p>
+
+<p>Within a single enum declaration, an enumeral may not be bound in
+two or more bindings.</p>
+
+<p>If the first binding does not have an integer-constant-expression,
+it is as if “= 0” appeared.  If a later binding does not have an
+integer-constant-expression, it is as if “= N” appeared, where N
+is one more than the integer value of the previous binding.</p>
+
+<p>Within a single enum declaration, an integer value may not be used
+in two or more bindings, whether implicitly or explicitly.</p>
+
+<h2 id="built-in-functions">Built-in functions</h2>
+
+<h3 id="is_enum_atomatom-enumeration_identifier"><code class="language-plaintext highlighter-rouge">is_enum_atom(Atom, Enumeration_Identifier)</code></h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">true</code> when Enumeration_Identifier is an atom that is declared
+as an enumeration identifier and Atom is one of the enumerals
+in that declaration,</li>
+  <li><code class="language-plaintext highlighter-rouge">false</code> otherwise.</li>
+</ul>
+
+<p>May be used as a guard test provided
+Enumeration_Identifier is a literal atom,
+with a compile-time error if it has no enum declaration.</p>
+
+<h3 id="is_enum_integerinteger-enumeration_identifier"><code class="language-plaintext highlighter-rouge">is_enum_integer(Integer, Enumeration_Identifier)</code></h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">true</code> when Enumeration_Identifier is an atom that is declared
+as an enumeration identifier and Integer is an integer that
+is used as the value in one of the bindings in that
+declaration,</li>
+  <li><code class="language-plaintext highlighter-rouge">false</code> otherwise.</li>
+</ul>
+
+<p>May be used as a guard test provided
+Enumeration_Identifier is a literal atom,
+with a compile-time error if it has no enum declaration.</p>
+
+<h3 id="enum_to_atominteger-enumeration_identifier"><code class="language-plaintext highlighter-rouge">enum_to_atom(Integer, Enumeration_Identifier)</code></h3>
+<ul>
+  <li>when <code class="language-plaintext highlighter-rouge">is_enum_integer(Integer, Enumeration_Identifier)</code> -&gt;<br />
+the enumeral bound to Integer in the
+declaration of Enumeration_Identifier</li>
+  <li>otherwise exits with <code class="language-plaintext highlighter-rouge">badarg</code>.</li>
+</ul>
+
+<p>May be used in a guard expression provided
+Enumeration_Identifier is a literal atom,
+with a compile-time error if it has no enum declaration.</p>
+
+<h3 id="enum_to_integeratom-enumeration_identifier"><code class="language-plaintext highlighter-rouge">enum_to_integer(Atom, Enumeration_Identifier)</code></h3>
+<ul>
+  <li>when <code class="language-plaintext highlighter-rouge">is_enum_atom(Atom, Enumeration_Identifier)</code> -&gt;<br />
+the integer value that Atom is bound to in the
+declaration of Enumeration_Identifier</li>
+  <li>otherwise exits with <code class="language-plaintext highlighter-rouge">badarg</code>.</li>
+</ul>
+
+<p>May be used in a guard expression provided
+Enumeration_Identifier is a literal atom,
+with a compile-time error if it has no enum declaration.</p>
+
+<p>All four of these functions are expected to take O(1) time
+and to allocate no storage at run time.</p>
+
+<h2 id="bit-syntax-extension">Bit syntax extension</h2>
+
+<p>The Type in a segment of the bit syntax may additionally be
+an Enumeration_Identifier, and the corresponding Value will
+then be an atom.  The value in the bit string that is being
+matched or constructed is or will be the integer bound to
+the atom; as such the Size, Endianness, Signedness, and Unit
+are interpreted as for the <code class="language-plaintext highlighter-rouge">integer</code> Type.</p>
+
+<p>In constructing a bit string,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">V</span> <span class="o">/</span> <span class="nv">Enumeration_Identifier</span> <span class="p">...</span>
+<span class="ow">or</span>  <span class="nv">V</span> <span class="p">:</span> <span class="nv">Size</span> <span class="o">/</span> <span class="nv">Enumeration_Identifier</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>acts as if</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">enum_to_integer</span><span class="p">(</span><span class="nv">V</span><span class="p">,</span> <span class="nv">Enumeration_Identifier</span><span class="p">)</span> <span class="o">/</span> <span class="n">integer</span> <span class="p">...</span>
+<span class="ow">or</span>  <span class="nf">enum_to_integer</span><span class="p">(</span><span class="nv">V</span><span class="p">,</span> <span class="nv">Enumeration_Identifier</span><span class="p">)</span> <span class="p">:</span> <span class="nv">Size</span> <span class="o">/</span> <span class="n">integer</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>had been written, with one exception, which is now described.</p>
+
+<p>If all the integer values in an enum declaration are non-negative,
+let k be the smallest integer such that 2^k is greater than all
+of them. If some are negative, let k be the smallest integer such
+that 2^(k-1) is greater than all of them and -(2^(k-1)) is less
+than or equal to all of them. The size of a segment for an
+enumeration value must then be at least k bits, whatever the
+actual value. A programmer who finds a need to bypass this can
+do the enumeral&lt;-&gt;integer conversion manually; what this limit
+does is to prevent accidental mis-specification. The size given
+in the enum declaration must be at least k. If no size is given
+in the bit syntax, the size given (or defaulted) in the enum
+declaration will be used.</p>
+
+<p>When such a segment is used in pattern matching, it is as if</p>
+
+<ul>
+  <li>first an integer is extracted as if the Type had been <code class="language-plaintext highlighter-rouge">integer</code>,</li>
+  <li>then the value is converted to an atom as if by <code class="language-plaintext highlighter-rouge">enum_to_atom</code>,</li>
+  <li>and finally the atom is matched to whatever pattern appeared.</li>
+</ul>
+
+<p>One expects that cases where the value V is an explicit atom
+will be translated completely at compile time, therefore having
+no overhead compared with using macros and <code class="language-plaintext highlighter-rouge">/integer</code>.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>This was inspired by thinking about PADS and other data
+description languages.  Imagine a C program doing something like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">enum</span> <span class="n">seriousness</span> <span class="p">{</span>
+    <span class="n">not_serious</span> <span class="o">=</span> <span class="n">'N'</span><span class="p">,</span>
+    <span class="n">hospitalised</span> <span class="o">=</span> <span class="n">'H'</span><span class="p">,</span>
+    <span class="n">life_threatening</span> <span class="o">=</span> <span class="n">'L'</span><span class="p">,</span>
+    <span class="n">congenital_abnormality</span> <span class="o">=</span> <span class="n">'C'</span><span class="p">,</span>
+    <span class="n">persisting_disability</span> <span class="o">=</span> <span class="n">'P'</span><span class="p">,</span>
+    <span class="n">intervention_required</span> <span class="o">=</span> <span class="n">'I'</span><span class="p">,</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="n">'D'</span>
+<span class="p">};</span>
+<span class="n">struct</span> <span class="nv">Message</span> <span class="p">{</span>
+    <span class="n">char</span> <span class="n">tag</span><span class="p">;</span>                       <span class="o">/*</span> <span class="n">a</span> <span class="n">seriousness</span> <span class="o">*/</span>
+    <span class="n">union</span> <span class="p">{</span>
+        <span class="n">int</span>   <span class="n">number_of_days</span><span class="p">;</span>       <span class="o">/*</span> <span class="nv">H</span> <span class="o">*/</span>
+        <span class="nb">float</span> <span class="n">extent_of_disability</span><span class="p">;</span> <span class="o">/*</span> <span class="nv">C</span> <span class="ow">or</span> <span class="nv">P</span> <span class="o">*/</span>
+        <span class="n">char</span>  <span class="n">procedure_code</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>    <span class="o">/*</span> <span class="nv">I</span> <span class="o">*/</span>
+    <span class="p">}</span> <span class="n">supplement</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>(The Message structure has been considerably simplified.)<br />
+Now imagine matching it.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">NOT_SERIOUS</span><span class="p">,</span> <span class="sc">$N</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">HOSPITALISED</span><span class="p">,</span> <span class="sc">$H</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">LIFE_THREATENING</span><span class="p">,</span> <span class="sc">$L</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">CONGENITAL_ABNORMALITY</span><span class="p">,</span> <span class="sc">$C</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">PERSISTING_DISABILITY</span><span class="p">,</span> <span class="sc">$P</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">INTERVENTION_REQUIRED</span><span class="p">,</span> <span class="sc">$I</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">DEATH</span><span class="p">,</span> <span class="sc">$D</span><span class="p">).</span>
+
+<span class="nf">decode_message</span><span class="p">(</span><span class="nv">B0</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">B0</span>
+      <span class="k">of</span> <span class="o">&lt;&lt;?</span><span class="nv">NOT_SERIOUS</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">not_serious</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">HOSPITALISED</span><span class="p">,</span> <span class="nv">NDays</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">hospitalised</span><span class="p">,</span><span class="nv">NDays</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">LIFE_THREATENING</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">life_threatening</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">CONGENITAL_ABNORMALITY</span><span class="p">,</span> <span class="nv">Extent</span><span class="o">/</span><span class="nb">float</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">congenital_abnormality</span><span class="p">,</span><span class="nv">Extent</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">PERSISTING_DISABILITY</span><span class="p">,</span> <span class="nv">Extent</span><span class="o">/</span><span class="nb">float</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">persisting_abnormality</span><span class="p">,</span><span class="nv">Extent</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">INTERVENTION_REQUIRED</span><span class="p">,</span> <span class="nv">Code</span><span class="p">:</span><span class="mi">5</span><span class="o">/</span><span class="n">bytes</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">intervention_required</span><span class="p">,</span><span class="nv">Code</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;?</span><span class="nv">DEATH</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">death</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>There are a number of problems with this.</p>
+
+<ul>
+  <li>You have to use macros; functions are not allowed in patterns.</li>
+  <li>There is nothing to link these macros together as a group.</li>
+  <li>So there is no help checking that you are using the right ones.</li>
+  <li>There is no word to relate them back to the original enum.</li>
+  <li>If the size isn’t 8, it must be repeated in each pattern.</li>
+  <li>If the Endianness isn’t <code class="language-plaintext highlighter-rouge">big</code>, it must be repeated in each
+pattern.</li>
+  <li>If the size is wrong, too bad.</li>
+  <li>If a macro from the wrong list is used, too bad.</li>
+  <li>You cannot use the same enumeral name for more than one
+enumeration, unless it happens to have the same value in both.</li>
+  <li>If you pass the macros around in a computation, they look
+just like numbers to tracers and debuggers; they have no
+run-time symbolic value.</li>
+</ul>
+
+<p>Now here’s the version using <code class="language-plaintext highlighter-rouge">-enum</code>.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="n">seriousness</span> <span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">not_serious</span> <span class="o">=</span> <span class="sc">$N</span><span class="p">,</span>
+    <span class="n">hospitalised</span> <span class="o">=</span> <span class="sc">$H</span>
+    <span class="n">life_threatening</span> <span class="o">=</span> <span class="sc">$L</span><span class="p">,</span>
+    <span class="n">congenital_abnormality</span> <span class="o">=</span> <span class="sc">$C</span><span class="p">,</span>
+    <span class="n">persisting_disability</span> <span class="o">=</span> <span class="sc">$P</span><span class="p">,</span>
+    <span class="n">intervention_required</span> <span class="o">=</span> <span class="sc">$I</span><span class="p">,</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="sc">$D</span>
+<span class="p">}).</span>
+
+<span class="nf">decode_message</span><span class="p">(</span><span class="nv">B0</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">B0</span>
+      <span class="k">of</span> <span class="o">&lt;&lt;</span><span class="n">not_serious</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+          <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">not_serious</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">hospitalised</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+           <span class="nv">NDays</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">hospitalised</span><span class="p">,</span><span class="nv">NDays</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">life_threatening</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+           <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">life_threatening</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">congenital_abnormality</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+           <span class="nv">Extent</span><span class="o">/</span><span class="nb">float</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">congenital_abnormality</span><span class="p">,</span><span class="nv">Extent</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">persisting_disability</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+            <span class="nv">Extent</span><span class="o">/</span><span class="nb">float</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">persisting_abnormality</span><span class="p">,</span><span class="nv">Extent</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">intervention_required</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+            <span class="nv">Code</span><span class="p">:</span><span class="mi">5</span><span class="o">/</span><span class="n">bytes</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">intervention_required</span><span class="p">,</span><span class="nv">Code</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+       <span class="p">;</span> <span class="o">&lt;&lt;</span><span class="n">death</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span>
+           <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">-&gt;</span>
+            <span class="p">{{</span><span class="n">death</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Rather fortuitously, this feature also provides a way of
+accepting any of a set of atoms or integers with a single
+guard test.  Let’s restructure the previous example to
+first extract the seriousness and then match the body, but
+this time, have just one body of each shape.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="n">seriousness</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">not_serious</span> <span class="o">=</span> <span class="sc">$N</span><span class="p">,</span>
+    <span class="n">hospitalised</span> <span class="o">=</span> <span class="sc">$H</span>
+    <span class="n">life_threatening</span> <span class="o">=</span> <span class="sc">$L</span><span class="p">,</span>
+    <span class="n">congenital_abnormality</span> <span class="o">=</span> <span class="sc">$C</span><span class="p">,</span>
+    <span class="n">persisting_disability</span> <span class="o">=</span> <span class="sc">$P</span><span class="p">,</span>
+    <span class="n">intervention_required</span> <span class="o">=</span> <span class="sc">$I</span><span class="p">,</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="sc">$D</span>
+<span class="p">}).</span>
+<span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="n">no_more_info</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">not_serious</span> <span class="o">=</span> <span class="sc">$N</span><span class="p">,</span>
+    <span class="n">life_threatening</span> <span class="o">=</span> <span class="sc">$L</span><span class="p">,</span>
+    <span class="n">death</span> <span class="o">=</span> <span class="sc">$D</span>
+<span class="p">}).</span>
+<span class="p">-</span><span class="ni">enum</span><span class="p">(</span><span class="n">extent_of_impairment</span><span class="p">,</span> <span class="p">{</span>
+    <span class="n">congenital_abnormality</span> <span class="o">=</span> <span class="sc">$C</span><span class="p">,</span>
+    <span class="n">persisting_disability</span> <span class="o">=</span> <span class="sc">$P</span>
+<span class="p">}).</span>
+    
+<span class="nf">decode_message</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="nv">Seriousness</span><span class="o">/</span><span class="n">seriousness</span><span class="p">,</span> <span class="nv">B0</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="nf">is_enum_atom</span><span class="p">(</span><span class="nv">Seriousness</span><span class="p">,</span> <span class="n">no_more_info</span><span class="p">)</span> <span class="o">-&gt;</span>
+       <span class="p">{{</span><span class="nv">Seriousness</span><span class="p">},</span> <span class="nv">B0</span><span class="p">}</span>
+     <span class="p">;</span> <span class="nf">is_enum_atom</span><span class="p">(</span><span class="nv">Seriousness</span><span class="p">,</span> <span class="n">extent_of_impairment</span><span class="p">)</span> <span class="o">-&gt;</span>
+       <span class="o">&lt;&lt;</span><span class="nv">Extent</span><span class="o">/</span><span class="nb">float</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">=</span> <span class="nv">B0</span><span class="p">,</span>
+       <span class="p">{{</span><span class="nv">Seriousness</span><span class="p">,</span><span class="nv">Extent</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+     <span class="p">;</span> <span class="nv">Seriousness</span> <span class="o">=:=</span> <span class="n">hospitalised</span> <span class="o">-&gt;</span>
+       <span class="o">&lt;&lt;</span><span class="nv">NDays</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">=</span> <span class="nv">B0</span><span class="p">,</span>
+       <span class="p">{{</span><span class="nv">Seriousness</span><span class="p">,</span><span class="nv">NDays</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+     <span class="p">;</span> <span class="nv">Seriousness</span> <span class="o">=:=</span> <span class="n">intervention_required</span> <span class="o">-&gt;</span>
+       <span class="o">&lt;&lt;</span><span class="nv">Code</span><span class="p">:</span><span class="mi">5</span><span class="o">/</span><span class="n">bytes</span><span class="p">,</span> <span class="nv">B1</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="o">=</span> <span class="nv">B0</span><span class="p">,</span>
+       <span class="p">{{</span><span class="nv">Seriousness</span><span class="p">,</span><span class="nv">Code</span><span class="p">},</span> <span class="nv">B1</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>Since this is supposed to make it easy to convert descriptions  <br />
+from C or PADS or similar forms, an enum declaration looks like
+a C enum declaration.</p>
+
+<p>Since size, signedness, and endianness may be needed in multiple
+places, it makes sense to put them all in the declaration so that
+they don’t have to be repeated (and therefore cannot be repeated
+incorrectly).</p>
+
+<p>The order of the arguments in the new BIFs is chosen to match
+the order of the arguments in <code class="language-plaintext highlighter-rouge">is_record/2</code>, so as to be familiar
+to Erlang programmers.</p>
+
+<p>The new BIFs are needed to explain the extended bit syntax.
+The only abbreviation in their names is <code class="language-plaintext highlighter-rouge">enum</code>, which exactly
+matches the keyword in the declaration.</p>
+
+<p>The new BIFs can also be used to implement the extended bit
+syntax by source-to-source transformation; no actual change to
+the bit syntax machinery is required.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Code that uses any of the four new BIFs will be affected.
+The nearest that the Erlang/OTP sources come to mentioning
+any of those atoms is <code class="language-plaintext highlighter-rouge">enum_to_int</code>, which is used.
+Code that does use any of these BIFs can be found using
+cross-reference tools.</p>
+
+<p>A simple approach would be to say that the BIFs <code class="language-plaintext highlighter-rouge">is_enum_atom/2</code>,
+<code class="language-plaintext highlighter-rouge">is_enum_integer/2</code>, <code class="language-plaintext highlighter-rouge">enum_to_atom/2</code>, <code class="language-plaintext highlighter-rouge">and enum_to_integer/2</code>
+are in scope in a module if and only if there is an <code class="language-plaintext highlighter-rouge">-enum</code>
+declaration in that module, in which case existing code would
+be entirely unaffected.</p>
+
+<p>The effect on the bit syntax is that previously illegal
+forms (where Type is not one of the existing numeric or bit
+string types or Value is an atom) become legal, but only if
+licensed by appropriate <code class="language-plaintext highlighter-rouge">-enum</code> declarations.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>There is none.  However, we can sketch one.
+The four new BIFs are all simple table lookups of the kind that
+the Erlang compiler already has to be able to generate for
+indexed clause selection.  As such, they are safe to call in
+guards.  Since the Type in the bit syntax may only be an
+enumeration name when it is a literal atom known to the compiler
+as an enumeration name, the constructor</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span><span class="p">...</span> <span class="nv">V</span> <span class="p">:</span> <span class="nv">S</span> <span class="o">/</span> <span class="nv">T</span> <span class="nv">X</span> <span class="p">...</span><span class="o">&gt;&gt;</span>
+</code></pre></div></div>
+
+<p>can be translated as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span> <span class="nv">V1</span> <span class="o">=</span> <span class="nf">enum_to_integer</span><span class="p">(</span><span class="nv">V</span><span class="p">,</span> <span class="nv">X</span><span class="p">),</span> <span class="o">&lt;&lt;</span><span class="p">...</span> <span class="nv">V1</span> <span class="p">:</span> <span class="nv">S</span> <span class="o">/</span> <span class="n">integer</span> <span class="nv">X</span> <span class="p">...</span><span class="o">&gt;&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>and the pattern</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span><span class="p">...</span> <span class="nv">V</span> <span class="p">:</span> <span class="nv">S</span> <span class="o">/</span> <span class="nv">T</span> <span class="nv">X</span> <span class="p">...</span><span class="o">&gt;&gt;</span>
+</code></pre></div></div>
+
+<p>can be translated to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;&lt;</span><span class="p">...</span> <span class="nv">V</span><span class="err">'</span> <span class="p">:</span> <span class="nv">S</span> <span class="o">/</span> <span class="n">integer</span> <span class="nv">X</span> <span class="p">...</span><span class="o">&gt;&gt;</span>
+</code></pre></div></div>
+
+<p>by adding</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">V</span> <span class="o">=:=</span> <span class="nf">enum_to_atom</span><span class="p">(</span><span class="nv">V</span><span class="err">'</span><span class="p">,</span> <span class="nv">T</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>to the guard if V occurs elsewhere in the pattern or will be
+bound in the context, or</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nv">V</span> <span class="o">=</span> <span class="nf">enum_to_atom</span><span class="p">(</span><span class="nv">V</span><span class="err">'</span><span class="p">,</span> <span class="nv">T</span><span class="p">)</span>
+<span class="k">if</span> <span class="nv">V</span> <span class="n">would</span> <span class="ow">not</span> <span class="n">otherwise</span> <span class="n">become</span> <span class="n">bound</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Binding like this should be allowed in guards anyway,
+but in this case it is perfectly safe because it is O(1) and
+does not require any dynamic storage allocation (unlike, say,
+arithmetic).</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

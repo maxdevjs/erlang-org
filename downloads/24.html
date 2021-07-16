@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"24 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>24 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/downloads.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <!-- convert page.release to string -->
+
+
+
+
+<div class="container body border-top pt-4">
+    <main class="main">
+        <div class="header pe-lg-4">
+            <h1>Erlang/OTP 24</h1>
+            This release of Erlang/OTP can be built from
+            <a href="/erlang-org/docs/24/installation_guide/INSTALL.html">source</a> or
+            installed using <a href="https://erlang-solutions.com/downloads">pre-built packages</a> for your OS or
+            third-party tools (such as <a href="https://github.com/kerl/kerl">kerl</a>
+            or <a href="https://github.com/asdf-vm/asdf-erlang">asdf</a>).
+            <div>
+                <code class="docker">
+                    docker run -it erlang:24
+                </code>
+            </div>
+        </div>
+        <div class="links">
+            
+            <!--
+    See the comment in _default.scss for how the responsive collapse work
+-->
+<div class="card collapse-expand-md">
+    <div class="card-header navbar-light">
+        <button class="float-start navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#downloadCardBody" aria-controls="downloadCardBody" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="row text-center">
+            <div class="col-xl">
+                <strong>Latest version is 24.0.3</strong>
+            </div>
+            <div class="col-xl-2">
+                <a href="https://github.com/erlang/otp/releases/tag/OTP-24.0.3">
+                    <img src="/erlang-org/assets/img/GitHub-Mark-32px.png" alt="View on github.com"></a>
+            </div>
+        </div>
+    </div>
+    <div id="downloadCardBody" class="collapse navbar-collapse">
+        <div class="card-body d-grid gap-2">
+            <!-- Download source button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/otp_src_24.0.3.tar.gz" class="btn btn-primary w-75">
+        Download source
+    </a>
+</div>
+            <!-- Download windows button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/otp_win32_24.0.3.exe" class="btn btn-primary w-75">
+        Download Windows installer
+    </a>
+</div>
+            <!-- Download Release notes button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/OTP-24.0.3.README" class="btn btn-primary w-75">
+        Download Release notes
+    </a>
+</div>
+            <!-- View/Download docs button group -->
+            <div class="btn-group">
+    
+    
+    <a href="/erlang-org/docs/24" class="btn btn-primary w-75">
+        View documentation
+    </a>
+</div>
+        </div>
+    </div>
+</div>
+        </div>
+        <div class="content">
+            <h2 id="highlights">Highlights</h2>
+
+<h3 id="compiler">compiler</h3>
+<ul>
+  <li>The compiler will now inline funs that are used only once immediately after their definition.</li>
+  <li>Compiler warnings and errors now include column numbers in addition to line numbers.</li>
+  <li>Variables bound between the keywords <code class="language-plaintext highlighter-rouge">'try'</code> and <code class="language-plaintext highlighter-rouge">'of'</code> can now be used in the clauses following the <code class="language-plaintext highlighter-rouge">'of'</code> keyword
+(that is, in the success case when no exception was raised).</li>
+  <li>Generators in list and binary comprehensions will now
+raise a <code class="language-plaintext highlighter-rouge">{bad_generator,Generator}</code> exception if the
+generator has an incorrect type
+Similarly, when a
+filter does not evaluate to a boolean, a
+<code class="language-plaintext highlighter-rouge">{bad_filter,Filter}</code> exception will be raised.</li>
+  <li>Warnings for expressions whose result was ignored that could be suppressed by
+using the anonymous variable <code class="language-plaintext highlighter-rouge">'_'</code> can now be suppressed with a variable beginning with <code class="language-plaintext highlighter-rouge">'_'</code>.</li>
+  <li>Selective receive optimization will now be applied much
+more often.
+The new <code class="language-plaintext highlighter-rouge">recv_opt_info</code> compile flag can be used to print
+diagnostics relating to this optimization.
+You can read more about the selective receive
+optimization in the Efficiency Guide.</li>
+</ul>
+
+<h3 id="erts-kernel-stdlib">erts, kernel, stdlib</h3>
+<ul>
+  <li>hex encoding and decoding functions added in the binary module</li>
+  <li>
+    <p>The BeamAsm JIT-compiler has been added to Erlang/OTP and will give a significant performance boost for many applications.
+The JIT-compiler is enabled by default on most x86 64-bit platforms that have a C++ compiler that can compile C++17. 
+To verify that a JIT enabled emulator is running you can use <code class="language-plaintext highlighter-rouge">erlang:system_info(emu_flavor)</code>.</p>
+  </li>
+  <li>A compatibility adaptor for <code class="language-plaintext highlighter-rouge">gen_tcp</code> to use the new socket API has been implemented (<code class="language-plaintext highlighter-rouge">gen_tcp_socket</code>).</li>
+  <li>Extended error information for failing BIF calls as proposed in EEP 54 has been implemented.</li>
+  <li>Process aliases as outlined by EEP 53 has been introduced.</li>
+  <li>Implementation of EEP 56 in supervisor. It adds the concept of significant children as well as the <code class="language-plaintext highlighter-rouge">auto_shutdown</code> supervisor flag. See the supervisor manual page for more information.</li>
+</ul>
+
+<h3 id="ftp">ftp</h3>
+<ul>
+  <li>Add support for FTPES (explicit FTP over TLS).</li>
+</ul>
+
+<h3 id="ssl">ssl</h3>
+<ul>
+  <li>Make TLS handshakes in Erlang distribution concurrent.</li>
+  <li>TLS connections now support EdDSA certificates.</li>
+</ul>
+
+<h3 id="wx">wx</h3>
+<ul>
+  <li>The application has been completely rewritten in order
+to use wxWidgets version 3 as its base.</li>
+  <li>Added support for wxWebView.</li>
+</ul>
+
+<h3 id="edoc">edoc</h3>
+<ul>
+  <li>EDoc is now capable of emitting EEP-48 doc chunks. This means that, with some
+configuration,  community projects can now provide documentation for shell_docs
+the same way that OTP libraries did since OTP 23.0.</li>
+</ul>
+
+<p>For more details about new features and potential incompatibilities see</p>
+<ul>
+  <li>https://erlang.org/download/OTP-24.0.README</li>
+</ul>
+
+
+        </div>
+        <aside class="sidebar text-muted collapse-expand-lg">
+    <div class="border-bottom navbar-light d-flex py-3">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarToggle"
+            aria-controls="sidebarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <strong class="text-nowrap h6 ps-3">All releases</strong>
+    </div>
+    <div id="sidebarToggle" class="collapse navbar-collapse">
+        <nav>
+            <ul class="nav flex-column text-nowrap">
+                
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/24" class="nav-link" role="button" aria-expanded="true">
+                        Erlang/OTP 24</a>
+                    <ul class="nav flex-column">
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-24.0.3">24.0.3</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-24.0.2">24.0.2</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-24.0.1">24.0.1</a>
+                        </li>
+                        
+                        <li class="nav-item ms-3">
+                            <a class="nav-link py-0" href="/erlang-org/patches/OTP-24.0">24.0</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/23" class="nav-link" role="button">
+                        Erlang/OTP 23</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/22" class="nav-link" role="button">
+                        Erlang/OTP 22</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/21" class="nav-link" role="button">
+                        Erlang/OTP 21</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/20" class="nav-link" role="button">
+                        Erlang/OTP 20</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/19" class="nav-link" role="button">
+                        Erlang/OTP 19</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/18" class="nav-link" role="button">
+                        Erlang/OTP 18</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/17" class="nav-link" role="button">
+                        Erlang/OTP 17</a>
+                    
+                </li>
+                
+            </ul>
+            <small>There is a file containing MD5 checksums for all files in the
+                <a href="http://erlang.org/download">download directory</a>,
+                also reachable through
+                <code>rsync rsync.erlang.org::erlang-download</code></small>
+        </nav>
+    </div>
+</aside>
+    </main>
+</div>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

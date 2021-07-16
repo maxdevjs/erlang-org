@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0011 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0011 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Patrik Nyblom &lt;pan(at)erlang(dot)org&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Accepted/R12B-3u Proposal is implemented in OTP release R12B-3, except for Unicode support according to EEP 10</dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>04-Jun-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-5</dd>
+                        
+                        
+                        <dt>Post-History:</dt>
+                        <dd>01-Jan-1970</dd>
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-11-built-in-regular-expressions-in-erlang">EEP 11: Built in regular expressions in Erlang</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>This EEP suggests how to integrate an external regular expression
+library into the Erlang virtual machine.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Regular expressions are widely used. Regardless of how other features
+of a language can be used to match or pick out parts of a string, many
+programmers prefer the regular expression syntax and expect
+regular expressions to be available in a modern language.</p>
+
+<p>The Perl programming language has integrated regular expressions
+directly into the syntax and Perl programmers are often highly skilled
+at writing complicated regular expressions that parse e.g. text files,
+HTTP requests or simple user input. The Perl extensions to the common
+regular expressions are widely known and many modern programming
+languages support something similar.</p>
+
+<p>Erlang currently has a minimalistic regular expression module (regexp
+module in STDLIB), which lacks features commonly available in other
+implementations. The current library is also painfully slow compared
+to the native C libraries utilized in other languages.</p>
+
+<p>Erlang needs to interface with a modern regular expression library in
+a way that does not break the properties of the virtual machine.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<h2 id="preconditions">Preconditions</h2>
+
+<p>Writing a more efficient regular expression library purely in Erlang
+has been attempted, but so far no really efficient implementation has
+been proposed, and the work involved in creating one is deemed
+extensive.</p>
+
+<p>On the other hand, several more or less successful attempts to
+integrate an external regular expressions library into the virtual
+machine have been presented. None of them, however, have addressed the
+issue of long running regular expressions stalling the schedulers.</p>
+
+<p>A built in function in the Erlang VM needs to stop execution when it
+has run a certain amount of iterations, to avoid stalling a scheduler
+and thereby starving other processes in the system. When the Erlang
+process get’s scheduled again, the built in function restarts and has
+provided some way of storing it’s current state so that execution of
+the function can continue where it was once left.</p>
+
+<p>The execution of a regular expression match is in many ways similar to the
+virtual machine’s execution of ordinary beam code, but the available
+libraries are (for obvious reasons) not prepared to give up the
+execution temporarily to allow other processes to execute. A
+complicated regular expression on large amounts of subject data can
+take seconds or even minutes to execute. Stalling one of the
+schedulers in the VM for that amount of time is not an option in a
+real parallel system. As suggested interfaces to external libraries
+have never addressed this problem, none have been accepted and/or
+integrated in the main Erlang distribution.</p>
+
+<p>Stack usage is another issue seldom addressed. The Erlang virtual
+machine may run a lot of scheduler threads, especially on processors
+with large amounts of cores. Multithreading applications need to be
+careful about stack usage, why recursive C routines are best
+avoided. The Erlang virtual machine avoids recursion in C code, why a
+linked in library should do the same. When it comes to realtime
+operating systems, the need to avoid recursion in the C code is even
+more obvious. The library used for Erlang regular expressions simply
+cannot be recursive on the C stack, at least not in a way where stack
+usage cannot be determined at compile time.</p>
+
+<h3 id="multithreading-versus-interruptable-execution">Multithreading versus interruptable execution</h3>
+
+<p>The problem of interrupting the execution of a regular expression (or
+other lengthy operations) when another Erlang process should be
+scheduled, has two obvious solutions:</p>
+
+<ol>
+  <li>
+    <p>Count the number of iterations in a regular expression match, store
+the state after a certain amount of iterations (or a certain amount
+of time) and return control to the scheduler when execution time
+slot is exceeded.</p>
+  </li>
+  <li>
+    <p>Let the operating system take care of the problem by executing the
+regular expression matches in separate kernel threads.</p>
+  </li>
+</ol>
+
+<p>In the virtual machine’s file driver, the second approach is used,
+introducing the concept of the asynchronous thread pool. The file I/O
+case is however special as the I/O operation in itself usually
+consumes far more time than the running time for the inter-thread
+communication and task switching involved when using asynchronous
+threads. Besides, there simply is no other solution at hand for I/O,
+so OS threads is the <em>only</em> solution at hand in that case.</p>
+
+<p>If regular expressions were to be executed in separate threads, even
+very small and simple expressions would have to carry the extra burden
+of OS level task switching and communication.</p>
+
+<p>Other lengthy operations in the virtual machine use the first
+approach of voluntary interruption and rescheduling. In the cases
+where external libraries are involved, like IP communication, the
+emulator provides ways to passively wait for events by supplying
+interfaces to I/O multiplexing (select/poll). This is the way to avoid
+blocking the schedulers in most drivers. Asynchronous threads are only
+utilized where there simply are no other options, like in file I/O
+(which cannot utilize I/O multiplexing).</p>
+
+<p>Using the first solution when interfacing an external library in a
+driver or BIF, involves either finding a library where interruption and
+restart of execution is possible, or modifying an existing library to
+support this.</p>
+
+<p>Even though modifying a library will make upgrading and patching of
+the library much harder, the benefits are significant. When executing e.g.
+regular expressions, the same thread that actually is executing the
+beam code will be utilized, why setup time and overhead in general is
+kept at a minimum. Of course execution time of the regexp itself will
+be slightly longer, as the implementation needs to keep track of the
+number of executed iterations and needs to be prepared to store the
+current state for later execution wakeup. The much smaller setup time
+is however expected to be dominating when it comes to smaller regular
+expressions (or rather expressions that involve a small number of
+loops). One also has to bear in mind that this solution imposes much
+less load on the operating system scheduler, which is a good thing for
+large and/or embedded systems.</p>
+
+<p>For operating systems where no kernel threads are available, the first
+solution is the only acceptable. Separate threads for pure user space
+code execution will do more harm than good to the realtime properties
+of the Erlang system.</p>
+
+<h3 id="selecting-a-suitable-library-to-integrate">Selecting a suitable library to integrate</h3>
+
+<p>The library to integrate into the virtual machine should in an ideal
+situation fulfill the following wishes:</p>
+
+<ul>
+  <li>Interruptable, the execution of the regular expression match should
+stop after a certain amount of iterations and should then be
+restartable at a later time.</li>
+  <li>The library should be implemented in plain C, not any other language
+or extension.</li>
+  <li>The C implementation should be non-recursive.</li>
+  <li>The library should implement modern (Perl like) regular expression 
+syntax.</li>
+  <li>The library should be efficient.</li>
+  <li>The library should provide Unicode support.</li>
+</ul>
+
+<p>No available regular expression library currently provides a perfect
+match. The best available is the <a href="http://www.pcre.org/" title="The PCRE homepage">PCRE</a> library, which has compile time
+options for not using the C stack, Perl (and Python) compatible
+regular expressions and also is written in a well structured way,
+making it suitable for integration, porting and implementing
+extensions needed in the Erlang case.</p>
+
+<p>Other alternatives include rxlib (no longer maintained), the Tcl/Tk
+regular expression implementation, GNU regex, Jakarta and Onigurama,
+among others. Of those the Tcl/Tk implementation seems the most
+promising, especially as it for many situations is much faster than
+other implementations. The algorithms and code are however quite
+incomprehensible and the regular expression flavor not the most
+widespread.</p>
+
+<p>After having had a good look at the alternatives, I came to the
+conclusion that PCRE was the best choice for the following reasons:</p>
+
+<ul>
+  <li>The code is maintained, very readable and easy to work with.</li>
+  <li>The library is fast, although not the fastest.</li>
+  <li>Extensive test suites.</li>
+  <li>Perl compatible syntax.</li>
+  <li>Widely spread: Used in Apache, PHP, Apple Safari etc.</li>
+  <li>The regexp engine is pure C.</li>
+  <li>Unicode support (UTF-8) which fits nicely into the suggested
+Unicode representation in Erlang (<a href="eep-0010.md" title="EEP 10">EEP 10</a>).</li>
+  <li>Recursion on the C stack can be avoided.</li>
+  <li>The library has most of the infrastructure for an interruptable
+execution of the expressions present, although restarting of
+interrupted matches is not (yet) implemented.</li>
+</ul>
+
+<p>Although the subjective reasoning about code readability might seem
+somewhat out of place, the PCRE code base makes updates to the library
+easier to integrate, as relatively few and comprehensible alterations
+need to be done to the library to make it fit into the virtual
+machine. To be able to maintain the library is important and being
+able to understand the code is crucial.</p>
+
+<p>The most appealing feature of the library is however the extensive
+support for Perl compatible regular expressions. PCRE is certainly one
+of the most powerful libraries around and Erlang programmers used to
+Perl’s regular expressions will feel at home.</p>
+
+<h2 id="programmers-interface">Programmers interface</h2>
+
+<p>In Perl, the regular expressions are integrated into the language
+itself. This could of course be done in Erlang too. However, Erlang
+already has syntax for matching structured data as well as binary
+ditto. Introducing new primitives for string matching with regular
+expressions seems out of place. Erlang is also not a language designed
+for processing textual data in the way Perl is, but a language that
+can handle complicated structured data. The bit-syntax however might
+one day benefit from regular expression extensions, but that is beyond
+the scope of this EEP.</p>
+
+<p>A regular expression module interfacing with the library through built
+in functions is the usual way to do it in Erlang, and that’s the way
+this EEP suggests. As the module name regexp is already taken, the
+abbreviation “re” for module name seems to be a good choice.</p>
+
+<p>As a base implementation, I suggest a module with two basic functions:
+one for precompiling a regular expression into “bytecode” for the
+regular expression matching execution; and one for actually running
+the regexp matching. The function that runs the matching should take
+either a compiled regular expression, or the source of a regular
+expression as input (together with the subject string and the options
+for execution).</p>
+
+<p>Around these two suggested functions one can implement functionality
+in Erlang to mimic the existing regular expression library or
+implement new functionality.</p>
+
+<p>The current regexp module can, apart from matching, split a string
+according to a regular expression (functionality similar to the Perl
+built in function split) and do substitution of sub-strings based on
+regular expression matching (like the s/<RE>/<String>/ expression in
+Perl or awk). With corresponding functions in the "re" module, the new
+module would provide all functionality of the old one.</String></RE></p>
+
+<p>The names of the functions should, as much as possible, be chosen so
+that mix up with the current regexp library functions is avoided, why I
+suggest “compile” and “run” and “replace” as names for regexp
+compilation, execution and substitution respectively. As no good
+synonym for the name “split” has emerged, that name is retained in the
+new module.</p>
+
+<p>Here follows part of the suggested manual page:</p>
+
+<h3 id="excerpt-from-a-suggested-manual-page">Excerpt from a suggested manual page</h3>
+
+<h4 id="data-types">DATA TYPES</h4>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">iodata</span><span class="p">()</span> <span class="o">=</span> <span class="nf">iolist</span><span class="p">()</span> <span class="p">|</span> <span class="nf">binary</span><span class="p">()</span>
+<span class="nf">iolist</span><span class="p">()</span> <span class="o">=</span> <span class="p">[</span><span class="nf">char</span><span class="p">()</span> <span class="p">|</span> <span class="nf">binary</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iolist</span><span class="p">()]</span>
+           <span class="c">% a binary is allowed as the tail of the list
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">mp</span><span class="p">()</span> <span class="o">=</span> <span class="nv">Opaque</span> <span class="n">datatype</span> <span class="n">containing</span> <span class="n">a</span> <span class="n">compiled</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">.</span>
+</code></pre></div></div>
+
+<h4 id="exports">EXPORTS</h4>
+
+<h5 id="compileregexp---ok-mp--error-errspec">compile(Regexp) -&gt; {ok, MP} | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Regexp</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The same as compile(Regexp,[])</p>
+
+<h5 id="compileregexpoptions---ok-mp--error-errspec">compile(Regexp,Options) -&gt; {ok, MP} | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Regexp</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Options</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">Option</span> <span class="p">]</span>
+<span class="nv">Option</span> <span class="o">=</span> <span class="n">anchored</span> <span class="p">|</span> <span class="n">caseless</span> <span class="p">|</span> <span class="n">dollar_endonly</span> <span class="p">|</span> <span class="n">dotall</span> <span class="p">|</span> <span class="n">extended</span> <span class="p">|</span>
+         <span class="n">firstline</span> <span class="p">|</span> <span class="n">multiline</span> <span class="p">|</span> <span class="n">no_auto_capture</span> <span class="p">|</span> <span class="n">dupnames</span> <span class="p">|</span>
+         <span class="n">ungreedy</span> <span class="p">|</span> <span class="p">{</span><span class="n">newline</span><span class="p">,</span> <span class="nv">NLSpec</span><span class="p">}</span>
+<span class="nv">NLSpec</span> <span class="o">=</span> <span class="n">cr</span> <span class="p">|</span> <span class="n">crlf</span> <span class="p">|</span> <span class="n">lf</span> <span class="p">|</span> <span class="n">anycrlf</span>
+<span class="nv">MP</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>This function compiles a regular expression with the syntax described below
+into an internal format to be used later as a parameter to the run/2,3 functions.</p>
+
+<p>Compiling the regular expression before matching is useful if the same
+expression is to be used in matching against multiple subjects during the
+program’s lifetime. Compiling once and executing many times is far more
+efficient than compiling each time one wants to match.</p>
+
+<p>The options have the following meanings:</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">anchored</code><br />
+The pattern is forced to be “anchored”, that is, it is constrained to match
+only at the first matching point in the string that is being searched
+(the “subject string”). This effect can also be achieved by appropriate
+constructs in the pattern itself.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">caseless</code><br />
+Letters in the pattern match both upper and lower case letters.
+It is equivalent to Perl’s <code class="language-plaintext highlighter-rouge">/i</code> option, and it can be changed within
+a pattern by a <code class="language-plaintext highlighter-rouge">(?i)</code> option setting. Uppercase and lowercase letters
+are defined as in the ISO-8859-1 character set.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">dollar_endonly</code><br />
+A dollar metacharacter in the pattern matches only at the end of the subject
+string. Without this option, a dollar also matches immediately before a newline
+at the end of the string (but not before any other newlines). The dollar_endonly
+option is ignored if multiline is given. There is no equivalent option in Perl,
+and no way to set it within a pattern.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">dotall</code><br />
+A dot maturate in the pattern matches all characters, including those that
+indicate newline. Without it, a dot does not match when the current position
+is at a newline. This option is equivalent to Perl’s <code class="language-plaintext highlighter-rouge">/s</code> option, and it
+can be changed within a pattern by a <code class="language-plaintext highlighter-rouge">(?s)</code> option setting. A negative class
+such as <code class="language-plaintext highlighter-rouge">[^a]</code> always matches newline characters,
+independent of the setting of this option.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">extended</code><br />
+Whitespace data characters in the pattern are ignored except when escaped or
+inside a character class. Whitespace does not include the VT character
+(ASCII 11). In addition, characters between an unescaped <code class="language-plaintext highlighter-rouge">#</code> outside a
+character class and the next newline, inclusive, are also ignored. This is
+equivalent to Perl’s <code class="language-plaintext highlighter-rouge">/x</code> option, and it can be changed within a pattern by
+a <code class="language-plaintext highlighter-rouge">(?x)</code> option setting. This option makes it possible to include comments
+inside complicated patterns. Note, however, that this applies only to data
+characters. Whitespace characters may never appear within special character
+sequences in a pattern, for example within the sequence <code class="language-plaintext highlighter-rouge">(?(</code> which introduces
+a conditional subpattern.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">firstline</code><br />
+An unanchored pattern is required to match before or at the first newline
+in the subject string, though the matched text may continue over the newline.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">multiline</code><br />
+By default, PCRE treats the subject string as consisting of a single line of
+characters (even if it actually contains newlines). The “start of line”
+metacharacter (<code class="language-plaintext highlighter-rouge">^</code>) matches only at the start of the string, while the
+“end of line” metacharacter (<code class="language-plaintext highlighter-rouge">$</code>) matches only at the end of the string,
+or before a terminating newline (unless dollar_endonly is given). This is
+the same as Perl.</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">When</span> <span class="n">multiline</span> <span class="n">it</span> <span class="n">is</span> <span class="n">given</span><span class="p">,</span> <span class="n">the</span> <span class="s">"start of line"</span> <span class="ow">and</span> <span class="s">"end of line"</span> <span class="n">constructs</span>
+<span class="n">match</span> <span class="n">immediately</span> <span class="n">following</span> <span class="ow">or</span> <span class="n">immediately</span> <span class="n">before</span> <span class="n">internal</span> <span class="n">newlines</span> <span class="n">in</span> <span class="n">the</span>
+<span class="n">subject</span> <span class="n">string</span><span class="p">,</span> <span class="n">respectively</span><span class="p">,</span> <span class="n">as</span> <span class="n">well</span> <span class="n">as</span> <span class="n">at</span> <span class="n">the</span> <span class="n">very</span> <span class="n">start</span> <span class="ow">and</span> <span class="k">end</span><span class="p">.</span> <span class="nv">This</span> <span class="n">is</span>
+<span class="n">equivalent</span> <span class="n">to</span> <span class="nv">Perl</span><span class="err">'</span><span class="n">s</span> <span class="err">`</span><span class="o">/</span><span class="n">m</span><span class="err">`</span> <span class="n">option</span><span class="p">,</span> <span class="ow">and</span> <span class="n">it</span> <span class="n">can</span> <span class="n">be</span> <span class="n">changed</span> <span class="n">within</span> <span class="n">a</span> <span class="n">pattern</span> <span class="n">by</span>
+<span class="n">a</span> <span class="err">`</span><span class="p">(</span><span class="o">?</span><span class="n">m</span><span class="p">)</span><span class="err">`</span> <span class="n">option</span> <span class="n">setting</span><span class="p">.</span> <span class="nv">If</span> <span class="n">there</span> <span class="n">are</span> <span class="n">no</span> <span class="n">newlines</span> <span class="n">in</span> <span class="n">a</span> <span class="n">subject</span> <span class="n">string</span><span class="p">,</span>
+<span class="ow">or</span> <span class="n">no</span> <span class="n">occurrences</span> <span class="k">of</span> <span class="err">`^`</span> <span class="ow">or</span> <span class="err">`</span><span class="sc">$`</span> <span class="n">in</span> <span class="n">a</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">setting</span> <span class="n">multiline</span> <span class="n">has</span> <span class="n">no</span> <span class="n">effect</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">no_auto_capture</code><br />
+Disables the use of numbered capturing parentheses in the pattern.
+Any opening parenthesis that is not followed by <code class="language-plaintext highlighter-rouge">?</code> behaves as if it were
+followed by <code class="language-plaintext highlighter-rouge">?:</code> but named parentheses can still be used for capturing
+(and they acquire numbers in the usual way). There is no equivalent
+of this option in Perl.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">dupnames</code><br />
+Names used to identify capturing subpatterns need not be unique.
+This can be helpful for certain types of pattern when it is known
+that only one instance of the named subpattern can ever be matched.
+There are more details of named subpatterns below.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ungreedy</code><br />
+This option inverts the “greediness” of the quantifiers so that they
+are not greedy by default, but become greedy if followed by <code class="language-plaintext highlighter-rouge">?</code>.
+It is not compatible with Perl. It can also be set by a <code class="language-plaintext highlighter-rouge">(?U)</code> option
+setting within the pattern.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">{newline, NLSpec}</code><br />
+Override the default definition of a newline in the subject string, which is LF (ASCII 10) in Erlang.</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `</span><span class="ni">cr</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">a</span> <span class="n">single</span> <span class="n">character</span> <span class="nv">CR</span> <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">13</span><span class="p">)</span> 
+<span class="p">-</span><span class="err">   `</span><span class="ni">lf</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">a</span> <span class="n">single</span> <span class="n">character</span> <span class="nv">LF</span> <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">10</span><span class="p">),</span> <span class="n">the</span> <span class="n">default</span> 
+<span class="p">-</span><span class="err">   `</span><span class="ni">crlf</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">the</span> <span class="n">two</span><span class="o">-</span><span class="n">character</span> <span class="nv">CRLF</span> <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">13</span> <span class="n">followed</span> <span class="n">by</span> <span class="nv">ASCII</span> <span class="mi">10</span><span class="p">)</span> <span class="n">sequence</span><span class="p">.</span> 
+<span class="p">-</span><span class="err">   `</span><span class="ni">anycrlf</span><span class="err">`</span>  
+    <span class="nv">Any</span> <span class="k">of</span> <span class="n">the</span> <span class="n">three</span> <span class="n">preceding</span> <span class="n">sequences</span> <span class="n">should</span> <span class="n">be</span> <span class="n">recognized</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<h5 id="runsubjectre---match-captured--nomatch--error-errspec">run(Subject,RE) -&gt; {match, Captured} | nomatch | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Captured</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">CaptureData</span> <span class="p">]</span>
+<span class="nv">CaptureData</span> <span class="o">=</span> <span class="p">{</span><span class="nf">int</span><span class="p">(),</span><span class="nf">int</span><span class="p">()}</span> <span class="p">|</span> <span class="nf">string</span><span class="p">()</span> <span class="p">|</span> <span class="nf">binary</span><span class="p">()</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The same as run(Subject,RE,[]).</p>
+
+<h5 id="runsubjectre---match-captured--match--nomatch--error-errspec">run(Subject,RE) -&gt; {match, Captured} | match | nomatch | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Options</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">Option</span> <span class="p">]</span>
+<span class="nv">Option</span> <span class="o">=</span> <span class="n">anchored</span> <span class="p">|</span> <span class="n">global</span> <span class="p">|</span> <span class="n">notbol</span> <span class="p">|</span> <span class="n">noteol</span> <span class="p">|</span> <span class="n">notempty</span> <span class="p">|</span> <span class="p">{</span><span class="n">offset</span><span class="p">,</span> <span class="nf">int</span><span class="p">()}</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">newline</span><span class="p">,</span> <span class="nv">NLSpec</span><span class="p">}</span> <span class="p">|</span> <span class="p">{</span><span class="n">capture</span><span class="p">,</span> <span class="nv">ValueSpec</span><span class="p">}</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">capture</span><span class="p">,</span> <span class="nv">ValueSpec</span><span class="p">,</span> <span class="nv">Type</span><span class="p">}</span> <span class="p">|</span> <span class="nv">CompileOpt</span>
+<span class="nv">Type</span> <span class="o">=</span> <span class="n">index</span> <span class="p">|</span> <span class="n">list</span> <span class="p">|</span> <span class="n">binary</span>
+<span class="nv">ValueSpec</span> <span class="o">=</span> <span class="n">all</span> <span class="p">|</span> <span class="n">all_but_first</span> <span class="p">|</span> <span class="n">first</span> <span class="p">|</span> <span class="nv">ValueList</span>
+<span class="nv">ValueList</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">ValueID</span> <span class="p">]</span>
+<span class="nv">ValueID</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span> <span class="p">|</span> <span class="nf">string</span><span class="p">()</span> <span class="p">|</span> <span class="nf">atom</span><span class="p">()</span>
+<span class="nv">CompileOpt</span> <span class="o">=</span> <span class="n">see</span> <span class="n">compile</span><span class="o">/</span><span class="mi">2</span> <span class="n">above</span>
+<span class="nv">NLSpec</span> <span class="o">=</span> <span class="n">cr</span> <span class="p">|</span> <span class="n">crlf</span> <span class="p">|</span> <span class="n">lf</span> <span class="p">|</span> <span class="n">anycrlf</span>
+<span class="nv">Captured</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">CaptureData</span> <span class="p">]</span> <span class="p">|</span> <span class="p">[</span> <span class="p">[</span> <span class="nv">CaptureData</span> <span class="p">]</span> <span class="p">...</span> <span class="p">]</span>
+<span class="nv">CaptureData</span> <span class="o">=</span> <span class="p">{</span><span class="nf">int</span><span class="p">(),</span><span class="nf">int</span><span class="p">()}</span> <span class="p">|</span> <span class="nf">string</span><span class="p">()</span> <span class="p">|</span> <span class="nf">binary</span><span class="p">()</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Executes a regexp matching, returning <code class="language-plaintext highlighter-rouge">match</code> / <code class="language-plaintext highlighter-rouge">{match, Captured}</code> or
+<code class="language-plaintext highlighter-rouge">nomatch</code>. The regular expression can be given either as iodata()
+in which case it is automatically compiled (as by re:compile/2)
+and executed, or as a pre compiled mp() in which case it is executed
+against the subject directly.</p>
+
+<p>When compilation is involved, the function may return compilation errors
+as when compiling separately (<code class="language-plaintext highlighter-rouge">{error, {string(),int()}}</code>); when
+only matching, no errors are returned.</p>
+
+<p>If the regular expression is previously compiled, the option list can
+only contain the options <code class="language-plaintext highlighter-rouge">anchored</code>, <code class="language-plaintext highlighter-rouge">global</code>, <code class="language-plaintext highlighter-rouge">notbol</code>, <code class="language-plaintext highlighter-rouge">noteol</code>, <code class="language-plaintext highlighter-rouge">notempty</code>,
+<code class="language-plaintext highlighter-rouge">{offset, int()}</code>, <code class="language-plaintext highlighter-rouge">{newline, NLSpec}</code> and <code class="language-plaintext highlighter-rouge">{capture, ValueSpec}</code> /
+<code class="language-plaintext highlighter-rouge">{capture, ValueSpec, Type}</code>. Otherwise all options valid for the
+<code class="language-plaintext highlighter-rouge">re:compile/2</code> function are allowed as well. Options allowed both
+for compilation and execution of a match, namely <code class="language-plaintext highlighter-rouge">anchored</code> and
+<code class="language-plaintext highlighter-rouge">{newline, NLSpec}</code>, will affect both the compilation and execution
+if present together with a non pre-compiled regular expression.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">{capture, ValueSpec}</code> / <code class="language-plaintext highlighter-rouge">{capture, ValueSpec, Type}</code> defines
+what to return from the function upon successful matching. The capture
+tuple may contain both a value specification telling which of the captured
+substrings are to be returned, and a type specification, telling how
+captured substrings are to be returned (as index tuples, lists or binaries).
+The capture option makes the function quite flexible and powerful.
+The different options are described in detail below</p>
+
+<p>If the capture options describe that no substring capturing at all is to be
+done (<code class="language-plaintext highlighter-rouge">{capture, none}</code>), the function will return the single atom match
+upon successful matching, otherwise the tuple <code class="language-plaintext highlighter-rouge">{match, ValueList}</code>
+is returned. Disabling capturing can be done either by specifying
+none or an empty list as ValueSpec.</p>
+
+<p>A description of all the options relevant for execution follows:</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">anchored</code><br />
+Limits <code class="language-plaintext highlighter-rouge">re:run/3</code> to matching at the first matching position. If a pattern
+was compiled with anchored, or turned out to be anchored by virtue of its
+contents, it cannot be made unachored at matching time, hence there is no
+unanchored option.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">global</code><br />
+Implements global (repetitive) search as the <code class="language-plaintext highlighter-rouge">/g</code> flag in i.e. Perl.
+Each match found is returned as a separate list() containing
+the specific match as well as any matching subexpressions (or as
+specified by the capture option). The Captured part of the return
+value will hence be a list() of list()’s when this option is given.</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">When</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span> <span class="n">matches</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">string</span><span class="p">,</span> <span class="n">the</span> <span class="n">behaviour</span>
+<span class="n">might</span> <span class="n">seem</span> <span class="n">non</span><span class="o">-</span><span class="n">intuitive</span><span class="p">,</span> <span class="n">why</span> <span class="n">the</span> <span class="n">behaviour</span> <span class="n">requites</span> <span class="n">some</span> <span class="n">clarifying</span><span class="p">.</span>
+<span class="nv">With</span> <span class="n">the</span> <span class="n">global</span> <span class="n">option</span><span class="p">,</span> <span class="err">`</span><span class="nn">re</span><span class="p">:</span><span class="n">run</span><span class="o">/</span><span class="mi">3</span><span class="err">`</span> <span class="n">handles</span> <span class="n">empty</span> <span class="n">matches</span> <span class="n">in</span> <span class="n">the</span> <span class="n">same</span> <span class="n">way</span>
+<span class="n">as</span> <span class="nv">Perl</span><span class="p">,</span> <span class="n">meaning</span> <span class="n">that</span> <span class="n">a</span> <span class="n">match</span> <span class="n">at</span> <span class="n">any</span> <span class="n">point</span> <span class="n">giving</span> <span class="n">an</span> <span class="n">empty</span> <span class="nf">string</span>
+<span class="p">(</span><span class="n">with</span> <span class="nb">length</span> <span class="mi">0</span><span class="p">)</span> <span class="n">will</span> <span class="n">be</span> <span class="n">retried</span> <span class="n">with</span> <span class="n">the</span> <span class="n">options</span> <span class="err">`</span><span class="p">[</span><span class="n">anchored</span><span class="p">,</span> <span class="n">notempty</span><span class="p">]</span><span class="err">`</span>
+<span class="n">as</span> <span class="n">well</span><span class="p">.</span> <span class="nv">If</span> <span class="n">that</span> <span class="n">search</span> <span class="n">gives</span> <span class="n">a</span> <span class="n">result</span> <span class="k">of</span> <span class="nb">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">the</span> <span class="n">result</span>
+<span class="n">is</span> <span class="n">included</span><span class="p">.</span> <span class="nv">An</span> <span class="nn">example</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"cat"</span><span class="p">,</span><span class="s">"(|at)"</span><span class="p">,[</span><span class="n">global</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">matching</span> <span class="n">will</span> <span class="n">be</span> <span class="n">performed</span> <span class="n">as</span> <span class="nn">following</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">0</span><span class="o">**</span>  
+    <span class="nv">The</span> <span class="n">regexp</span> <span class="err">`</span><span class="p">(|</span><span class="n">at</span><span class="p">)</span><span class="err">`</span> <span class="n">will</span> <span class="n">first</span> <span class="n">match</span> <span class="n">at</span> <span class="n">the</span> <span class="n">initial</span> <span class="n">position</span> <span class="k">of</span>
+    <span class="n">the</span> <span class="n">string</span> <span class="n">cat</span><span class="p">,</span> <span class="n">giving</span> <span class="n">the</span> <span class="n">result</span> <span class="n">set</span> <span class="err">`</span><span class="p">[{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}]</span><span class="err">`</span> <span class="p">(</span><span class="n">the</span>
+    <span class="n">second</span> <span class="err">`</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span><span class="err">`</span> <span class="n">is</span> <span class="n">due</span> <span class="n">to</span> <span class="n">the</span> <span class="n">subexpression</span> <span class="n">marked</span> <span class="n">by</span> <span class="n">the</span>
+    <span class="n">parentheses</span><span class="p">).</span> <span class="nv">As</span> <span class="n">the</span> <span class="nb">length</span> <span class="k">of</span> <span class="n">the</span> <span class="n">match</span> <span class="n">is</span> <span class="mi">0</span><span class="p">,</span> <span class="n">we</span> <span class="n">don</span><span class="err">'</span><span class="n">t</span>
+    <span class="n">advance</span> <span class="n">to</span> <span class="n">the</span> <span class="n">next</span> <span class="n">position</span> <span class="n">yet</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">0</span> <span class="n">with</span> <span class="err">`</span><span class="p">[</span><span class="n">anchored</span><span class="p">,</span> <span class="n">notempty</span><span class="p">]</span><span class="err">`</span><span class="o">**</span>  
+    <span class="nv">The</span> <span class="n">search</span> <span class="n">is</span> <span class="n">retried</span> <span class="n">with</span> <span class="n">the</span> <span class="n">options</span> <span class="p">[</span><span class="n">anchored</span><span class="p">,</span> <span class="n">notempty</span><span class="p">]</span> <span class="n">at</span>
+    <span class="n">the</span> <span class="n">same</span> <span class="n">position</span><span class="p">,</span> <span class="n">which</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">give</span> <span class="n">any</span> <span class="n">interesting</span> <span class="n">result</span> <span class="k">of</span>
+    <span class="n">longer</span> <span class="nb">length</span><span class="p">,</span> <span class="n">why</span> <span class="n">the</span> <span class="n">search</span> <span class="n">position</span> <span class="n">is</span> <span class="n">now</span> <span class="n">advanced</span> <span class="n">to</span> <span class="n">the</span> <span class="n">next</span>
+    <span class="nf">character</span> <span class="p">(</span><span class="err">`</span><span class="n">a</span><span class="err">`</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">1</span><span class="o">**</span>  
+    <span class="nv">Now</span> <span class="n">the</span> <span class="n">search</span> <span class="n">results</span> <span class="n">in</span> <span class="err">`</span><span class="p">[{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}]</span><span class="err">`</span> <span class="n">meaning</span> <span class="n">this</span> <span class="n">search</span>
+    <span class="n">will</span> <span class="n">also</span> <span class="n">be</span> <span class="n">repeated</span> <span class="n">with</span> <span class="n">the</span> <span class="n">extra</span> <span class="n">options</span><span class="p">.</span>
+<span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">1</span> <span class="n">with</span> <span class="err">`</span><span class="p">[</span><span class="n">anchored</span><span class="p">,</span> <span class="n">notempty</span><span class="p">]</span><span class="err">`</span><span class="o">**</span>  
+    <span class="nv">Now</span> <span class="n">the</span> <span class="n">ab</span> <span class="n">alternative</span> <span class="n">is</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">result</span> <span class="n">will</span> <span class="n">be</span>
+    <span class="err">`</span><span class="p">[{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}]</span><span class="err">`</span><span class="p">.</span> <span class="nv">The</span> <span class="n">result</span> <span class="n">is</span> <span class="n">added</span> <span class="n">to</span> <span class="n">the</span> <span class="n">list</span> <span class="k">of</span> <span class="n">results</span>
+    <span class="ow">and</span> <span class="n">the</span> <span class="n">position</span> <span class="n">in</span> <span class="n">the</span> <span class="n">search</span> <span class="n">string</span> <span class="n">is</span> <span class="n">advanced</span> <span class="n">two</span> <span class="n">steps</span><span class="p">.</span>
+<span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">3</span><span class="o">**</span> 
+    <span class="nv">The</span> <span class="n">search</span> <span class="n">now</span> <span class="n">once</span> <span class="n">again</span> <span class="n">matches</span> <span class="n">the</span> <span class="n">empty</span> <span class="n">string</span><span class="p">,</span>
+    <span class="n">giving</span> <span class="err">`</span><span class="p">[{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">}]</span><span class="err">`</span><span class="p">.</span>
+<span class="p">-</span><span class="err">   **A</span><span class="ni">t</span> <span class="n">offset</span> <span class="mi">1</span> <span class="n">with</span> <span class="err">`</span><span class="p">[</span><span class="n">anchored</span><span class="p">,</span> <span class="n">notempty</span><span class="p">]</span><span class="o">**</span>  
+    <span class="nv">This</span> <span class="n">will</span> <span class="n">give</span> <span class="n">no</span> <span class="n">result</span> <span class="k">of</span> <span class="nb">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">we</span> <span class="n">are</span> <span class="n">at</span> <span class="n">the</span> <span class="n">last</span>
+    <span class="n">position</span><span class="p">,</span> <span class="n">so</span> <span class="n">the</span> <span class="n">global</span> <span class="n">search</span> <span class="n">is</span> <span class="n">complete</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">result</span> <span class="k">of</span> <span class="n">the</span> <span class="n">call</span> <span class="nn">is</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[[{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}],[{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}],[{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}],[{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">}]]}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">notempty</code><br />
+An empty string is not considered to be a valid match if this option
+is given. If there are alternatives in the pattern, they are tried.
+If all the alternatives match the empty string, the entire match fails.
+For example, if the pattern:</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">a</span><span class="o">?</span><span class="n">b</span><span class="o">?</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">is</span> <span class="n">applied</span> <span class="n">to</span> <span class="n">a</span> <span class="n">string</span> <span class="ow">not</span> <span class="n">beginning</span> <span class="n">with</span> <span class="s">"a"</span> <span class="ow">or</span> <span class="s">"b"</span><span class="p">,</span> <span class="n">it</span> <span class="n">matches</span> <span class="n">the</span>
+<span class="n">empty</span> <span class="n">string</span> <span class="n">at</span> <span class="n">the</span> <span class="n">start</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subject</span><span class="p">.</span> <span class="nv">With</span> <span class="n">notempty</span> <span class="n">given</span><span class="p">,</span>
+<span class="n">this</span> <span class="n">match</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">,</span> <span class="n">so</span> <span class="err">`</span><span class="nn">re</span><span class="p">:</span><span class="n">run</span><span class="o">/</span><span class="mi">3</span><span class="err">`</span> <span class="n">searches</span> <span class="n">further</span> <span class="n">into</span> <span class="n">the</span> <span class="n">string</span>
+<span class="n">for</span> <span class="n">occurrences</span> <span class="k">of</span> <span class="s">"a"</span> <span class="ow">or</span> <span class="s">"b"</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Perl</span> <span class="n">has</span> <span class="n">no</span> <span class="n">direct</span> <span class="n">equivalent</span> <span class="k">of</span> <span class="n">notempty</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">does</span> <span class="n">make</span> <span class="n">a</span> <span class="n">special</span>
+<span class="k">case</span> <span class="k">of</span> <span class="n">a</span> <span class="n">pattern</span> <span class="n">match</span> <span class="k">of</span> <span class="n">the</span> <span class="n">empty</span> <span class="n">string</span> <span class="n">within</span> <span class="n">its</span> <span class="err">`</span><span class="nf">split</span><span class="p">()</span><span class="err">`</span> <span class="n">function</span><span class="p">,</span>
+<span class="ow">and</span> <span class="k">when</span> <span class="n">using</span> <span class="n">the</span> <span class="err">`</span><span class="o">/</span><span class="n">g</span><span class="err">`</span> <span class="n">modifier</span><span class="p">.</span> <span class="nv">It</span> <span class="n">is</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">emulate</span> <span class="nv">Perl</span><span class="err">'</span><span class="n">s</span>
+<span class="n">behavior</span> <span class="k">after</span> <span class="n">matching</span> <span class="n">a</span> <span class="n">null</span> <span class="n">string</span> <span class="n">by</span> <span class="n">first</span> <span class="n">trying</span> <span class="n">the</span> <span class="n">match</span>
+<span class="n">again</span> <span class="n">at</span> <span class="n">the</span> <span class="n">same</span> <span class="n">offset</span> <span class="n">with</span> <span class="n">notempty</span> <span class="ow">and</span> <span class="n">anchored</span><span class="p">,</span> <span class="ow">and</span> <span class="n">then</span>
+<span class="k">if</span> <span class="n">that</span> <span class="n">fails</span> <span class="n">by</span> <span class="n">advancing</span> <span class="n">the</span> <span class="n">starting</span> <span class="nf">offset</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span>
+<span class="ow">and</span> <span class="n">trying</span> <span class="n">an</span> <span class="n">ordinary</span> <span class="n">match</span> <span class="n">again</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">notbol</code><br />
+This option specifies that the first character of the subject string
+is not the beginning of a line, so the circumflex metacharacter should
+not match before it. Setting this without multiline (at compile time)
+causes circumflex never to match. This option affects only the behavior
+of the circumflex metacharacter. It does not affect <code class="language-plaintext highlighter-rouge">\A</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">noteol</code><br />
+This option specifies that the end of the subject string is not the end
+of a line, so the dollar metacharacter should not match it nor
+(except in multiline mode) a newline immediately before it.
+Setting this without multiline (at compile time) causes dollar
+never to match. This option affects only the behavior of the dollar
+metacharacter. It does not affect <code class="language-plaintext highlighter-rouge">\Z</code> or <code class="language-plaintext highlighter-rouge">\z</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">{offset</code><code class="language-plaintext highlighter-rouge"> , int()}</code><br />
+Start matching at the offset (position) given in the subject string.
+The offset is zero-based, so that the default is <code class="language-plaintext highlighter-rouge">{offset,0}</code>
+(all of the subject string).</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">{newline, NLSpec}</code>
+Override the default definition of a newline in the subject string,
+which is LF (ASCII 10) in Erlang.</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `</span><span class="ni">cr</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">a</span> <span class="n">single</span> <span class="n">character</span> <span class="nv">CR</span> <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">13</span><span class="p">).</span>
+<span class="p">-</span><span class="err">   `</span><span class="ni">lf</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">a</span> <span class="n">single</span> <span class="n">character</span> <span class="nv">LF</span> <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">the</span> <span class="n">default</span><span class="p">.</span>
+<span class="p">-</span><span class="err">   `</span><span class="ni">crlf</span><span class="err">`</span>  
+    <span class="nv">Newline</span> <span class="n">is</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">the</span> <span class="n">two</span><span class="o">-</span><span class="n">character</span> <span class="nv">CRLF</span>
+    <span class="p">(</span><span class="nv">ASCII</span> <span class="mi">13</span> <span class="n">followed</span> <span class="n">by</span> <span class="nv">ASCII</span> <span class="mi">10</span><span class="p">)</span> <span class="n">sequence</span><span class="p">.</span> 
+<span class="p">-</span><span class="err">   `</span><span class="ni">anycrlf</span><span class="err">`</span>  
+    <span class="nv">Any</span> <span class="k">of</span> <span class="n">the</span> <span class="n">three</span> <span class="n">preceding</span> <span class="n">sequences</span> <span class="n">should</span> <span class="n">be</span> <span class="n">recognized</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">{capture, ValueSpec}</code> / <code class="language-plaintext highlighter-rouge">{capture, ValueSpec, Type}</code><br />
+Specifies which captured substrings are returned and in what format.
+By default, <code class="language-plaintext highlighter-rouge">re:run/3</code> captures all of the matching part of the substring
+as well as all capturing subpatterns (all of the pattern is
+automatically captured). The default return type is (zero-based)
+indexes of the captured parts of the string, given as <code class="language-plaintext highlighter-rouge">{Offset,Length}</code>
+pairs (the index Type of capturing).</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">As</span> <span class="n">an</span> <span class="n">example</span> <span class="k">of</span> <span class="n">the</span> <span class="n">default</span> <span class="n">behavior</span><span class="p">,</span> <span class="n">the</span> <span class="n">following</span> <span class="nn">call</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">"abcd"</span><span class="p">,[]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">returns</span><span class="p">,</span> <span class="n">as</span> <span class="n">first</span> <span class="ow">and</span> <span class="n">only</span> <span class="n">captured</span> <span class="n">string</span> <span class="n">the</span> <span class="n">matching</span> <span class="n">part</span> <span class="k">of</span>
+<span class="n">the</span> <span class="nf">subject</span> <span class="p">(</span><span class="s">"abcd"</span> <span class="n">in</span> <span class="n">the</span> <span class="n">middle</span><span class="p">)</span> <span class="n">as</span> <span class="n">a</span> <span class="n">index</span> <span class="n">pair</span> <span class="err">`</span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}</span><span class="err">`</span><span class="p">,</span> <span class="n">where</span>
+<span class="n">character</span> <span class="n">positions</span> <span class="n">are</span> <span class="n">zero</span> <span class="n">based</span><span class="p">,</span> <span class="n">just</span> <span class="n">as</span> <span class="n">in</span> <span class="n">offsets</span><span class="p">.</span> <span class="nv">The</span> <span class="n">return</span>
+<span class="n">value</span> <span class="k">of</span> <span class="n">the</span> <span class="n">call</span> <span class="n">above</span> <span class="n">would</span> <span class="n">then</span> <span class="nn">be</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Another</span> <span class="p">(</span><span class="ow">and</span> <span class="n">quite</span> <span class="n">common</span><span class="p">)</span> <span class="k">case</span> <span class="n">is</span> <span class="n">where</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span>
+<span class="n">matches</span> <span class="n">all</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subject</span><span class="p">,</span> <span class="n">as</span> <span class="nn">in</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">".*abcd.*"</span><span class="p">,[]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">where</span> <span class="n">the</span> <span class="n">return</span> <span class="n">value</span> <span class="n">correspondingly</span> <span class="n">will</span> <span class="n">point</span> <span class="n">out</span> <span class="n">all</span> <span class="k">of</span> <span class="n">the</span> <span class="n">string</span><span class="p">,</span>
+<span class="n">beginning</span> <span class="n">at</span> <span class="n">index</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">being</span> <span class="mi">10</span> <span class="n">characters</span> <span class="nn">long</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">If</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span> <span class="n">contains</span> <span class="n">capturing</span> <span class="n">subpatterns</span><span class="p">,</span>
+<span class="n">like</span> <span class="n">in</span> <span class="n">the</span> <span class="n">following</span> <span class="k">case</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">".*(abcd).*"</span><span class="p">,[]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">all</span> <span class="k">of</span> <span class="n">the</span> <span class="n">matched</span> <span class="n">subject</span> <span class="n">is</span> <span class="n">captured</span><span class="p">,</span> <span class="n">as</span> <span class="n">well</span> <span class="n">as</span>
+<span class="n">the</span> <span class="n">captured</span> <span class="nn">substrings</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">},{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">the</span> <span class="n">complete</span> <span class="n">matching</span> <span class="n">pattern</span> <span class="n">always</span> <span class="n">giving</span> <span class="n">the</span> <span class="n">first</span> <span class="n">return</span> <span class="n">value</span> <span class="n">in</span>
+<span class="n">the</span> <span class="n">list</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">rest</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subpatterns</span> <span class="n">being</span> <span class="n">added</span> <span class="n">in</span> <span class="n">the</span> <span class="n">order</span> <span class="n">they</span>
+<span class="n">occurred</span> <span class="n">in</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">capture</span> <span class="n">tuple</span> <span class="n">is</span> <span class="n">built</span> <span class="n">up</span> <span class="n">as</span> <span class="nn">follows</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `V</span><span class="ni">alueSpec</span><span class="err">`</span>  
+    <span class="nv">Specifies</span> <span class="n">which</span> <span class="nf">captured</span> <span class="p">(</span><span class="n">sub</span><span class="p">)</span><span class="n">patterns</span> <span class="n">are</span> <span class="n">to</span> <span class="n">be</span> <span class="n">returned</span><span class="p">.</span>
+    <span class="nv">The</span> <span class="err">`</span><span class="nv">ValueSpec</span><span class="err">`</span> <span class="n">can</span> <span class="n">either</span> <span class="n">be</span> <span class="n">an</span> <span class="n">atom</span> <span class="n">describing</span> <span class="n">a</span> <span class="n">predefined</span> <span class="n">set</span>
+    <span class="k">of</span> <span class="n">return</span> <span class="n">values</span><span class="p">,</span> <span class="ow">or</span> <span class="n">a</span> <span class="n">list</span> <span class="n">containing</span> <span class="n">either</span> <span class="n">the</span> <span class="n">indexes</span> <span class="ow">or</span> <span class="n">the</span>
+    <span class="n">names</span> <span class="k">of</span> <span class="n">specific</span> <span class="n">subpatterns</span> <span class="n">to</span> <span class="n">return</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">The</span> <span class="n">predefined</span> <span class="n">sets</span> <span class="k">of</span> <span class="n">subpatterns</span> <span class="nn">are</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">all</span><span class="err">`</span>
+        <span class="nv">All</span> <span class="n">captured</span> <span class="n">subpatterns</span> <span class="n">including</span> <span class="n">the</span> <span class="n">complete</span> <span class="n">matching</span> <span class="n">string</span><span class="p">.</span>
+        <span class="nv">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">default</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">first</span><span class="err">`</span>  
+        <span class="nv">Only</span> <span class="n">the</span> <span class="n">first</span> <span class="n">captured</span> <span class="n">subpattern</span><span class="p">,</span> <span class="n">which</span> <span class="n">is</span> <span class="n">always</span> <span class="n">the</span> <span class="n">complete</span>
+        <span class="n">matching</span> <span class="n">part</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subject</span><span class="p">.</span> <span class="nv">All</span> <span class="n">explicitly</span> <span class="n">captured</span> <span class="n">subpatterns</span>
+        <span class="n">are</span> <span class="n">discarded</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">all_but_first</span><span class="err">`</span>  
+        <span class="nv">All</span> <span class="n">but</span> <span class="n">the</span> <span class="n">first</span> <span class="n">matching</span> <span class="n">subpattern</span><span class="p">,</span> <span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span> <span class="n">all</span> <span class="n">explicitly</span>
+        <span class="n">captured</span> <span class="n">subpatterns</span><span class="p">,</span> <span class="n">but</span> <span class="ow">not</span> <span class="n">the</span> <span class="n">complete</span> <span class="n">matching</span> <span class="n">part</span> <span class="k">of</span> <span class="n">the</span>
+        <span class="n">subject</span> <span class="n">string</span><span class="p">.</span> <span class="nv">This</span> <span class="n">is</span> <span class="n">useful</span> <span class="k">if</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span> <span class="n">as</span>
+        <span class="n">a</span> <span class="n">whole</span> <span class="n">matches</span> <span class="n">a</span> <span class="n">large</span> <span class="n">part</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subject</span><span class="p">,</span> <span class="n">but</span> <span class="n">the</span> <span class="n">part</span> <span class="n">you</span><span class="err">'</span><span class="n">re</span>
+        <span class="n">interested</span> <span class="n">in</span> <span class="n">is</span> <span class="n">in</span> <span class="n">an</span> <span class="n">explicitly</span> <span class="n">captured</span> <span class="n">subpattern</span><span class="p">.</span>
+        <span class="nv">If</span> <span class="n">the</span> <span class="n">return</span> <span class="n">type</span> <span class="n">is</span> <span class="n">list</span> <span class="ow">or</span> <span class="n">binary</span><span class="p">,</span> <span class="ow">not</span> <span class="n">returning</span> <span class="n">subpatterns</span>
+        <span class="n">you</span><span class="err">'</span><span class="n">re</span> <span class="ow">not</span> <span class="n">interested</span> <span class="n">in</span> <span class="n">is</span> <span class="n">a</span> <span class="n">good</span> <span class="n">way</span> <span class="n">to</span> <span class="n">optimize</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">none</span><span class="err">`</span>
+        <span class="nv">Do</span> <span class="ow">not</span> <span class="n">return</span> <span class="n">matching</span> <span class="n">subpatterns</span> <span class="n">at</span> <span class="n">all</span><span class="p">,</span> <span class="n">yielding</span> <span class="n">the</span> <span class="n">single</span>
+        <span class="n">atom</span> <span class="n">match</span> <span class="n">as</span> <span class="n">the</span> <span class="n">return</span> <span class="n">value</span> <span class="k">of</span> <span class="n">the</span> <span class="n">function</span> <span class="k">when</span> <span class="n">matching</span>
+        <span class="n">successfully</span> <span class="n">instead</span> <span class="k">of</span> <span class="n">the</span> <span class="p">{</span><span class="n">match</span><span class="p">,</span> <span class="nf">list</span><span class="p">()}</span> <span class="n">return</span><span class="p">.</span> <span class="nv">Specifying</span>
+        <span class="n">an</span> <span class="n">empty</span> <span class="n">list</span> <span class="n">gives</span> <span class="n">the</span> <span class="n">same</span> <span class="n">behavior</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">The</span> <span class="n">value</span> <span class="n">list</span> <span class="n">is</span> <span class="n">a</span> <span class="n">list</span> <span class="k">of</span> <span class="n">indexes</span> <span class="n">for</span> <span class="n">the</span> <span class="n">subpatterns</span> <span class="n">to</span> <span class="n">return</span><span class="p">,</span>
+    <span class="n">where</span> <span class="n">index</span> <span class="mi">0</span> <span class="n">is</span> <span class="n">for</span> <span class="n">all</span> <span class="k">of</span> <span class="n">the</span> <span class="n">pattern</span><span class="p">,</span> <span class="ow">and</span> <span class="mi">1</span> <span class="n">is</span> <span class="n">for</span> <span class="n">the</span> <span class="n">first</span>
+    <span class="n">explicit</span> <span class="n">capturing</span> <span class="n">subpattern</span> <span class="n">in</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">,</span>
+    <span class="ow">and</span> <span class="n">so</span> <span class="n">forth</span><span class="p">.</span> <span class="nv">When</span> <span class="n">using</span> <span class="n">named</span> <span class="n">captured</span> <span class="nf">subpatterns</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span>
+    <span class="n">in</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">,</span> <span class="n">one</span> <span class="n">can</span> <span class="n">use</span> <span class="err">`</span><span class="nf">atom</span><span class="p">()</span><span class="err">`</span><span class="n">'s or `string()`'s</span>
+    <span class="n">to</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">subpatterns</span> <span class="n">to</span> <span class="n">be</span> <span class="n">returned</span><span class="p">.</span> <span class="nv">This</span> <span class="n">deserves</span> <span class="n">an</span> <span class="n">example</span><span class="p">,</span>
+    <span class="n">consider</span> <span class="n">the</span> <span class="n">following</span> <span class="n">regular</span> <span class="nn">expression</span><span class="p">::</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="s">".*(abcd).*"</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">matched</span> <span class="n">against</span> <span class="n">the</span> <span class="n">string</span> <span class="err">`</span><span class="s">"ABCabcdABC"</span><span class="err">`</span><span class="p">,</span> <span class="n">capturing</span> <span class="n">only</span> <span class="n">the</span>
+    <span class="err">`</span><span class="s">"abcd"</span><span class="err">`</span> <span class="nf">part</span> <span class="p">(</span><span class="n">the</span> <span class="n">first</span> <span class="n">explicit</span> <span class="n">subpattern</span><span class="p">):</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">".*(abcd).*"</span><span class="p">,[{</span><span class="n">capture</span><span class="p">,[</span><span class="mi">1</span><span class="p">]}]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">The</span> <span class="n">call</span> <span class="n">will</span> <span class="n">yield</span> <span class="n">the</span> <span class="n">following</span> <span class="nn">result</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">explicitly</span> <span class="n">captured</span> <span class="n">subpattern</span> <span class="n">is</span> <span class="err">`</span><span class="s">"(abcd)"</span><span class="err">`</span><span class="p">,</span>
+    <span class="n">matching</span> <span class="err">`</span><span class="s">"abcd"</span><span class="err">`</span> <span class="n">in</span> <span class="n">the</span> <span class="n">subject</span><span class="p">,</span> <span class="nf">at</span> <span class="p">(</span><span class="n">zero</span><span class="o">-</span><span class="n">based</span><span class="p">)</span> <span class="n">position</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="k">of</span> <span class="nb">length</span> <span class="mi">4</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Now</span> <span class="n">consider</span> <span class="n">the</span> <span class="n">same</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">,</span> <span class="n">but</span> <span class="n">with</span> <span class="n">the</span> <span class="n">subpattern</span>
+    <span class="n">explicitly</span> <span class="n">named</span> <span class="err">`</span><span class="n">'FOO'</span><span class="err">`</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="s">".*(?&lt;FOO&gt;abcd).*"</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">With</span> <span class="n">this</span> <span class="n">expression</span><span class="p">,</span> <span class="n">we</span> <span class="n">could</span> <span class="n">still</span> <span class="n">give</span> <span class="n">the</span> <span class="n">index</span> <span class="k">of</span> <span class="n">the</span> <span class="n">subpattern</span>
+    <span class="n">with</span> <span class="n">the</span> <span class="n">following</span> <span class="nn">call</span><span class="p">::</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">".*(?&lt;FOO&gt;abcd).*"</span><span class="p">,[{</span><span class="n">capture</span><span class="p">,[</span><span class="mi">1</span><span class="p">]}]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">giving</span> <span class="n">the</span> <span class="n">same</span> <span class="n">result</span> <span class="n">as</span> <span class="n">before</span><span class="p">.</span> <span class="nv">But</span> <span class="n">as</span> <span class="n">the</span> <span class="n">subpattern</span> <span class="n">is</span> <span class="n">named</span><span class="p">,</span>
+    <span class="n">we</span> <span class="n">can</span> <span class="n">also</span> <span class="n">give</span> <span class="n">its</span> <span class="n">name</span> <span class="n">in</span> <span class="n">the</span> <span class="n">value</span> <span class="nn">list</span><span class="p">::</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"ABCabcdABC"</span><span class="p">,</span><span class="s">".*(?&lt;FOO&gt;abcd).*"</span><span class="p">,[{</span><span class="n">capture</span><span class="p">,[</span><span class="n">'FOO'</span><span class="p">]}]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">which</span> <span class="n">would</span> <span class="n">yield</span> <span class="n">the</span> <span class="n">same</span> <span class="n">result</span> <span class="n">as</span> <span class="n">the</span> <span class="n">earlier</span> <span class="n">examples</span><span class="p">,</span> <span class="nn">namely</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">The</span> <span class="n">values</span> <span class="n">list</span> <span class="n">might</span> <span class="n">specify</span> <span class="n">indexes</span> <span class="ow">or</span> <span class="n">names</span> <span class="ow">not</span> <span class="n">present</span> <span class="n">in</span> <span class="n">the</span>
+    <span class="n">regular</span> <span class="n">expression</span><span class="p">,</span> <span class="n">in</span> <span class="n">which</span> <span class="k">case</span> <span class="n">the</span> <span class="n">return</span> <span class="n">values</span> <span class="n">vary</span> <span class="n">depending</span>
+    <span class="n">on</span> <span class="n">the</span> <span class="n">type</span><span class="p">.</span> <span class="nv">If</span> <span class="n">the</span> <span class="n">type</span> <span class="n">is</span> <span class="err">`</span><span class="n">index</span><span class="err">`</span><span class="p">,</span> <span class="n">the</span> <span class="n">tuple</span> <span class="err">`</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span><span class="err">`</span> <span class="n">is</span> <span class="n">returned</span>
+    <span class="n">for</span> <span class="n">values</span> <span class="n">having</span> <span class="n">no</span> <span class="n">corresponding</span> <span class="n">subpattern</span> <span class="n">in</span> <span class="n">the</span> <span class="n">regexp</span><span class="p">,</span> <span class="n">but</span> <span class="n">for</span>
+    <span class="n">the</span> <span class="n">other</span> <span class="nf">types</span> <span class="p">(</span><span class="n">binary</span> <span class="ow">and</span> <span class="n">list</span><span class="p">),</span> <span class="n">the</span> <span class="n">values</span> <span class="n">are</span> <span class="n">the</span> <span class="n">empty</span> <span class="n">binary</span>
+    <span class="ow">or</span> <span class="n">list</span> <span class="n">respectively</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `T</span><span class="ni">ype</span><span class="err">`</span>  
+    <span class="nv">Optionally</span> <span class="n">specifies</span> <span class="n">how</span> <span class="n">captured</span> <span class="n">substrings</span> <span class="n">are</span> <span class="n">to</span> <span class="n">be</span> <span class="n">returned</span><span class="p">.</span>
+    <span class="nv">If</span> <span class="n">omitted</span><span class="p">,</span> <span class="n">the</span> <span class="n">default</span> <span class="k">of</span> <span class="n">index</span> <span class="n">is</span> <span class="n">used</span><span class="p">.</span> <span class="nv">The</span> <span class="nv">Type</span> <span class="n">can</span> <span class="n">be</span> <span class="n">one</span> <span class="k">of</span>
+    <span class="n">the</span> <span class="nn">following</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">index</span><span class="err">`</span>  
+        <span class="nv">Return</span> <span class="n">captured</span> <span class="n">substrings</span> <span class="n">as</span> <span class="n">pairs</span> <span class="k">of</span> <span class="n">byte</span> <span class="n">indexes</span> <span class="n">into</span>
+        <span class="n">the</span> <span class="n">subject</span> <span class="n">string</span> <span class="ow">and</span> <span class="nb">length</span> <span class="k">of</span> <span class="n">the</span> <span class="n">matching</span> <span class="n">string</span> <span class="n">in</span>
+        <span class="n">the</span> <span class="nf">subject</span> <span class="p">(</span><span class="n">as</span> <span class="k">if</span> <span class="n">the</span> <span class="n">subject</span> <span class="n">string</span> <span class="n">was</span> <span class="n">flattened</span> <span class="n">with</span>
+        <span class="nb">iolist_to_binary</span> <span class="n">prior</span> <span class="n">to</span> <span class="n">matching</span><span class="p">).</span> <span class="nv">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">default</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">list</span><span class="err">`</span>  
+        <span class="nv">Return</span> <span class="n">matching</span> <span class="n">substrings</span> <span class="n">as</span> <span class="n">lists</span> <span class="k">of</span> <span class="nf">characters</span>
+        <span class="p">(</span><span class="nv">Erlang</span> <span class="err">`</span><span class="nf">string</span><span class="p">()</span><span class="err">`'</span><span class="n">s</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">+</span>   <span class="err">`</span><span class="n">binary</span><span class="err">`</span>  
+        <span class="nv">Return</span> <span class="n">matching</span> <span class="n">substrings</span> <span class="n">as</span> <span class="n">binaries</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">In</span> <span class="n">general</span><span class="p">,</span> <span class="n">subpatterns</span> <span class="n">that</span> <span class="n">got</span> <span class="n">assigned</span> <span class="n">no</span> <span class="n">value</span> <span class="n">in</span> <span class="n">the</span> <span class="n">match</span>
+<span class="n">are</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">the</span> <span class="n">tuple</span> <span class="err">`</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span><span class="err">`</span> <span class="k">when</span> <span class="n">type</span> <span class="n">is</span> <span class="err">`</span><span class="n">index</span><span class="err">`</span><span class="p">.</span>
+<span class="nv">Unasigned</span> <span class="n">subpatterns</span> <span class="n">are</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">the</span> <span class="n">empty</span> <span class="n">binary</span> <span class="ow">or</span> <span class="n">list</span>
+<span class="n">respectively</span> <span class="n">for</span> <span class="n">other</span> <span class="n">return</span> <span class="n">types</span><span class="p">.</span> <span class="nv">Consider</span> <span class="n">the</span> <span class="n">regular</span> <span class="nn">expression</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="s">".*((?&lt;FOO&gt;abdd)|a(..d)).*"</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">There</span> <span class="n">are</span> <span class="n">three</span> <span class="n">explicitly</span> <span class="n">capturing</span> <span class="n">subpatterns</span><span class="p">,</span> <span class="n">where</span> <span class="n">the</span> <span class="n">opening</span>
+<span class="n">parenthesis</span> <span class="n">position</span> <span class="n">determines</span> <span class="n">the</span> <span class="n">order</span> <span class="n">in</span> <span class="n">the</span> <span class="n">result</span><span class="p">,</span>
+<span class="n">hence</span> <span class="err">`</span><span class="s">"((?&lt;FOO&gt;abdd)|a(..d))"</span><span class="err">`</span> <span class="n">is</span> <span class="n">subpattern</span> <span class="n">index</span> <span class="mi">1</span><span class="p">,</span>
+<span class="err">`</span><span class="s">"(?&lt;FOO&gt;abdd)"</span><span class="err">`</span> <span class="n">is</span> <span class="n">subpattern</span> <span class="n">index</span> <span class="mi">2</span> <span class="ow">and</span> <span class="err">`</span><span class="s">"(..d)"</span><span class="err">`</span>
+<span class="n">is</span> <span class="n">subpattern</span> <span class="n">index</span> <span class="mi">3</span><span class="p">.</span> <span class="nv">When</span> <span class="n">matched</span> <span class="n">against</span> <span class="n">the</span> <span class="n">following</span> <span class="nn">string</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="s">"ABCabcdABC"</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">the</span> <span class="n">subpattern</span> <span class="n">at</span> <span class="n">index</span> <span class="mi">2</span> <span class="n">won</span><span class="err">'</span><span class="n">t</span> <span class="n">match</span><span class="p">,</span> <span class="n">as</span> <span class="err">`</span><span class="s">"abdd"</span><span class="err">`</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">present</span>
+<span class="n">in</span> <span class="n">the</span> <span class="n">string</span><span class="p">,</span> <span class="n">but</span> <span class="n">the</span> <span class="n">complete</span> <span class="n">pattern</span> <span class="nf">matches</span> <span class="p">(</span><span class="n">due</span> <span class="n">to</span> <span class="n">the</span> <span class="n">alternative</span>
+<span class="err">`</span><span class="s">"a(..d)"</span><span class="err">`</span><span class="p">.</span> <span class="nv">The</span> <span class="n">subpattern</span> <span class="n">at</span> <span class="n">index</span> <span class="mi">2</span> <span class="n">is</span> <span class="n">therefore</span> <span class="n">unassigned</span> <span class="ow">and</span>
+<span class="n">the</span> <span class="n">default</span> <span class="n">return</span> <span class="n">value</span> <span class="n">will</span> <span class="nn">be</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[{</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">},{</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">},{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">},{</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Setting</span> <span class="n">the</span> <span class="n">capture</span> <span class="nv">Type</span> <span class="n">to</span> <span class="n">binary</span> <span class="n">would</span> <span class="n">give</span> <span class="n">the</span> <span class="nn">following</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">{</span><span class="n">match</span><span class="p">,[</span><span class="o">&lt;&lt;</span><span class="s">"ABCabcdABC"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">"abcd"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">"bcd"</span><span class="o">&gt;&gt;</span><span class="p">]}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">where</span> <span class="n">the</span> <span class="n">empty</span> <span class="nf">binary</span> <span class="p">(</span><span class="err">`</span><span class="o">&lt;&lt;&gt;&gt;</span><span class="err">`</span><span class="p">)</span> <span class="n">represents</span> <span class="n">the</span> <span class="n">unassigned</span> <span class="n">subpattern</span><span class="p">.</span>
+<span class="nv">In</span> <span class="n">the</span> <span class="n">binary</span> <span class="k">case</span><span class="p">,</span> <span class="n">some</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">matching</span> <span class="n">is</span> <span class="n">therefore</span> <span class="n">lost</span><span class="p">,</span>
+<span class="n">the</span> <span class="err">`</span><span class="o">&lt;&lt;&gt;&gt;</span><span class="err">`</span> <span class="n">might</span> <span class="n">just</span> <span class="n">as</span> <span class="n">well</span> <span class="n">be</span> <span class="n">an</span> <span class="n">empty</span> <span class="n">string</span> <span class="n">captured</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">If</span> <span class="n">differentiation</span> <span class="n">between</span> <span class="n">empty</span> <span class="n">matches</span> <span class="ow">and</span> <span class="n">non</span> <span class="n">existing</span> <span class="n">subpatterns</span>
+<span class="n">is</span> <span class="n">necessary</span><span class="p">,</span> <span class="n">use</span> <span class="n">the</span> <span class="n">type</span> <span class="n">index</span> <span class="ow">and</span> <span class="n">do</span> <span class="n">the</span> <span class="n">conversion</span> <span class="n">to</span>
+<span class="n">the</span> <span class="n">final</span> <span class="n">type</span> <span class="n">in</span> <span class="nv">Erlang</span> <span class="n">code</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">When</span> <span class="n">the</span> <span class="n">option</span> <span class="n">global</span> <span class="n">is</span> <span class="n">given</span><span class="p">,</span> <span class="n">the</span> <span class="n">capture</span> <span class="n">specification</span> <span class="n">affects</span> <span class="n">each</span>
+<span class="n">match</span> <span class="n">separately</span><span class="p">,</span> <span class="n">so</span> <span class="nn">that</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nn">re</span><span class="p">:</span><span class="nf">run</span><span class="p">(</span><span class="s">"cacb"</span><span class="p">,</span><span class="s">"c(a|b)"</span><span class="p">,[</span><span class="n">global</span><span class="p">,{</span><span class="n">capture</span><span class="p">,[</span><span class="mi">1</span><span class="p">],</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gives</span> <span class="n">the</span> <span class="nn">result</span><span class="p">:</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">`</span><span class="p">{</span><span class="n">match</span><span class="p">,[[</span><span class="s">"a"</span><span class="p">],[</span><span class="s">"b"</span><span class="p">]]}</span><span class="err">`</span>
+</code></pre></div></div>
+
+<p>The options solely affecting the compilation step are described in
+the <code class="language-plaintext highlighter-rouge">re:compile/2</code> function.</p>
+
+<h5 id="replacesubject-re-replacement---iodata--error-errspec">replace(Subject, RE, Replacement) -&gt; iodata() | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Replacement</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The same as replace(Subject, RE, Replacement,[]).</p>
+
+<h5 id="replacesubject-re-replacement-options---iodata--binary--list--error-errspec">replace(Subject, RE, Replacement, Options) -&gt; iodata() | binary() | list() | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Replacement</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Options</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">Option</span> <span class="p">]</span>
+<span class="nv">Option</span> <span class="o">=</span> <span class="n">anchored</span> <span class="p">|</span> <span class="n">global</span> <span class="p">|</span> <span class="n">notbol</span> <span class="p">|</span> <span class="n">noteol</span> <span class="p">|</span> <span class="n">notempty</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">offset</span><span class="p">,</span> <span class="nf">int</span><span class="p">()}</span> <span class="p">|</span> <span class="p">{</span><span class="n">newline</span><span class="p">,</span> <span class="nv">NLSpec</span><span class="p">}</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">return</span><span class="p">,</span> <span class="nv">ReturnType</span><span class="p">}</span> <span class="p">|</span> <span class="nv">CompileOpt</span>
+<span class="nv">ReturnType</span> <span class="o">=</span> <span class="n">iodata</span> <span class="p">|</span> <span class="n">list</span> <span class="p">|</span> <span class="n">binary</span>
+<span class="nv">CompileOpt</span> <span class="o">=</span> <span class="n">see</span> <span class="n">compile</span><span class="o">/</span><span class="mi">2</span> <span class="n">above</span>
+<span class="nv">NLSpec</span> <span class="o">=</span> <span class="n">cr</span> <span class="p">|</span> <span class="n">crlf</span> <span class="p">|</span> <span class="n">lf</span> <span class="p">|</span> <span class="n">anycrlf</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Replaces the matched part of the Subject string with
+the content of Replacement.</p>
+
+<p>Options are given as to the re:run/3 function except that the <code class="language-plaintext highlighter-rouge">capture</code>
+option of re:run/3 is not allowed. Instead a <code class="language-plaintext highlighter-rouge">{return, ReturnType}</code>
+is present. The default return type is <code class="language-plaintext highlighter-rouge">iodata</code> , constructed in a way
+to minimize copying. The iodata result can be used directly in many
+I/O-operations. If a flat list() is desired, specify <code class="language-plaintext highlighter-rouge">{return, list}</code>
+and if a binary is preferred, specify <code class="language-plaintext highlighter-rouge">{return, binary}</code>.</p>
+
+<p>The replacement string can contain the special character <code class="language-plaintext highlighter-rouge">&amp;</code>,
+which inserts the whole matching expression in the result,
+and the special sequence <code class="language-plaintext highlighter-rouge">\N</code> (where N is an integer &gt; 0),
+resulting in the subexpression number N will be inserted in the result.
+If no subexpression with that number is generated by the regular expression,
+nothing is inserted.</p>
+
+<p>To insert an <code class="language-plaintext highlighter-rouge">&amp;</code> or <code class="language-plaintext highlighter-rouge">\</code> in the result, precede it with a <code class="language-plaintext highlighter-rouge">\</code>.
+Note that Erlang already gives a special meaning to <code class="language-plaintext highlighter-rouge">\</code> in literal strings,
+why a single <code class="language-plaintext highlighter-rouge">\</code> has to be written as <code class="language-plaintext highlighter-rouge">"\\"</code> and therefore
+a double <code class="language-plaintext highlighter-rouge">\</code> as <code class="language-plaintext highlighter-rouge">"\\\\"</code>. Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">replace</span><span class="p">(</span><span class="s">"abcd"</span><span class="p">,</span><span class="s">"c"</span><span class="p">,</span><span class="s">"[&amp;]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>gives:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"ab[c]d"</span>
+</code></pre></div></div>
+
+<p>while:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">replace</span><span class="p">(</span><span class="s">"abcd"</span><span class="p">,</span><span class="s">"c"</span><span class="p">,</span><span class="s">"[</span><span class="se">\\</span><span class="s">&amp;]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>gives:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"ab[&amp;]d"</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">{error, ErrSpec}</code> return value can only arise from compilation,
+i.e. when a non precompiled malformed RE is given.</p>
+
+<h5 id="splitsubjectre---splitlist--error-errspec">split(Subject,RE) -&gt; SplitList | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">SplitList</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">iodata</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>The same as <code class="language-plaintext highlighter-rouge">split(Subject, RE, [])</code>.</p>
+
+<h5 id="splitsubjectreoptions---splitlist--error-errspec">split(Subject,RE,Options) -&gt; SplitList | {error, ErrSpec}</h5>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Subject</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">RE</span> <span class="o">=</span> <span class="nf">mp</span><span class="p">()</span> <span class="p">|</span> <span class="nf">iodata</span><span class="p">()</span>
+<span class="nv">Options</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">Option</span> <span class="p">]</span>
+<span class="nv">Option</span> <span class="o">=</span> <span class="n">anchored</span> <span class="p">|</span> <span class="n">global</span> <span class="p">|</span> <span class="n">notbol</span> <span class="p">|</span> <span class="n">noteol</span> <span class="p">|</span> <span class="n">notempty</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">offset</span><span class="p">,</span> <span class="nf">int</span><span class="p">()}</span> <span class="p">|</span> <span class="p">{</span><span class="n">newline</span><span class="p">,</span> <span class="nv">NLSpec</span><span class="p">}</span> <span class="p">|</span> <span class="p">{</span><span class="n">return</span><span class="p">,</span> <span class="nv">ReturnType</span><span class="p">}</span> <span class="p">|</span>
+         <span class="p">{</span><span class="n">parts</span><span class="p">,</span> <span class="nv">NumParts</span><span class="p">}</span> <span class="p">|</span> <span class="n">group</span> <span class="p">|</span> <span class="nv">CompileOpt</span>
+<span class="nv">NumParts</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span> <span class="p">|</span> <span class="n">infinity</span>
+<span class="nv">ReturnType</span> <span class="o">=</span> <span class="n">iodata</span> <span class="p">|</span> <span class="n">list</span> <span class="p">|</span> <span class="n">binary</span>
+<span class="nv">CompileOpt</span> <span class="o">=</span> <span class="n">see</span> <span class="n">compile</span><span class="o">/</span><span class="mi">2</span> <span class="n">above</span>
+<span class="nv">NLSpec</span> <span class="o">=</span> <span class="n">cr</span> <span class="p">|</span> <span class="n">crlf</span> <span class="p">|</span> <span class="n">lf</span> <span class="p">|</span> <span class="n">anycrlf</span>
+<span class="nv">SplitList</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">RetData</span> <span class="p">]</span> <span class="p">|</span> <span class="p">[</span> <span class="nv">GroupedRetData</span> <span class="p">]</span>
+<span class="nv">GroupedRetData</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">RetData</span> <span class="p">]</span>
+<span class="nv">RetData</span> <span class="o">=</span> <span class="nf">iodata</span><span class="p">()</span> <span class="p">|</span> <span class="nf">binary</span><span class="p">()</span> <span class="p">|</span> <span class="nf">list</span><span class="p">()</span>
+<span class="nv">ErrSpec</span> <span class="o">=</span> <span class="p">{</span><span class="nv">ErrString</span><span class="p">,</span> <span class="nv">Position</span><span class="p">}</span>
+<span class="nv">ErrString</span> <span class="o">=</span> <span class="nf">string</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">int</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>This function splits the input into parts by finding tokens according to
+the regular expression supplied.</p>
+
+<p>The splitting is done basically by running a global regexp match and dividing
+the initial string wherever a match occurs. The matching part of the string
+is removed from the output.</p>
+
+<p>The result is given as a list of “strings”, the preferred datatype given in
+the return option (default <code class="language-plaintext highlighter-rouge">iodata</code>).</p>
+
+<p>If subexpressions are given in the regular expression, the matching
+subexpressions are returned in the resulting list as well. An example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"[ln]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>will yield the result:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="s">"Er"</span><span class="p">,</span><span class="s">"a"</span><span class="p">,</span><span class="s">"g"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>while:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"([ln])"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>will yield:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="s">"Er"</span><span class="p">,</span><span class="s">"l"</span><span class="p">,</span><span class="s">"a"</span><span class="p">,</span><span class="s">"n"</span><span class="p">,</span><span class="s">"g"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>The text matching the subexpression (marked by the parantheses in the regexp)
+is inserted in the result list where it was found. In effect this means that
+concatenating the result of a split where the whole regexp is
+a single subexpression (as in the example above) will always
+result in the original string.</p>
+
+<p>As there is no matching subexpression for the last part in the example
+(the <code class="language-plaintext highlighter-rouge">"g"</code>), there is nothing inserted after that. To make the group of
+strings and the parts matching the subexpressions more obvious, one might use
+the group option, which groups together the part of the subject string with
+the parts matching the subexpressions when the string was split:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"([ln])"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">},</span><span class="n">group</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<p>gives:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[[</span><span class="s">"Er"</span><span class="p">,</span><span class="s">"l"</span><span class="p">],[</span><span class="s">"a"</span><span class="p">,</span><span class="s">"n"</span><span class="p">],[</span><span class="s">"g"</span><span class="p">]]</span>
+</code></pre></div></div>
+
+<p>Here the regular expression matched first the <code class="language-plaintext highlighter-rouge">"l"</code>, causing <code class="language-plaintext highlighter-rouge">"Er"</code> to be
+the first part in the result. When the regular expression matched,
+the (only) subexpression was bound to the <code class="language-plaintext highlighter-rouge">"l"</code>, why the <code class="language-plaintext highlighter-rouge">"l"</code> is inserted in
+the group together with <code class="language-plaintext highlighter-rouge">"Er"</code>. The next match is of the <code class="language-plaintext highlighter-rouge">"n"</code>, making <code class="language-plaintext highlighter-rouge">"a"</code>
+the next part to be returned. As the subexpression is bound to
+the substring <code class="language-plaintext highlighter-rouge">"n"</code> in this case, the <code class="language-plaintext highlighter-rouge">"n"</code> is inserted into this group.
+The last group consists of the rest of the string, as no more matches are found.</p>
+
+<p>All empty strings are per default removed from the end of the result list,
+the semantics beeing that we split the string in as many parts as possible
+until we reach the end of the string. In effect this means that all empty
+strings are stripped from the result list (or all empty groups if the group
+option is given). The <code class="language-plaintext highlighter-rouge">parts</code> option can be used to change this behaviour.
+Let’s look at an example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"[lg]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>The result will be::</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="s">"Er"</span><span class="p">,</span><span class="s">"an"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>as the matching of the “g” in the end effectively makes the matching reach
+the end of the string. If we however say we want more parts:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"[lg]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">},{</span><span class="n">parts</span><span class="p">,</span><span class="mi">3</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>We will get the last part as well, even though there is only an empty string
+after the last match (matching the <code class="language-plaintext highlighter-rouge">"g"</code>):</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="s">"Er"</span><span class="p">,</span><span class="s">"an"</span><span class="p">,[]]</span>
+</code></pre></div></div>
+
+<p>More than three parts are not possible with this indata, why:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">re</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="s">"Erlang"</span><span class="p">,</span><span class="s">"[lg]"</span><span class="p">,[{</span><span class="n">return</span><span class="p">,</span><span class="n">list</span><span class="p">},{</span><span class="n">parts</span><span class="p">,</span><span class="mi">4</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<p>will give the same result. To specify that as many results as possible
+are to be returned, including any empty results at end, you can specify
+infinity as the number of parts to return. Specifying 0 as the number of
+parts gives the default behaviour of returning all parts except empty
+parts at the end.</p>
+
+<p>If subexpressions are captured, empty subexpression matches at the end
+are also stripped from the result if <code class="language-plaintext highlighter-rouge">{parts, N}</code> is not specified.
+If you are familiar with Perl, the default behaviour corresponds exactly
+to the Perl default, the <code class="language-plaintext highlighter-rouge">{parts, N}</code> where <code class="language-plaintext highlighter-rouge">N</code> is a positive integer
+corresponds exactly to the Perl behaviour with a positive numerical
+third parameter and the {parts, infinity} behaviour corresponds to that
+when the Perl routine is given a negative integer as the third parameter.</p>
+
+<p>Summary of options not previously described for the <code class="language-plaintext highlighter-rouge">re:run/3</code> function:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">{return, ReturnType}</code><br />
+Specifies how the parts of the original string are presented in
+the result list. The possible types are:</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `</span><span class="ni">iodata</span><span class="err">`</span>  
+    <span class="nv">The</span> <span class="n">variant</span> <span class="k">of</span> <span class="nf">iodata</span><span class="p">()</span> <span class="n">that</span> <span class="n">gives</span> <span class="n">the</span> <span class="n">least</span> <span class="n">copying</span> <span class="k">of</span> <span class="n">data</span> <span class="n">with</span>
+    <span class="n">the</span> <span class="n">current</span> <span class="nf">implementation</span> <span class="p">(</span><span class="n">often</span> <span class="n">a</span> <span class="n">binary</span><span class="p">,</span> <span class="n">but</span> <span class="n">don</span><span class="err">'</span><span class="n">t</span> <span class="n">depend</span> <span class="n">on</span> <span class="n">it</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `</span><span class="ni">binary</span><span class="err">`</span>  
+    <span class="nv">All</span> <span class="n">parts</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">binaries</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="err">   `</span><span class="ni">list</span><span class="err">`</span>  
+    <span class="nv">All</span> <span class="n">parts</span> <span class="n">returned</span> <span class="n">as</span> <span class="n">lists</span> <span class="k">of</span> <span class="nf">characters</span> <span class="p">(</span><span class="s">"strings"</span><span class="p">).</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">group</code><br />
+Groups together the part of the string with the parts of the string
+matching the subexpressions of the regexp.</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">return</span> <span class="n">value</span> <span class="n">from</span> <span class="n">the</span> <span class="n">function</span> <span class="n">will</span> <span class="n">in</span> <span class="n">this</span> <span class="k">case</span> <span class="n">be</span> <span class="n">a</span> <span class="err">`</span><span class="nf">list</span><span class="p">()</span><span class="err">`</span>
+<span class="k">of</span> <span class="err">`</span><span class="nf">list</span><span class="p">()</span><span class="err">`'</span><span class="n">s</span><span class="p">.</span> <span class="nv">Each</span> <span class="n">sublist</span> <span class="n">begins</span> <span class="n">with</span> <span class="n">the</span> <span class="n">string</span> <span class="n">picked</span> <span class="n">out</span> <span class="k">of</span>
+<span class="n">the</span> <span class="n">subject</span> <span class="n">string</span><span class="p">,</span> <span class="n">followed</span> <span class="n">by</span> <span class="n">the</span> <span class="n">parts</span> <span class="n">matching</span> <span class="n">each</span> <span class="k">of</span>
+<span class="n">the</span> <span class="n">subexpressions</span> <span class="n">in</span> <span class="n">order</span> <span class="k">of</span> <span class="n">occurence</span> <span class="n">in</span> <span class="n">the</span> <span class="n">regular</span> <span class="n">expression</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">{parts, N}</code><br />
+Specifies the number of parts the subject string is to be split into.</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">number</span> <span class="k">of</span> <span class="n">parts</span> <span class="n">should</span> <span class="n">be</span> <span class="mi">0</span> <span class="n">for</span> <span class="n">the</span> <span class="n">default</span> <span class="n">behaviour</span>
+<span class="s">"as many as there are, skipping empty parts at the end"</span><span class="p">,</span> <span class="n">a</span> <span class="n">positive</span>
+<span class="n">integer</span> <span class="n">for</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">maximum</span> <span class="n">on</span> <span class="n">the</span> <span class="n">number</span> <span class="k">of</span> <span class="n">parts</span> <span class="ow">and</span> <span class="n">infinity</span> <span class="n">for</span>
+<span class="n">the</span> <span class="n">maximum</span> <span class="n">number</span> <span class="k">of</span> <span class="n">parts</span> <span class="n">possible</span><span class="p">,</span> <span class="n">regardless</span> <span class="k">of</span> <span class="k">if</span> <span class="n">the</span> <span class="n">parts</span> <span class="n">are</span>
+<span class="n">empty</span> <span class="n">strings</span> <span class="n">at</span> <span class="n">the</span> <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<h3 id="supported-string-representations">Supported string representations</h3>
+
+<p>As can be viewed in the manual excerpt, I suggest allowing both the
+regular expressions and the subject strings to be provided as
+<code class="language-plaintext highlighter-rouge">iodata()</code>, which means either binaries, lists or a mix of binaries
+and deep lists. When Unicode is not involved, this basically means a
+implicit <code class="language-plaintext highlighter-rouge">iolist_to_binary()</code> when supplying data to the re module.</p>
+
+<h3 id="further-extensions">Further extensions</h3>
+
+<p>The following extensions are not yet implemented in the prototype, but
+should be included in a final release:</p>
+
+<ul>
+  <li>
+    <p>Unicode support. Unicode strings should be represented as suggested
+in <a href="eep-0010.md" title="EEP 10">EEP 10</a>, which means either UTF-8 in binaries, lists of Unicode
+characters as integers, or a mix thereof. If the regular expression
+was compiled for Unicode or a <code class="language-plaintext highlighter-rouge">unicode</code> option is supplied when
+compiling and running in one go, the data is expected to be in one
+of the supported Unicode formats, otherwise a <code class="language-plaintext highlighter-rouge">badarg</code> exception
+will be thrown.</p>
+  </li>
+  <li>
+    <p>Match predicates to make it easy to use regular expressions in
+logical Erlang expressions.</p>
+  </li>
+</ul>
+
+<p>Of these, Unicode support is the far most important, and also the one
+that can not be implemented efficiently purely in Erlang code.</p>
+
+<h2 id="prototype-implementation">Prototype implementation</h2>
+
+<p>A prototype implementation using the PCRE library is present along
+with a reference manual page in the R12B-4 distribution. This
+implementation does not yet fully support Unicode, as <a href="eep-0010.md" title="EEP 10">EEP 10</a> is not
+accepted at the time of writing. The prototype implementation also 
+lacks the “split” function, which was implemented after the R12B-4 release.</p>
+
+<p>In terms of performance, fairly simple regular expressions matches are
+with this prototype up to 75 times faster than with the current regexp
+module. The bookkeeping to allow for interruptions of the regular
+expression execution costs between 1 and 2% of the performance when no
+out scheduling is needed. In worst cases a 5% performance loss can be
+noted compared to an untouched library, but then actual restarting is
+involved, so the numbers are not fully comparable.</p>
+
+<p>Compiling PCRE to use the C stack for recursive calls and avoid
+restarting is expected to give the best results in terms of execution
+speed. The difference in benchmarks to the fully interruptable version
+is however only in the range of 1 to 3% when no restarting occurs and
+still no more than 6% when restarting actually occurs.</p>
+
+<p>The conclusion is that the extra cost imposed on the PCRE library to
+allow an integration into the Erlang emulator without using
+asynchronous threads is in an absolute worst scenario no more than 6%
+compared to a theoretical maximum.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

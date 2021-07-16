@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Optimization Traps and Pitfalls - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Optimization Traps and Pitfalls - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-8 offset-lg-2">
+            <article class="card mb-4">
+    <div class="card-header">
+        <h3><a href="/erlang-org/blog/opt-traps-and-pitfalls/">Optimization Traps and Pitfalls</a></h3>
+        <div class="date">August 24, 2018
+             · by Björn Gustavsson
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        
+        
+        <p>Back after the summer holidays, this blog will now change tracks and
+start a series of blog posts about Static Single Assignment (SSA).
+This first installment will set the scene for the posts that follow by
+looking at the traps and pitfalls one can fall into when trying to
+optimize BEAM assembly code.</p>
+      <h2 id="a-brief-introduction-to-beam-assembly-language">
+        
+        
+          A brief introduction to BEAM assembly language <a href="#a-brief-introduction-to-beam-assembly-language">#</a>
+        
+        
+      </h2>
+    
+
+<p>We will look at the BEAM code for the following function:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">foo</span><span class="p">({</span><span class="n">tag</span><span class="p">,</span><span class="nv">A</span><span class="p">,_,_})</span> <span class="o">-&gt;</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span><span class="nv">A</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>The (unoptimized) BEAM code looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{function, foo, 1, 2}.
+  {label,1}.
+    {line,[{location,"ex1.erl",4}]}.
+    {func_info,{atom,ex1},{atom,foo},1}.
+  {label,2}.
+    {test,is_tuple,{f,3},[{x,0}]}.
+    {test,test_arity,{f,3},[{x,0},4]}.
+    {get_tuple_element,{x,0},0,{x,1}}.
+    {get_tuple_element,{x,0},1,{x,2}}.
+    {test,is_eq_exact,{f,3},[{x,1},{atom,tag}]}.
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+  {label,3}.
+    {test_heap,2,1}.
+    {put_list,{x,0},nil,{x,1}}.
+    {move,{atom,function_clause},{x,0}}.
+    {line,[{location,"ex1.erl",4}]}.
+    {call_ext_only,2,{extfunc,erlang,error,2}}.
+</code></pre></div></div>
+
+<p>We will concentrate on the part of the code that does
+the actual work:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {test,is_tuple,{f,3},[{x,0}]}.
+    {test,test_arity,{f,3},[{x,0},4]}.
+    {get_tuple_element,{x,0},0,{x,1}}.
+    {get_tuple_element,{x,0},1,{x,2}}.
+    {test,is_eq_exact,{f,3},[{x,1},{atom,tag}]}.
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+  {label,3}.
+    %% Cause a function_clause exception.
+</code></pre></div></div>
+
+<p>We will now explain what each instruction does.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {test,is_tuple,{f,3},[{x,0}]}.
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">test</code> instructions test whether a condition is true. If it
+is, the next instruction will be executed. Otherwise,
+there will be a branch to the failure label.</p>
+
+<p>The condition tested by this instruction is <code class="language-plaintext highlighter-rouge">is_tuple</code>, that is
+whether its operand is a tuple.  The operand is <code class="language-plaintext highlighter-rouge">{x,0}</code>, which is the
+register for the first argument for the function. If <code class="language-plaintext highlighter-rouge">{x,0}</code> does not
+contain a tuple, execution will continue at the failure label. <code class="language-plaintext highlighter-rouge">{f,3}</code>
+means that that the failure label is <code class="language-plaintext highlighter-rouge">3</code>. The code at label <code class="language-plaintext highlighter-rouge">3</code> will
+cause a <code class="language-plaintext highlighter-rouge">function_clause</code> exception.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {test,test_arity,{f,3},[{x,0},4]}.
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">test_arity</code> instruction tests whether the first operand (which
+must be a tuple) has the size given by the second operand. The first
+operand is <code class="language-plaintext highlighter-rouge">{x,0}</code> and the second operand is <code class="language-plaintext highlighter-rouge">4</code>. The failure label is
+the same as for the previous instruction.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {get_tuple_element,{x,0},0,{x,1}}.
+    {get_tuple_element,{x,0},1,{x,2}}.
+</code></pre></div></div>
+
+<p>When those two instructions are executed, the previous instructions have
+established that <code class="language-plaintext highlighter-rouge">{x,0}</code> contains a tuple of arity 4.
+<code class="language-plaintext highlighter-rouge">get_tuple_element</code> takes three operands. The first is the source
+tuple, <code class="language-plaintext highlighter-rouge">{x,0}</code>, the second is the <strong>zero-based</strong> index into the tuple,
+and the third operand is the register into which the element from the
+tuple should be stored. Note that there is no failure label because it
+cannot fail.</p>
+
+<p>So the first <code class="language-plaintext highlighter-rouge">get_tuple_element</code> instruction fetches the first element
+of the tuple and stores it in the <code class="language-plaintext highlighter-rouge">{x,1}</code> register, and the second
+<code class="language-plaintext highlighter-rouge">get_tuple_element</code> instruction fetches the second element and stores
+it into the <code class="language-plaintext highlighter-rouge">{x,2}</code> register.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {test,is_eq_exact,{f,3},[{x,1},{atom,tag}]}.
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">is_eq_exact</code> is again a <code class="language-plaintext highlighter-rouge">test</code> instruction. It tests
+whether the contents of <code class="language-plaintext highlighter-rouge">{x,1}</code> is exactly equal (that is,
+<code class="language-plaintext highlighter-rouge">=:=</code>) to the atom <code class="language-plaintext highlighter-rouge">tag</code>. If not, execution will continue
+at the failure label <code class="language-plaintext highlighter-rouge">3</code>.</p>
+
+<p>That concludes the function header. The next instruction is in the
+body of the function that will build the <code class="language-plaintext highlighter-rouge">{ok,A}</code> tuple:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {test_heap,3,3}.
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">test_heap</code> instruction ensures that there is sufficient free
+space on the heap to construct a term. The first operand (the first
+<code class="language-plaintext highlighter-rouge">3</code>) says that the following instructions will need 3 words on the
+heap. A tuple has a header word, followed by the elements, so a tuple
+with 2 elements needs 3 heap words in total.</p>
+
+<p>If there is not sufficient room on the heap, the <code class="language-plaintext highlighter-rouge">test_heap</code>
+instruction will do a garbage collection to find some fresh heap
+space. The second operand (the second <code class="language-plaintext highlighter-rouge">3</code>) is the number of <code class="language-plaintext highlighter-rouge">x</code>
+registers that have values that must be preserved during garbage
+collection. The <code class="language-plaintext highlighter-rouge">3</code> means that <code class="language-plaintext highlighter-rouge">{x,0}</code>, <code class="language-plaintext highlighter-rouge">{x,1}</code>, and <code class="language-plaintext highlighter-rouge">{x,2}</code> have live
+values.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+</code></pre></div></div>
+
+<p>Those three instructions build the tuple, putting a tagged
+pointer to the tuple in <code class="language-plaintext highlighter-rouge">{x,0}</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    return.
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">return</code> returns from the function. The return value is the
+value in <code class="language-plaintext highlighter-rouge">{x,0}</code>.</p>
+      <h2 id="optimizing-this-code">
+        
+        
+          Optimizing this code <a href="#optimizing-this-code">#</a>
+        
+        
+      </h2>
+    
+
+<p>Testing that a term is a tuple of a certain size with a specific atom
+as the first element is a common operation (think records). Therefore
+the BEAM machine has an <code class="language-plaintext highlighter-rouge">is_tagged_tuple</code> instruction that does the
+work of 4 other instructions.</p>
+
+<p>Using that instruction, this code:</p>
+
+<pre class="highlight">
+    <b>{test,is_tuple,{f,3},[{x,0}]}.</b>
+    <b>{test,test_arity,{f,3},[{x,0},4]}.</b>
+    <b>{get_tuple_element,{x,0},0,{x,1}}.</b>
+    {get_tuple_element,{x,0},1,{x,2}}.
+    <b>{test,is_eq_exact,{f,3},[{x,1},{atom,tag}]}.</b>
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+</pre>
+
+<p>can be rewritten like this:</p>
+
+<pre class="highlight">
+    <b>{test,is_tagged_tuple,{f,1},[{x,0},4,{atom,tag}]}.</b>
+    {get_tuple_element,{x,0},1,{x,2}}.
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+</pre>
+
+<p>This is a nice reduction in code size and execution
+time. However, this optimization is not safe.</p>
+
+<p>Why?</p>
+
+<p>Consider the <code class="language-plaintext highlighter-rouge">{test_heap,3,3}</code> instruction. The second <code class="language-plaintext highlighter-rouge">3</code> says
+that 3 <code class="language-plaintext highlighter-rouge">x</code> registers are live, namely <code class="language-plaintext highlighter-rouge">{x,0}</code>, <code class="language-plaintext highlighter-rouge">{x,1}</code>, and <code class="language-plaintext highlighter-rouge">{x,2}</code>.
+Clearly, <code class="language-plaintext highlighter-rouge">{x,0}</code> and <code class="language-plaintext highlighter-rouge">{x,2}</code> are live, but what about <code class="language-plaintext highlighter-rouge">{x,1}</code>?
+We removed the <code class="language-plaintext highlighter-rouge">get_tuple_element</code> instruction that assigned <code class="language-plaintext highlighter-rouge">{x,1}</code>
+a value, so the value of <code class="language-plaintext highlighter-rouge">{x,1}</code> is undefined.</p>
+
+<p>Passing undefined register values to the garbage collector is the kind
+of bug that could take weeks to track down. In fact, there will
+probably be a future blog post about that kind of bug and how two
+tools were born as result of that bug.</p>
+
+<p>Reluctantly, in order to make the optimization safe, we must keep
+the <code class="language-plaintext highlighter-rouge">get_tuple_element</code> instruction that assigns to <code class="language-plaintext highlighter-rouge">{x,1}</code>:</p>
+
+<pre class="highlight">
+    {test,is_tagged_tuple,{f,1},[{x,0},4,{atom,tag}]}.
+    <b>{get_tuple_element,{x,0},0,{x,1}}.</b>
+    {get_tuple_element,{x,0},1,{x,2}}.
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+</pre>
+
+<p>Another possibility in this case would be to assign an empty list
+(called <code class="language-plaintext highlighter-rouge">nil</code> in the BEAM assembly language) to <code class="language-plaintext highlighter-rouge">{x,1}</code>:</p>
+
+<pre class="highlight">
+    {test,is_tagged_tuple,{f,1},[{x,0},4,{atom,tag}]}.
+    <b>{move,nil,{x,1}}.</b>
+    {get_tuple_element,{x,0},1,{x,2}}.
+    {test_heap,3,3}.
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+</pre>
+
+<p>However, in this very simple example, another optimization will
+actually allow the compiler to remove the assignment to <code class="language-plaintext highlighter-rouge">{x,1}</code>:</p>
+
+<pre class="highlight">
+    {test,is_tagged_tuple,{f,1},[{x,0},4,{atom,tag}]}.
+    <b>{test_heap,3,1}.</b>
+    <b>{get_tuple_element,{x,0},1,{x,2}}.</b>
+    {put_tuple,2,{x,0}}.
+    {put,{atom,ok}}.
+    {put,{x,2}}.
+    return.
+</pre>
+
+<p>The <code class="language-plaintext highlighter-rouge">test_heap</code> and <code class="language-plaintext highlighter-rouge">get_tuple_element</code> instructions have been swapped.
+Note that the number of live register have been adjusted in the <code class="language-plaintext highlighter-rouge">test_heap</code>
+instruction. It is now <code class="language-plaintext highlighter-rouge">1</code> instead of <code class="language-plaintext highlighter-rouge">3</code>.</p>
+
+<p>In general, though, the compiler might have to abandon an optimization
+or keep an instruction that assigns a register to avoiding feeding the
+garbage collector undefined values.</p>
+      <h2 id="the-final-straw">
+        
+        
+          The final straw <a href="#the-final-straw">#</a>
+        
+        
+      </h2>
+    
+
+<p>During the development of OTP 21, we realized that we have reached the
+limit for improving the optimizations that operates on the BEAM
+assembly language. In particular, we wanted to make the optimization
+called the <a href="http://erlang.org/doc/efficiency_guide/binaryhandling.html#matching-binaries">delayed sub binary creation</a> applicable in
+more circumstances. It turned out that would it be hard or impossible
+to substantially improve the optimization by working on BEAM assembly
+language.</p>
+
+<p>Apart from the problem of leaving undefined registers, as illustrated
+in the previous optimization example, there is also the complexity of
+traversing and analyzing BEAM instructions. The BEAM instruction set
+was not designed to be optimizer-friendly.</p>
+      <h2 id="conclusion">
+        
+        
+          Conclusion <a href="#conclusion">#</a>
+        
+        
+      </h2>
+    
+
+<p>As I have tried to show with the example above, one of the hardest
+parts of working with BEAM code is that register allocation has
+already been done and that instructions that may do a garbage
+collection (such as <code class="language-plaintext highlighter-rouge">test_heap</code>) have already been added.</p>
+
+<p>Early this year (2018), we decided that we should introduce a new
+intermediate format to alleviate the problems with optimizing BEAM
+code. It should be close enough to BEAM code to allow
+low-level optimizations such as the <code class="language-plaintext highlighter-rouge">is_tagged_tuple</code> optimization
+described in this blog post, but register allocation should not have
+been done, and <code class="language-plaintext highlighter-rouge">test_heap</code> and similar instructions should not have
+been added. It should also be more regular to make it easier to
+traverse while doing optimizations.</p>
+
+<p>We decided to make the new intermediate format <a href="https://en.wikipedia.org/wiki/Static_single_assignment_form">SSA-based</a>.
+In the next blog post, we will re-visit the example from this blog
+post and see what it looks like in the <a href="https://github.com/erlang/otp/pull/1935">new SSA-based intermediate
+format</a>.</p>
+
+        
+    </div>
+</article>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-c.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-bash.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

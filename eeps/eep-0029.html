@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0029 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0029 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>25-Feb-2009</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-5</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-29-abstract-patterns-stage-1">EEP 29: Abstract Patterns, Stage 1</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Abstract Patterns are named pattern/guard combinations
+which can be used</p>
+
+<ul>
+  <li>in patterns, to support abstract data types</li>
+  <li>as user-defined guards, guaranteed safe-for-guards</li>
+  <li>as ordinary functions</li>
+  <li>to replace many but not all uses of macros.</li>
+</ul>
+
+<p>The full proposal has six stages, of which this is stage 1.
+This stage allows only simple abstract patterns which can be
+handled by in-line substitution, so requiring no change to the
+Erlang Virtual Machine.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>We introduce abstract pattern declarations and calls.
+The syntax is given as an adaptation of that in parse.yrl.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">form</span> <span class="o">-&gt;</span> <span class="n">abstract_pattern</span> <span class="n">dot</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">abstract_pattern</span> <span class="o">-&gt;</span> <span class="n">'#'</span> <span class="n">atom</span> <span class="n">clause_args</span> <span class="n">clause_guard</span>
+                    <span class="n">'-&gt;'</span> <span class="n">expr</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>For future reference, we’ll use the schematic rule</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">H1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Hn</span><span class="p">)</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="nv">B</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>where an empty clause_guard is taken to mean that <code class="language-plaintext highlighter-rouge">G</code> is ‘true’.
+<code class="language-plaintext highlighter-rouge">H1, ..., Hn</code> and <code class="language-plaintext highlighter-rouge">B</code> must all be patterns.</p>
+
+<p>Abstract patterns may not be directly or indirectly recursive.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">expr_700</span> <span class="o">-&gt;</span> <span class="n">pattern_call</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pattern_call</span> <span class="o">-&gt;</span> <span class="n">'#'</span> <span class="n">atom</span> <span class="n">argument_list</span>
+</code></pre></div></div>
+
+<p>The expressions in the argument_list of a pattern_call must be</p>
+
+<ul>
+  <li>patterns in a pattern</li>
+  <li>guard expressions elsewhere in a guard</li>
+  <li>any expression elsewhere in an ordinary expression.</li>
+</ul>
+
+<p>There are two ways to understand the semantics of abstract
+patterns: as function calls and as inline substitution.</p>
+
+<p>Considered as functions, stage 1 abstract patterns correspond
+to two functions.  Given our schematic rule, we get</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#A-&gt;'</span><span class="p">(</span><span class="nv">H1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Hn</span><span class="p">)</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="nv">B</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>That is, part of the meaning of an abstract pattern is a
+function that works just the way it looks as if it works.
+(The name ‘#A-&gt;’ is for expository purposes and should not
+be taken literally.  In particular, it is NOT part of this
+specification that such a function should be directly
+accessible at all, still less that it should be accessible
+by a name of that form.)  So</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#permute</span><span class="p">([</span><span class="nv">R</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">T</span><span class="p">])</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nv">T</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">R</span><span class="p">].</span>
+</code></pre></div></div>
+
+<p>acts in one direction just like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#permute-&gt;'</span><span class="p">([</span><span class="nv">R</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">T</span><span class="p">])</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nv">T</span><span class="p">,</span><span class="nv">A</span><span class="p">,</span><span class="nv">R</span><span class="p">].</span>
+</code></pre></div></div>
+
+<p>would.  Because abstract patterns are not allowed to be
+recursive and cannot have any side effects, it is safe
+to call them in guards.  As a guard test, <code class="language-plaintext highlighter-rouge">#A(E1,...,En)</code>
+is equivalent to <code class="language-plaintext highlighter-rouge">(true = '#A-&gt;'(E1,...,En))</code>.</p>
+
+<p>In the other direction, we get</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#A='</span><span class="p">(</span><span class="nv">B</span><span class="p">)</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">H1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Hn</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>A pattern match</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">P1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Pn</span><span class="p">)</span> <span class="o">=</span> <span class="nv">E</span>
+</code></pre></div></div>
+
+<p>is equivalent to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nv">P1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Pn</span><span class="p">}</span> <span class="o">=</span> <span class="nf">'#A='</span><span class="p">(</span><span class="nv">E</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>When some of the patterns Hi, B use ‘=’, the definition is
+a little trickier.  Suppose, for example, we have</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#foo</span><span class="p">([</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">]</span> <span class="o">=</span> <span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">H</span><span class="p">,</span><span class="nv">T</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>A naive translation would be</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#foo='</span><span class="p">({</span><span class="nv">H</span><span class="p">,</span><span class="nv">T</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">]</span> <span class="o">=</span> <span class="nv">X</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>which would not work, because X would be undefined.  The
+basic problem here is that ‘=’ in patterns is symmetric,
+while ‘=’ in expressions is not.  The real translation
+has to be that</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">H11</span><span class="o">=</span><span class="nv">H12</span><span class="o">=</span><span class="p">..,</span> <span class="p">...,</span> <span class="nv">Hn1</span><span class="o">=</span><span class="nv">Hn2</span><span class="o">=</span><span class="p">..)</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="nv">B</span>
+</code></pre></div></div>
+
+<p>is equivalent to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#A='</span><span class="p">(</span><span class="nv">B</span><span class="p">)</span>
+<span class="k">when</span> <span class="nv">G</span><span class="p">,</span> <span class="nv">X1</span><span class="o">=</span><span class="nv">H11</span><span class="p">,</span> <span class="nv">X1</span><span class="o">=</span><span class="nv">H12</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Xn</span><span class="o">=</span><span class="nv">Hn1</span><span class="p">,</span> <span class="nv">Xn</span><span class="o">=</span><span class="nv">Hn2</span><span class="p">,</span> <span class="p">...</span>
+<span class="p">-</span><span class="err">&gt; {X1, ..., X</span><span class="ni">n</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>where the bindings <code class="language-plaintext highlighter-rouge">Xi=Hij</code> are both sorted and re-ordered
+(that is, switched from <code class="language-plaintext highlighter-rouge">Xi=Hij</code> to <code class="language-plaintext highlighter-rouge">Hij=Xi</code>) according to
+data flow.  In the case of the <code class="language-plaintext highlighter-rouge">#foo/1</code> example, we’d get</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">'#foo='</span><span class="p">({</span><span class="nv">H</span><span class="p">,</span><span class="nv">T</span><span class="p">})</span> <span class="k">when</span> <span class="nv">X1</span> <span class="o">=</span> <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">],</span> <span class="nv">X</span> <span class="o">=</span> <span class="nv">X1</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">X1</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>The sorting and reordering process is easier than it sounds.
+While there is an equation <code class="language-plaintext highlighter-rouge">Xi=Hij</code> such that either every
+variable in <code class="language-plaintext highlighter-rouge">Hij</code> is known or <code class="language-plaintext highlighter-rouge">Xi</code> is known, add <code class="language-plaintext highlighter-rouge">Xi=Hij</code> if
+<code class="language-plaintext highlighter-rouge">Hij</code> is all known, or <code class="language-plaintext highlighter-rouge">Hij = Xi</code> if <code class="language-plaintext highlighter-rouge">Xi</code> is known.</p>
+
+<p>This sorting-and-reordering-by-dataflow is also recommended
+in the forward direction when B contains ‘=’.</p>
+
+<p>Sometimes one or the other direction of an abstract pattern
+cannot be constructed, even with sorting and reordering by
+dataflow.  This is typically because one side contains a
+variable that doesn’t occur on the other.  For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#first</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">X</span><span class="p">,_}.</span>
+<span class="nl">#second</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{_,</span><span class="nv">Y</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>are usable as patterns, but not as functions.  The compiler
+should issue a warning for such abstract patterns but allow
+them.  It should be a run-time error to call such a pattern
+as a function as well.  It should be possible to suppress
+the warning, perhaps by</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">compile</span><span class="p">({</span><span class="n">pattern_only</span><span class="p">,[{</span><span class="n">first</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">second</span><span class="p">,</span><span class="mi">1</span><span class="p">}]}).</span>
+</code></pre></div></div>
+
+<p>(That’s within the current syntax.  Ideally that should be
+` #first/1<code class="language-plaintext highlighter-rouge"> and </code>#second/1`.)</p>
+
+<p>For another example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#is_date</span><span class="p">(</span><span class="nl">#date</span><span class="p">(_,_,_))</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>is usable as a function, even/especially in a guard, but is  <br />
+not usable as a pattern.  The compiler should issue a
+warning for such abstract patterns but allow them.  It
+should be a run-time error to call such a pattern as well.
+It should be possible to suppress the warning, perhaps by</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">compile</span><span class="p">({</span><span class="n">function_only</span><span class="p">,[{</span><span class="n">is_date</span><span class="p">,</span><span class="mi">1</span><span class="p">}]}).</span>
+</code></pre></div></div>
+
+<p>Definition via in-line substituion is straightforward.
+All of the following rewrites assume a standard renaming
+of variables.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(...</span> <span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">P1</span><span class="p">,...,</span><span class="nv">Pn</span><span class="p">)</span> <span class="p">...)</span> <span class="k">when</span> <span class="nv">Gf</span> <span class="o">-&gt;</span> <span class="nv">Bf</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(...</span> <span class="nv">B</span> <span class="p">...)</span>
+<span class="k">when</span> <span class="nv">G</span><span class="p">,</span> <span class="nv">Xi</span><span class="o">=</span><span class="nv">Hij</span><span class="p">...,</span> <span class="p">{</span><span class="nv">P1</span><span class="p">,...,</span><span class="nv">Pn</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="nv">X1</span><span class="p">,...,</span><span class="nv">Xn</span><span class="p">},</span> <span class="nv">Gf</span> <span class="o">-&gt;</span> <span class="nv">Bf</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="p">...</span> <span class="k">of</span> <span class="p">...</span> <span class="err">#</span><span class="p">(</span><span class="nv">P1</span><span class="p">,...,</span><span class="nv">Pn</span><span class="p">)</span> <span class="p">...</span> <span class="k">when</span> <span class="nv">Gc</span> <span class="o">-&gt;</span> <span class="nv">Bc</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="p">...</span> <span class="k">of</span> <span class="p">...</span> <span class="nv">B</span> <span class="p">...</span>
+<span class="k">when</span> <span class="nv">G</span><span class="p">,</span> <span class="nv">Xi</span><span class="o">=</span><span class="nv">Hij</span><span class="p">...,</span> <span class="p">{</span><span class="nv">P1</span><span class="p">,...,</span><span class="nv">Pn</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="nv">X1</span><span class="p">,...,</span><span class="nv">Xn</span><span class="p">},</span> <span class="nv">Gc</span> <span class="o">-&gt;</span> <span class="nv">Bc</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">P</span> <span class="o">=</span> <span class="nv">E</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nv">E</span> <span class="k">of</span> <span class="nv">P</span> <span class="o">-&gt;</span> <span class="n">ok</span> <span class="k">end</span>
+</code></pre></div></div>
+
+<p>In a guard expression,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(...</span> <span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">E1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">En</span><span class="p">)</span> <span class="p">...)</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nv">H1</span><span class="p">,...,</span><span class="nv">Hn</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="nv">E1</span><span class="p">,...,</span><span class="nv">En</span><span class="p">},</span> <span class="nv">G</span><span class="p">,</span> <span class="p">(...</span> <span class="nv">B</span> <span class="p">...)</span>
+</code></pre></div></div>
+
+<p>As a guard test,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">E1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">En</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nv">H1</span><span class="p">,...,</span><span class="nv">Hn</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="nv">E1</span><span class="p">,...,</span><span class="nv">En</span><span class="p">},</span> <span class="nv">G</span><span class="p">,</span> <span class="n">true</span> <span class="o">=</span> <span class="nv">B</span>
+</code></pre></div></div>
+
+<p>As an ordinary expression,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="nv">A</span><span class="p">(</span><span class="nv">E1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">En</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>rewrites to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="p">{</span><span class="nv">E1</span><span class="p">,...,</span><span class="nv">En</span><span class="p">}</span> <span class="k">of</span> <span class="p">{</span><span class="nv">H1</span><span class="p">,...,</span><span class="nv">Hn</span><span class="p">}</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="nv">B</span> <span class="k">end</span>
+</code></pre></div></div>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Even in this restricted form, abstract patterns solve a lot
+of problems that keep coming up on the Erlang mailing list.
+They were invented to serve two main purposes:  to greatly
+reduce the need for the preprocessor, and to support the
+use of abstract data types.  It turns out that they can also
+reduce the amount of keyboard work a programmer has to do,
+and increase the amount of type information available to the
+compiler.</p>
+
+<p>Macros are often used to provide named constants.
+For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">unknown</span><span class="p">,</span> <span class="s">"UNKNOWN"</span><span class="p">).</span>
+<span class="nf">f</span><span class="p">(</span><span class="o">?</span><span class="n">unknown</span><span class="p">,</span> <span class="nv">Actors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Actors</span><span class="p">;</span>
+<span class="nf">f</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">Actors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">lists</span><span class="p">:</span><span class="nf">keydelete</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nl">#actor.name</span><span class="p">,</span> <span class="nv">Actors</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>A function is not used here because function calls may not
+appear in patterns.  Abstract patterns are functions that
+are sufficiently restricted that they <em>may</em> appear in patterns:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#unknown</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s">"UNKNOWN"</span><span class="p">.</span>
+<span class="nf">f</span><span class="p">(</span><span class="nl">#unknown</span><span class="p">(),</span> <span class="nv">Actors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Actors</span><span class="p">;</span>
+<span class="nf">f</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">Actors</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">lists</span><span class="p">:</span><span class="nf">keydelete</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nl">#actor.name</span><span class="p">,</span> <span class="nv">Actors</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Sometimes these constants must be computed.
+For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">START_TIMEOUT</span><span class="p">,</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">30</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Thanks to variable binding in guards, we can do that too:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#start_timeout</span><span class="p">()</span> <span class="k">when</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span><span class="mi">30</span> <span class="o">-&gt;</span> <span class="nv">N</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>There are things that macros cannot do, because there needs
+to be a guard test as well as a pattern.  Macros can’t bilocate.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#date</span><span class="p">(</span><span class="nv">D</span><span class="p">,</span> <span class="nv">M</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span>
+<span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">Y</span><span class="p">),</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mi">1600</span><span class="p">,</span> <span class="nv">Y</span> <span class="o">=&lt;</span> <span class="mi">2500</span><span class="p">,</span>
+     <span class="nb">is_integer</span><span class="p">(</span><span class="nv">M</span><span class="p">),</span> <span class="nv">M</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span>    <span class="nv">M</span> <span class="o">=&lt;</span> <span class="mi">12</span><span class="p">,</span>
+     <span class="nb">is_integer</span><span class="p">(</span><span class="nv">D</span><span class="p">),</span> <span class="nv">D</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span>    <span class="nv">D</span> <span class="o">=&lt;</span> <span class="mi">31</span>
+<span class="p">-</span><span class="err">&gt; {Y, M, D}.
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#vector3</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span>
+<span class="k">when</span> <span class="nb">is_float</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nb">is_float</span><span class="p">(</span><span class="nv">Y</span><span class="p">),</span> <span class="nb">is_float</span><span class="p">(</span><span class="nv">Z</span><span class="p">)</span>
+<span class="p">-</span><span class="err">&gt; {X, Y, Z}.
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#mod_func</span><span class="p">(</span><span class="nv">M</span><span class="p">,</span> <span class="nv">F</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">M</span><span class="p">),</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">F</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">M</span><span class="p">,</span> <span class="nv">F</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#mod_func_arity</span><span class="p">(</span><span class="nv">M</span><span class="p">,</span> <span class="nv">F</span><span class="p">,</span> <span class="nv">A</span><span class="p">)</span>
+<span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">M</span><span class="p">),</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">F</span><span class="p">),</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">A</span><span class="p">),</span> <span class="nv">A</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+<span class="p">-</span><span class="err">&gt; {M, F, A}.
+</span></code></pre></div></div>
+
+<p>Some macros cannot be replaced by abstract patterns.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">DBG</span><span class="p">(</span><span class="nv">DbgLvl</span><span class="p">,</span> <span class="nv">Format</span><span class="p">,</span> <span class="nv">Data</span><span class="p">),</span>
+	<span class="nf">dbg</span><span class="p">(</span><span class="nv">DbgLvl</span><span class="p">,</span> <span class="nv">Format</span><span class="p">,</span> <span class="nv">Data</span><span class="p">)).</span>
+</code></pre></div></div>
+
+<p>cannot be an abstract pattern because the right hand side
+involves a call to an ordinary function.</p>
+
+<p>Some macros define guard tests.  For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">tab</span><span class="p">,</span> <span class="mi">9</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">space</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_tab</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">==</span> <span class="o">?</span><span class="n">tab</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_space</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">==</span> <span class="o">?</span><span class="n">space</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_underline</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">==</span> <span class="sc">$_</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_number</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$0</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$9</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_upper</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$A</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$Z</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_lower</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$a</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$z</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="o">?</span><span class="nf">is_upper</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="o">?</span><span class="nf">is_lower</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="o">?</span><span class="nf">is_underline</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>These can be converted to abstract patterns that are usable
+as guard tests,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#tab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="mi">9</span><span class="p">.</span>
+<span class="nl">#space</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="mi">32</span><span class="p">.</span>
+<span class="nl">#is_tab</span><span class="p">(</span><span class="nl">#tab</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="nl">#is_space</span><span class="p">(</span><span class="nl">#space</span><span class="p">())</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="nl">#is_underline</span><span class="p">(</span><span class="sc">$_</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="nl">#is_number</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$0</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$9</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="nl">#is_upper</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span>  <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$A</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$Z</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="nl">#is_lower</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span>  <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$a</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$z</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nl">#is_upper</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nl">#is_lower</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nv">X</span><span class="p">|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nl">#is_underline</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>or to abstract patterns that can be used as patterns,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#tab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="mi">9</span><span class="p">.</span>
+<span class="nl">#space</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="mi">32</span><span class="p">.</span>
+<span class="nl">#underline</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">==</span> <span class="sc">$_</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">.</span>
+<span class="nl">#number</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$0</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$9</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">.</span>
+<span class="nl">#upper</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span>  <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$A</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$Z</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">.</span>
+<span class="nl">#lower</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span>  <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$a</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$z</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">.</span>
+
+<span class="nf">token</span><span class="p">([</span><span class="nl">#upper</span><span class="p">(</span><span class="nv">X</span><span class="p">)|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nl">#lower</span><span class="p">(</span><span class="nv">X</span><span class="p">)|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+<span class="nf">token</span><span class="p">([</span><span class="nl">#underline</span><span class="p">(</span><span class="nv">X</span><span class="p">)|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Of course we can use disjunction in the guard of an
+abstract pattern.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#id_start</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="k">when</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$A</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$Z</span>
+		<span class="p">;</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="sc">$a</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="sc">$z</span>
+		<span class="p">;</span> <span class="nv">X</span> <span class="o">==</span> <span class="sc">$_</span>           <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">token</span><span class="p">([</span><span class="nl">#is_start</span><span class="p">(</span><span class="nv">X</span><span class="p">)|</span><span class="nv">File</span><span class="p">],</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">Result</span><span class="p">,</span> <span class="nv">Gen</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">GenNew</span> <span class="o">=</span> <span class="k">case</span> <span class="nv">Gen</span> <span class="k">of</span> <span class="n">not_set</span> <span class="o">-&gt;</span> <span class="n">var</span><span class="p">;</span> <span class="p">_</span> <span class="o">-&gt;</span> <span class="nv">Gen</span> <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">Var</span><span class="p">}</span> <span class="o">=</span> <span class="nf">tok_var</span><span class="p">(</span><span class="nv">File</span><span class="p">,</span> <span class="p">[</span><span class="nv">X</span><span class="p">]),</span>
+    <span class="nf">token</span><span class="p">(</span><span class="nv">Rem</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="p">[{</span><span class="n">var</span><span class="p">,</span><span class="nv">Var</span><span class="p">}|</span><span class="nv">Result</span><span class="p">],</span> <span class="nv">GenNew</span><span class="p">,</span> <span class="nv">BsNl</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Yes, the original macro-based version could have done the same.
+It’s from the OTP sources; don’t blame me.</p>
+
+<p>Aside from replacing a pattern AND a guard, which macros cannot
+do, the great advantages over patterns over macros are that</p>
+
+<ul>
+  <li>they can be syntax-checked at the point of definition,
+while macros can only be syntax-checked at the point of use;</li>
+  <li>there is no problem, indeed no possibility, of variable name
+capture;</li>
+  <li>abstract patterns are value based, not token-list based, so
+there are no problems with operators.</li>
+</ul>
+
+<p>Consider the following OTP macro:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">IC_FLAG_TEST</span><span class="p">(_</span><span class="nv">F1</span><span class="p">,</span> <span class="p">_</span><span class="nv">I1</span><span class="p">),</span> <span class="p">((_</span><span class="nv">F1</span> <span class="ow">band</span> <span class="p">_</span><span class="nv">I1</span><span class="p">)</span> <span class="o">==</span> <span class="p">_</span><span class="nv">I1</span><span class="p">)).</span>
+</code></pre></div></div>
+
+<p>First, the author was evidently scared of accidental collisions
+with other variable names.  Second, the parentheses look as
+though they are there in case of operator precedence bugs.</p>
+
+<p>There’s at least one other like it,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_set</span><span class="p">(</span><span class="nv">F</span><span class="p">,</span> <span class="nv">Bits</span><span class="p">),</span> <span class="p">((</span><span class="nv">F</span><span class="p">)</span> <span class="ow">band</span> <span class="p">(</span><span class="nv">Bits</span><span class="p">))</span> <span class="o">==</span> <span class="p">(</span><span class="nv">F</span><span class="p">)).</span>
+</code></pre></div></div>
+
+<p>which (correctly) suggests that the first macro doesn’t have enough
+parentheses.    The abstract pattern equivalent,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#ic_flag_test</span><span class="p">(</span><span class="nv">Flags</span><span class="p">,</span> <span class="nv">Mask</span><span class="p">)</span> <span class="k">when</span> <span class="nv">Flags</span> <span class="ow">band</span> <span class="nv">Mask</span> <span class="o">==</span> <span class="nv">Mask</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>has neither problem.</p>
+
+<p>Once again, there are things that abstract patterns cannot do.
+For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">get_max</span><span class="p">(_</span><span class="nv">X</span><span class="p">,</span> <span class="p">_</span><span class="nv">Y</span><span class="p">),</span> <span class="k">if</span> <span class="p">_</span><span class="nv">X</span> <span class="o">&gt;</span> <span class="p">_</span><span class="nv">Y</span> <span class="o">-&gt;</span> <span class="p">_</span><span class="nv">X</span><span class="p">;</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="p">_</span><span class="nv">Y</span> <span class="k">end</span><span class="p">).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">get_min</span><span class="p">(_</span><span class="nv">X</span><span class="p">,</span> <span class="p">_</span><span class="nv">Y</span><span class="p">),</span> <span class="k">if</span> <span class="p">_</span><span class="nv">X</span> <span class="o">&gt;</span> <span class="p">_</span><span class="nv">Y</span> <span class="o">-&gt;</span> <span class="p">_</span><span class="nv">Y</span><span class="p">;</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="p">_</span><span class="nv">X</span> <span class="k">end</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>These cannot be abstract patterns because an abstract pattern
+cannot contain an ‘if’ or a ‘case’ or any other control structure.
+But they can, and should, be ordinary inline functions:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">compile</span><span class="p">({</span><span class="n">inline</span><span class="p">,[{</span><span class="n">max</span><span class="p">,</span><span class="mi">2</span><span class="p">},{</span><span class="n">min</span><span class="p">,</span><span class="mi">2</span><span class="p">}]}).</span>
+<span class="nf">max</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="nv">Y</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">;</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="nv">Y</span> <span class="k">end</span><span class="p">.</span>
+<span class="nf">min</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="nv">Y</span> <span class="o">-&gt;</span> <span class="nv">Y</span><span class="p">;</span> <span class="n">true</span> <span class="o">-&gt;</span> <span class="nv">X</span> <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Abstract patterns don’t need to do what ordinary functions can.
+Here’s another example from the OTP sources.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">LOWER</span><span class="p">(</span><span class="nv">Char</span><span class="p">),</span>
+	<span class="k">if</span>
+	    <span class="nv">Char</span> <span class="o">&gt;=</span> <span class="sc">$A</span><span class="p">,</span> <span class="nv">Char</span> <span class="o">=&lt;</span> <span class="sc">$Z</span> <span class="o">-&gt;</span>
+		<span class="nv">Char</span> <span class="o">-</span> <span class="p">(</span><span class="sc">$A</span> <span class="o">-</span> <span class="sc">$a</span><span class="p">);</span>
+	    <span class="n">true</span> <span class="o">-&gt;</span>
+		<span class="nv">Char</span>
+	<span class="k">end</span><span class="p">).</span>
+<span class="nf">tolower</span><span class="p">(</span><span class="nv">Chars</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="p">[</span><span class="o">?</span><span class="nv">LOWER</span><span class="p">(</span><span class="nv">Char</span><span class="p">)</span> <span class="p">||</span> <span class="nv">Char</span> <span class="o">&lt;-</span> <span class="nv">Chars</span><span class="p">].</span>
+</code></pre></div></div>
+
+<p>This could, and should, have been an ordinary inlined function.
+Abstract patterns don’t need to do what ordinary functions can.
+Let’s examine it a little closer.  Suppose we had a pattern</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Cl</span> <span class="o">=</span> <span class="nl">#lower</span><span class="p">(</span><span class="nv">Cx</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>which when used as an ordinary function converted both <code class="language-plaintext highlighter-rouge">$x</code> and <code class="language-plaintext highlighter-rouge">$X</code>
+to <code class="language-plaintext highlighter-rouge">$x</code>.  Then when used as a pattern <code class="language-plaintext highlighter-rouge">#lower(Cx) = $x</code>, there would
+be two correct answers for <code class="language-plaintext highlighter-rouge">Cx</code>.  There are no other cases where
+a pattern may match more than one way.  The fact that abstract
+patterns cannot do conditionals is one of the things that makes
+them usable as patterns.</p>
+
+<p>Macros are sometimes used for module names.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">SERVER</span><span class="p">,{</span><span class="n">rmod_random_impl</span><span class="p">,</span>
+        <span class="nb">list_to_atom</span><span class="p">(</span><span class="s">"babbis@"</span> <span class="o">++</span>
+	<span class="nb">hd</span><span class="p">(</span><span class="nb">tl</span><span class="p">(</span><span class="nn">string</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nb">atom_to_list</span><span class="p">(</span><span class="nb">node</span><span class="p">()),</span><span class="s">"@"</span><span class="p">))))}).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">CLIENTMOD</span><span class="p">,</span><span class="n">'rmod_random'</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">produce</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">?</span><span class="nv">CLIENTMOD</span><span class="p">:</span><span class="nf">produce</span><span class="p">(</span><span class="o">?</span><span class="nv">SERVER</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Abstract patterns can be used for this too, but there is an
+error waiting to happen.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">server</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rmod_random_impl</span><span class="p">,</span>
+        <span class="nb">list_to_atom</span><span class="p">(</span><span class="s">"babbis@"</span> <span class="o">++</span>
+	<span class="nb">hd</span><span class="p">(</span><span class="nb">tl</span><span class="p">(</span><span class="nn">string</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nb">atom_to_list</span><span class="p">(</span><span class="nb">node</span><span class="p">()),</span><span class="s">"@"</span><span class="p">))))}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#client_mod</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">'rmod_random'</span><span class="p">.</span>
+
+<span class="n">produce</span> <span class="o">-&gt;</span> <span class="nl">#client_mod</span><span class="p">():</span><span class="nf">produce</span><span class="p">(</span><span class="nf">server</span><span class="p">()).</span>
+</code></pre></div></div>
+
+<p>The risk is that of writing <code class="language-plaintext highlighter-rouge">#client_mod:produce(server())</code>,
+which is the syntax we’ll want in stage 2 for calling an
+abstract pattern defined in another module.
+There is one thing that macros are used for that abstract
+patterns can be used for, but you’d probably rather not.</p>
+
+<p>Abstract patterns were also invented with the aim of
+replacing at least some uses of records.  Frames (or Joe
+Armstrong’s structs, which are essentially the same thing)
+are a superior way to do that.   Let’s see a simple case.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">mark_params</span><span class="p">,</span> <span class="p">{</span><span class="n">cell_id</span><span class="p">,</span>
+		      <span class="n">virtual_col</span><span class="p">,</span>
+		      <span class="n">virtual_row</span>
+		     <span class="p">}).</span>
+<span class="p">...</span>
+<span class="nv">MarkP</span> <span class="o">=</span> <span class="nf">mark_params</span><span class="p">(),</span>
+<span class="p">...</span>
+<span class="nv">NewMarkP</span> <span class="o">=</span> <span class="nv">MarkP</span><span class="nl">#mark_params</span><span class="p">{</span><span class="n">cell_id</span>     <span class="o">=</span> <span class="n">undefined</span><span class="p">,</span>
+			     <span class="n">virtual_col</span> <span class="o">=</span> <span class="n">undefined</span><span class="p">,</span>
+			     <span class="n">virtual_row</span> <span class="o">=</span> <span class="nv">VirtualRow</span>
+			    <span class="p">},</span>
+</code></pre></div></div>
+
+<p>This becomes</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">% General
+</span><span class="nl">#mark_params</span><span class="p">(</span><span class="nv">Cell</span><span class="p">,</span> <span class="nv">Row</span><span class="p">,</span> <span class="nv">Col</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">mark_params</span><span class="p">,</span> <span class="nv">Cell</span><span class="p">,</span> <span class="nv">Row</span><span class="p">,</span> <span class="nv">Col</span><span class="p">}.</span>
+<span class="c">% Initial value
+</span><span class="nl">#mark_params</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nl">#mark_params</span><span class="p">(</span><span class="n">undefined</span><span class="p">,</span> <span class="n">undefined</span><span class="p">,</span> <span class="n">undefined</span><span class="p">).</span>
+<span class="c">% Recogniser
+</span><span class="nl">#is_mark_params</span><span class="p">({</span><span class="n">mark_params</span><span class="p">,_,_,_})</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">.</span>
+<span class="c">% Cell extractor
+</span><span class="nl">#mark_params__cell</span><span class="p">(</span><span class="nl">#mark_params</span><span class="p">(</span><span class="nv">Cell</span><span class="p">,_,_))</span> <span class="o">-&gt;</span> <span class="nv">Cell</span><span class="p">.</span>
+<span class="c">% Cell updater
+</span><span class="nl">#mark_params__cell</span><span class="p">(</span><span class="nv">Cell</span><span class="p">,</span> <span class="nl">#mark_params</span><span class="p">(_,</span><span class="nv">R</span><span class="p">,</span><span class="nv">C</span><span class="p">))</span> <span class="o">-&gt;</span>
+    <span class="nl">#mark_params</span><span class="p">(</span><span class="nv">Cell</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="nv">C</span><span class="p">).</span>
+<span class="c">% Row extractor
+</span><span class="nl">#mark_params__row</span><span class="p">(</span><span class="nl">#mark_params</span><span class="p">(_,</span><span class="nv">Row</span><span class="p">,_))</span> <span class="o">-&gt;</span> <span class="nv">Row</span><span class="p">.</span>
+<span class="c">% Row updater
+</span><span class="nl">#mark_params__row</span><span class="p">(</span><span class="nv">Row</span><span class="p">,</span> <span class="nl">#mark_params</span><span class="p">(</span><span class="nv">K</span><span class="p">,_,</span><span class="nv">C</span><span class="p">))</span> <span class="o">-&gt;</span>
+    <span class="nl">#mark_params</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nv">Row</span><span class="p">,</span> <span class="nv">C</span><span class="p">).</span>
+<span class="c">% Col extractor
+</span><span class="nl">#mark_params__col</span><span class="p">(</span><span class="nl">#mark_params</span><span class="p">(_,_,</span><span class="nv">Col</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nv">Col</span><span class="p">.</span>
+<span class="c">% Col updater
+</span><span class="nl">#mark_params__col</span><span class="p">(</span><span class="nv">Col</span><span class="p">,</span> <span class="nl">#mark_params</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span><span class="nv">R</span><span class="p">,_))</span> <span class="o">-&gt;</span>
+    <span class="nl">#mark_params</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="nv">Col</span><span class="p">).</span>
+<span class="p">...</span>
+<span class="nv">MarkP</span> <span class="o">=</span> <span class="nl">#mark_params</span><span class="p">(),</span>
+<span class="p">...</span>
+<span class="nv">NewMarkP</span> <span class="o">=</span> <span class="nl">#mark_params__row</span><span class="p">(</span><span class="nv">VirtualRow</span><span class="p">,</span>
+           <span class="nl">#mark_params__col</span><span class="p">(</span><span class="n">undefined</span><span class="p">,</span>
+           <span class="nl">#mark_params__cell</span><span class="p">(</span><span class="n">undefined</span><span class="p">,</span> <span class="nv">MarkP</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<p>The extractor and updater patterns can be derived automatically,
+which comes in stage 4.  With frames/structs, we may never bother.</p>
+
+<p>There is a feature of Haskell that I have long loved.
+That is so-called “n+k patterns”, where a pattern may be N+K
+for N a variable and K a positive integer.  This matches V
+if V is an integer greater than or equal to K, and binds N
+to V - K.  For example,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fib</span> <span class="mi">0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fib</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="nf">fib</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">fib</span> <span class="n">n</span> <span class="o">+</span> <span class="nf">fib</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Not that that’s a good way to implement the Fibonacci function,
+of course.  (It takes O(phi^N) when O(log N) is attainable.)
+There’s no such thing in Erlang.  But with abstract patterns,
+we could program it:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#succ</span><span class="p">(</span><span class="nv">M</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">N</span><span class="p">),</span> <span class="nv">N</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">M</span> <span class="o">=</span> <span class="nv">N</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="nv">N</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">fib</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nf">fib</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nf">fib</span><span class="p">(</span><span class="nl">#succ</span><span class="p">(</span><span class="nl">#succ</span><span class="p">(</span><span class="nv">N</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nf">fib</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">+</span> <span class="nf">fib</span><span class="p">(</span><span class="nv">N</span><span class="o">+</span><span class="mi">1</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Sometimes we want a three-way split:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">N</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="nv">N</span> <span class="o">=</span> <span class="mi">2</span><span class="n">k</span><span class="o">+</span><span class="mi">0</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nv">N</span> <span class="o">=</span> <span class="mi">2</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can program that too:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#one</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">.</span>
+<span class="nl">#even</span><span class="p">(</span><span class="nv">K</span><span class="p">)</span>
+<span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">N</span><span class="p">),</span> <span class="p">(</span><span class="nv">N</span> <span class="ow">band</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">N</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="nv">K</span> <span class="o">=</span> <span class="nv">N</span> <span class="ow">div</span> <span class="mi">2</span>
+<span class="p">-</span><span class="err">&gt; N.
+#</span><span class="ni">odd</span><span class="p">(</span><span class="nv">K</span><span class="p">)</span>
+<span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">N</span><span class="p">),</span> <span class="p">(</span><span class="nv">N</span> <span class="ow">band</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">N</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">,</span> <span class="nv">K</span> <span class="o">=</span> <span class="nv">N</span> <span class="ow">div</span> <span class="mi">2</span>
+<span class="p">-</span><span class="err">&gt; N.
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">ruler</span><span class="p">(</span><span class="nl">#one</span><span class="p">())</span>   <span class="o">-&gt;</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nf">ruler</span><span class="p">(</span><span class="nl">#even</span><span class="p">(</span><span class="nv">K</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="nf">ruler</span><span class="p">(</span><span class="nv">K</span><span class="p">);</span>
+<span class="nf">ruler</span><span class="p">(</span><span class="nl">#odd</span><span class="p">(</span><span class="nv">K</span><span class="p">))</span>  <span class="o">-&gt;</span> <span class="mi">1</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Let’s turn to abstract data types.
+There are three obvious ways to implement association lists
+as single data structures:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[{</span><span class="nv">K1</span><span class="p">,</span><span class="nv">V1</span><span class="p">},</span> <span class="p">...,</span> <span class="p">{</span><span class="nv">Kn</span><span class="p">,</span><span class="nv">Vn</span><span class="p">}]</span>		<span class="c">% pairs
+</span><span class="p">[</span><span class="nv">K1</span><span class="p">,</span><span class="nv">V1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Kn</span><span class="p">,</span><span class="nv">Vn</span><span class="p">]</span>		<span class="c">% alternating
+</span><span class="p">{</span><span class="nv">K1</span><span class="p">,</span><span class="nv">V1</span><span class="p">,</span> <span class="p">...,</span> <span class="p">{</span><span class="nv">Kn</span><span class="p">,</span><span class="nv">Vn</span><span class="p">,[]}}</span>	<span class="c">% triples
+</span></code></pre></div></div>
+
+<p>Suppose you cannot make up your mind which is better.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#empty_alist</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">[].</span>
+<span class="p">-</span><span class="ni">ifdef</span><span class="p">(</span><span class="nv">PAIRS</span><span class="p">).</span>
+<span class="nl">#non_empty_alist</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">,</span><span class="nv">R</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[{</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">}|</span><span class="nv">R</span><span class="p">].</span>
+<span class="p">-</span><span class="ni">else</span><span class="p">.</span>
+<span class="p">-</span><span class="ni">ifdef</span><span class="p">(</span><span class="nv">TRIPLES</span><span class="p">).</span>
+<span class="nl">#non_empty_alist</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">,</span><span class="nv">R</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">,</span><span class="nv">R</span><span class="p">}.</span>
+<span class="p">-</span><span class="ni">else</span><span class="p">.</span>
+<span class="nl">#non_empty_alist</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">,</span><span class="nv">R</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">|</span><span class="nv">R</span><span class="p">].</span>
+<span class="p">-</span><span class="ni">endif</span><span class="p">.</span>
+<span class="p">-</span><span class="ni">endif</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">zip</span><span class="p">([</span><span class="nv">K</span><span class="p">|</span><span class="nv">Ks</span><span class="p">],</span> <span class="p">[</span><span class="nv">V</span><span class="p">|</span><span class="nv">Vs</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="nl">#non_empty_alist</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nv">V</span><span class="p">,</span> <span class="nf">zip</span><span class="p">(</span><span class="nv">Ks</span><span class="p">,</span> <span class="nv">Vs</span><span class="p">));</span>
+<span class="nf">zip</span><span class="p">([],</span> <span class="p">[])</span> <span class="o">-&gt;</span>
+    <span class="nl">#empty_alist</span><span class="p">().</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">lookup</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nl">#non_empty_alist</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">,_),</span> <span class="p">_)</span> <span class="o">-&gt;</span>
+    <span class="nv">V</span><span class="p">;</span>
+<span class="nf">lookup</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nl">#non_empty_alist</span><span class="p">(_,_,</span><span class="nv">R</span><span class="p">),</span> <span class="nv">D</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">lookup</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="nv">D</span><span class="p">);</span>
+<span class="nf">lookup</span><span class="p">(</span><span class="nv">K</span><span class="p">,</span> <span class="nl">#empty_alist</span><span class="p">(),</span> <span class="nv">D</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">D</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Now you can switch between the three implementations, for	
+testing and benchmarking, by flicking a single preprocessor
+switch.</p>
+
+<p>Sometimes there is something that would have been an algebraic
+data type in Haskell or Clean or SML or CAML, but in Erlang we
+just have to use a variety of tuples.  The parsed form of
+Erlang source code is a good example.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">lform</span><span class="p">({</span><span class="n">attribute</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arg</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">lattribute</span><span class="p">({</span><span class="n">attribute</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arg</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">);</span>
+<span class="nf">lform</span><span class="p">({</span><span class="n">function</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arity</span><span class="p">,</span><span class="nv">Clauses</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">lfunction</span><span class="p">({</span><span class="n">function</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arity</span><span class="p">,</span><span class="nv">Clauses</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">);</span>
+<span class="nf">lform</span><span class="p">({</span><span class="n">rule</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arity</span><span class="p">,</span><span class="nv">Clauses</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">lrule</span><span class="p">({</span><span class="n">rule</span><span class="p">,</span><span class="nv">Line</span><span class="p">,</span><span class="nv">Name</span><span class="p">,</span><span class="nv">Arity</span><span class="p">,</span><span class="nv">Clauses</span><span class="p">},</span> <span class="nv">Hook</span><span class="p">);</span>
+<span class="c">%% These are specials to make it easier for the compiler.
+</span><span class="nf">lform</span><span class="p">({</span><span class="n">error</span><span class="p">,</span><span class="nv">E</span><span class="p">},</span> <span class="p">_</span><span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">leaf</span><span class="p">(</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">[{</span><span class="n">error</span><span class="p">,</span><span class="nv">E</span><span class="p">}]));</span>
+<span class="nf">lform</span><span class="p">({</span><span class="n">warning</span><span class="p">,</span><span class="nv">W</span><span class="p">},</span> <span class="p">_</span><span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">leaf</span><span class="p">(</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">[{</span><span class="n">warning</span><span class="p">,</span><span class="nv">W</span><span class="p">}]));</span>
+<span class="nf">lform</span><span class="p">({</span><span class="n">eof</span><span class="p">,_</span><span class="nv">Line</span><span class="p">},</span> <span class="p">_</span><span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="sc">$\n</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>We can define abstract patterns for these.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#attribute</span><span class="p">(</span><span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">)</span>    <span class="o">-&gt;</span> <span class="p">{</span><span class="n">attribute</span><span class="p">,</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">}.</span>
+<span class="nl">#function</span><span class="p">(</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">function</span><span class="p">,</span>  <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#rule</span><span class="p">(</span>     <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rule</span><span class="p">,</span>      <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#eof</span><span class="p">(</span>      <span class="nv">L</span><span class="p">)</span>          <span class="o">-&gt;</span> <span class="p">{</span><span class="n">eof</span><span class="p">,</span>       <span class="nv">L</span><span class="p">}.</span>
+<span class="nl">#error</span><span class="p">(</span>    <span class="nv">E_</span>          <span class="o">-&gt;</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span>     <span class="nv">E</span><span class="p">}.</span>
+<span class="nl">#warning</span><span class="p">(</span>  <span class="nv">W</span><span class="p">)</span>          <span class="o">-&gt;</span> <span class="p">{</span><span class="n">warning</span><span class="p">,</span>   <span class="nv">W</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">#attribute</span><span class="p">()</span>		<span class="o">-&gt;</span> <span class="nl">#attribute</span><span class="p">(_,_,_).</span>
+<span class="nl">#function</span><span class="p">()</span>		<span class="o">-&gt;</span> <span class="nl">#function</span><span class="p">(_,_,_,_).</span>
+<span class="nl">#rule</span><span class="p">()</span>			<span class="o">-&gt;</span> <span class="nl">#rule</span><span class="p">(_,_,_,_).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">lform</span><span class="p">(</span><span class="nv">Form</span><span class="p">,</span> <span class="nv">Hook</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">Form</span>
+      <span class="k">of</span> <span class="nl">#attribute</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">lattribute</span><span class="p">(</span><span class="nv">Form</span><span class="p">,</span> <span class="nv">Hook</span><span class="p">)</span>
+       <span class="p">;</span> <span class="nl">#function</span><span class="p">()</span>  <span class="o">-&gt;</span> <span class="nf">lfunction</span><span class="p">(</span> <span class="nv">Form</span><span class="p">,</span> <span class="nv">Hook</span><span class="p">)</span>
+       <span class="p">;</span> <span class="nl">#rule</span><span class="p">()</span>      <span class="o">-&gt;</span> <span class="nf">lrule</span><span class="p">(</span>     <span class="nv">Form</span><span class="p">,</span> <span class="nv">Hook</span><span class="p">)</span>
+       <span class="p">;</span> <span class="nl">#error</span><span class="p">(</span><span class="nv">E</span><span class="p">)</span>    <span class="o">-&gt;</span> <span class="nf">leaf</span><span class="p">(</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">[{</span><span class="n">error</span><span class="p">,</span><span class="nv">E</span><span class="p">}]))</span>
+       <span class="p">;</span> <span class="nl">#warning</span><span class="p">(</span><span class="nv">W</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="nf">leaf</span><span class="p">(</span><span class="nf">format</span><span class="p">(</span><span class="s">"</span><span class="si">~p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">[{</span><span class="n">warning</span><span class="p">,</span><span class="nv">W</span><span class="p">}]))</span>
+       <span class="p">;</span> <span class="nl">#eof</span><span class="p">(_)</span>      <span class="o">-&gt;</span> <span class="sc">$\n</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>It would almost be worth defining these patterns even if these
+were their only occurrences, simply for the clarity they permit.
+But these patterns would be used over and over again.  Using
+the patterns not only makes the code shorter and clearer, it
+gives us two kinds of protection against changes to the data
+representation.  For example, suppose we decided to hold
+Name/Arity information in ‘function’ and ‘rule’ tuples as
+pairs, not as separate fields.  Then we could do</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">ifdef</span><span class="p">(</span><span class="nv">OLD_DATA</span><span class="p">).</span>
+<span class="nl">#function</span><span class="p">(</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span>  <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">function</span><span class="p">,</span>  <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#rule</span><span class="p">(</span>     <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span>  <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rule</span><span class="p">,</span>      <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#function</span><span class="p">(</span> <span class="nv">L</span><span class="p">,</span> <span class="p">{</span><span class="nv">N</span><span class="p">,</span><span class="nv">A</span><span class="p">},</span> <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">function</span><span class="p">,</span>  <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#rule</span><span class="p">(</span>     <span class="nv">L</span><span class="p">,</span> <span class="p">{</span><span class="nv">N</span><span class="p">,</span><span class="nv">A</span><span class="p">},</span> <span class="nv">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rule</span><span class="p">,</span>      <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="p">-</span><span class="ni">else</span><span class="p">.</span>
+<span class="nl">#function</span><span class="p">(</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="p">{</span><span class="n">function</span><span class="p">,</span>  <span class="nv">L</span><span class="p">,</span> <span class="p">{</span><span class="nv">N</span><span class="p">,</span><span class="nv">A</span><span class="p">},</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#rule</span><span class="p">(</span>     <span class="nv">L</span><span class="p">,</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">C</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rule</span><span class="p">,</span>      <span class="nv">L</span><span class="p">,</span> <span class="p">{</span><span class="nv">N</span><span class="p">,</span><span class="nv">A</span><span class="p">},</span> <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#function</span><span class="p">(</span> <span class="nv">L</span><span class="p">,</span> <span class="nv">NA</span><span class="p">,</span>   <span class="nv">C</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="p">{</span><span class="n">function</span><span class="p">,</span>  <span class="nv">L</span><span class="p">,</span> <span class="nv">NA</span><span class="p">,</span>    <span class="nv">C</span><span class="p">}.</span>
+<span class="nl">#rule</span><span class="p">(</span>     <span class="nv">L</span><span class="p">,</span> <span class="nv">NA</span><span class="p">,</span>   <span class="nv">C</span><span class="p">)</span>  <span class="o">-&gt;</span> <span class="p">{</span><span class="n">rule</span><span class="p">,</span>      <span class="nv">L</span><span class="p">,</span> <span class="nv">NA</span><span class="p">,</span>    <span class="nv">C</span><span class="p">}.</span>
+<span class="p">-</span><span class="ni">endif</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The rest of the code would remain unchanged.  That’s one kind of
+protection.  It doesn’t help us when we need to add new cases.
+That’s when the second kind of protection comes up.  Looking
+for <code class="language-plaintext highlighter-rouge">#function</code> is a much safer guide to finding relevant places
+than looking for <code class="language-plaintext highlighter-rouge">function</code>.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>There is more to the idea of abstract patterns than this
+specification describes.  Here’s a “road map”.</p>
+
+<ul>
+  <li>
+    <p>Stage 0:
+Allow pattern matching in guards.
+This is the subject of another EEP, as it is
+desirable in itself.  This MUST be implemented
+first before implementing Stage 1, because that’s
+what we want inlinable pattern calls to expand to.</p>
+  </li>
+  <li>
+    <p>Stage 1:
+Simple abstract patterns restricted so that they
+can be implemented exclusively by inline expansion.
+This requires no change to the VM other than the
+changes required for Stage 0.</p>
+
+    <p>Import/export of patterns can be faked using the
+preprocessor to -include definitions; this is not
+ideal, but it’s an acceptable stopgap.</p>
+  </li>
+  <li>
+    <p>Stage 2:
+Abstract functions are (pairs of) real functions,
+they may be -exported and -imported, may be called
+with module prefixes, can be replaced by hot loading,
+should be traceable, debuggable, profilable, and so
+on, just like other functions.  In Stage 2, exported
+abstract patterns would need inline declarations if
+they are to be inlined; other patterns would continue
+to be inlined except when compiled in debugging mode.</p>
+
+    <p>This requires fairly substantial changes to the
+run time system.  The big payoff here is that
+imported abstract patterns can be replaced by hot
+loading, unlike macros.</p>
+  </li>
+  <li>
+    <p>Stage 3:</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nl">#fun</span> <span class="p">[</span><span class="nv">Module</span><span class="p">:]</span><span class="nv">Name</span><span class="o">/</span><span class="nv">Arity</span> <span class="ow">and</span>
+    <span class="nl">#fun</span> <span class="p">(</span><span class="nv">P1</span><span class="p">,</span> <span class="p">...,</span> <span class="nv">Pn</span><span class="p">)</span> <span class="k">when</span> <span class="nv">G</span> <span class="o">-&gt;</span> <span class="nv">B</span> <span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">forms</span> <span class="n">are</span> <span class="n">introduced</span><span class="p">,</span> <span class="ow">and</span> <span class="n">a</span> <span class="n">metacall</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="err">#</span><span class="nv">Var</span><span class="p">(</span><span class="nv">E1</span><span class="p">,...,</span><span class="nv">En</span><span class="p">)</span> <span class="n">is</span> <span class="n">added</span><span class="p">.</span>
+
+<span class="nv">This</span> <span class="n">requires</span> <span class="n">extensions</span> <span class="n">to</span> <span class="n">the</span> <span class="nv">Erlang</span> <span class="n">term</span>
+<span class="n">representation</span> <span class="ow">and</span> <span class="n">the</span> <span class="nv">VM</span><span class="p">.</span>  <span class="nv">The</span> <span class="n">gain</span> <span class="n">here</span> <span class="n">is</span> <span class="n">that</span>
+<span class="n">the</span> <span class="nv">FAQ</span> <span class="s">"how do I pass a pattern as a parameter"</span>
+<span class="n">finally</span> <span class="n">gets</span> <span class="n">a</span> <span class="n">safe</span> <span class="n">answer</span><span class="p">.</span>  <span class="nv">For</span> <span class="n">example</span><span class="p">,</span>
+
+    <span class="nf">collect_messages</span><span class="p">(</span><span class="nv">P</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="nn">lists</span><span class="p">:</span><span class="nf">reverse</span><span class="p">(</span><span class="nf">collect_messages_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="p">[])).</span>
+    
+    <span class="nf">collect_messages_loop</span><span class="p">(</span><span class="nv">P</span><span class="p">,</span> <span class="nv">Ms</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="k">receive</span> <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="nv">P</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">collect_messages_loop</span><span class="p">([</span><span class="nv">M</span><span class="p">|</span><span class="nv">Ms</span><span class="p">])</span>
+          <span class="k">after</span> <span class="mi">0</span>        <span class="o">-&gt;</span> <span class="nv">Ms</span>
+        <span class="k">end</span><span class="p">.</span>
+
+<span class="n">gathers</span> <span class="n">all</span> <span class="n">the</span> <span class="n">messages</span> <span class="n">currently</span> <span class="n">in</span> <span class="n">the</span> <span class="n">mailbox</span>
+<span class="n">that</span> <span class="n">match</span> <span class="n">a</span> <span class="n">pattern</span> <span class="n">passed</span> <span class="n">as</span> <span class="n">a</span> <span class="n">parameter</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Stage 4:
+<code class="language-plaintext highlighter-rouge">&lt;expression&gt;#&lt;pattern call&gt;</code> field update,
+as described in the original proposal.</p>
+  </li>
+  <li>
+    <p>Stage 5:
+Multi-clause abstract patterns,
+as described in the original proposal.
+Multi-clause abstract patterns CAN handle
+examples like <code class="language-plaintext highlighter-rouge">?get_max</code> and <code class="language-plaintext highlighter-rouge">?LOWER</code>, which makes
+them even more useful in guards, but more than
+a little dubious as patterns.</p>
+  </li>
+  <li>
+    <p>Stage 6:
+“Hybrid” abstract patterns, where in <code class="language-plaintext highlighter-rouge">#A/M+N</code> the
+first <code class="language-plaintext highlighter-rouge">M</code> arguments are always inputs, and only
+the last <code class="language-plaintext highlighter-rouge">N</code> are outputs.  This one isn’t actually
+my idea.  The example</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nl">#range</span><span class="p">(</span><span class="nv">L</span><span class="p">,</span> <span class="nv">U</span><span class="p">,</span> <span class="nv">N</span><span class="p">)</span>
+    <span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">N</span><span class="p">),</span> <span class="nv">L</span> <span class="o">=&lt;</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">N</span> <span class="o">=&lt;</span> <span class="nv">U</span>
+    <span class="o">-&gt;</span> <span class="nv">N</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">comes</span> <span class="n">from</span> <span class="n">the</span> <span class="n">mailing</span> <span class="n">list</span><span class="p">.</span>  <span class="nv">I</span> <span class="n">don</span><span class="err">'</span><span class="n">t</span> <span class="n">like</span> <span class="n">this</span> <span class="n">very</span>
+<span class="n">much</span><span class="p">,</span> <span class="ow">and</span> <span class="n">note</span> <span class="n">that</span> <span class="n">for</span> <span class="n">some</span> <span class="n">purposes</span><span class="p">,</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="nf">range</span><span class="p">(</span><span class="nv">L</span><span class="p">,</span> <span class="nv">U</span><span class="p">)</span> <span class="o">-&gt;</span>
+       <span class="nl">#fun</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">N</span><span class="p">),</span> <span class="nv">L</span> <span class="o">=&lt;</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">N</span> <span class="o">=&lt;</span> <span class="nv">U</span>
+               <span class="o">-&gt;</span> <span class="nv">N</span> <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">can</span> <span class="n">do</span> <span class="n">the</span> <span class="n">same</span> <span class="n">job</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>What I’ve done for this proposal is to strip away everything
+that isn’t essential.  We get data abstraction, user defined
+guard tests and functions, and a replacement for many uses
+of macros, without run time overheads and without changes to
+anything except the compiler front end, assuming that Stage 0
+is done first.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Erlang currently uses the sharp sign for record syntax.
+Since record syntax uses curly braces, and abstract patterns
+use round parentheses, no existing code should be affected.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>Sketched above.  Given stage 0, this stage 1 is within my
+knowledge and abilities, but I don’t understand the Erlang
+VM well enough to do stage 0.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Retiring old performance pitfalls - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Retiring old performance pitfalls - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-8 offset-lg-2">
+            <article class="card mb-4">
+    <div class="card-header">
+        <h3><a href="/erlang-org/blog/retired-pitfalls-22/">Retiring old performance pitfalls</a></h3>
+        <div class="date">November 07, 2018
+             · by John Högberg
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        
+        
+        <p>Erlang/OTP 22 will bring many performance improvements to the table, but most
+of them have a broad impact and don’t affect the way you write efficient code.
+In this post I’d like to highlight a few things that used to be surprisingly
+slow but no longer need to be avoided.</p>
+      <h3 id="named-fun-recursion">
+        
+        
+          Named fun recursion <a href="#named-fun-recursion">#</a>
+        
+        
+      </h3>
+    
+
+<p>Named funs have a neat little feature that might not be obvious at a first
+glance; their name is a variable like any other and you’re free to pass it to
+another function or even return it.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">deepfoldl</span><span class="p">(</span><span class="nv">F</span><span class="p">,</span> <span class="nv">Acc0</span><span class="p">,</span> <span class="nv">L</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="p">(</span><span class="k">fun</span> <span class="nv">NamedFun</span><span class="p">([_|_]</span><span class="o">=</span><span class="nv">Elem</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">lists</span><span class="p">:</span><span class="nf">foldl</span><span class="p">(</span><span class="nv">NamedFun</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">,</span> <span class="nv">Elem</span><span class="p">);</span>
+         <span class="nv">NamedFun</span><span class="p">([],</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Acc</span><span class="p">;</span>
+         <span class="nv">NamedFun</span><span class="p">(</span><span class="nv">Elem</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">F</span><span class="p">(</span><span class="nv">Elem</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span>
+     <span class="k">end</span><span class="p">)(</span><span class="nv">L</span><span class="p">,</span> <span class="nv">Acc0</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>This is cool but a bit of a headache for the compiler. To create a fun we pass
+its definition and free variables to a <code class="language-plaintext highlighter-rouge">make_fun2</code> instruction, but we can’t
+include the fun itself as a free variable because it hasn’t been created yet.
+Prior to OTP 22 we solved this by creating a new equivalent fun <em>inside</em> the
+fun, but this made recursion surprisingly expensive both in terms of run-time
+and memory use.</p>
+
+<p>As of OTP 22 we translate recursion to a direct function call instead which
+avoids creating a new fun. Other cases still require recreating the fun, but
+they’re far less common.</p>
+
+<p><a href="https://github.com/erlang/otp/pull/1973">Optimize named funs and fun-wrapped macros #1973</a></p>
+      <h3 id="list-subtraction-with-large-operands--operator">
+        
+        
+          List subtraction with large operands (– operator) <a href="#list-subtraction-with-large-operands--operator">#</a>
+        
+        
+      </h3>
+    
+
+<p>While the Erlang VM appears to be pre-emptively scheduled to the programmer,
+it’s <a href="https://en.wikipedia.org/wiki/Computer_multitasking#Cooperative_multitasking">co-operatively scheduled</a>
+internally. When a native function runs it monopolizes the scheduler until it
+returns, so a long-running one can severely harm the responsiveness of the
+system. We’ve therefore written nearly all such functions in a style that
+breaks the work into short units that complete quickly enough, but there’s
+a steadily shrinking list of functions that misbehave, and list subtraction
+was one of these.</p>
+
+<p>It’s usually pretty straightforward to rewrite functions in this style, but
+the <a href="https://github.com/erlang/otp/blob/d9682b02b81fa6e23e554b6e017650eb89ecebed/erts/emulator/beam/erl_bif_lists.c#L195">old algorithm</a>
+processed the second list in a loop around the first list, which is problematic
+since both lists can be very long and resuming work in nested loops is often
+trickier than expected.</p>
+
+<p>In this case it was easier to just get rid of the nested loop altogether. The
+new algorithm starts out by building a red-black tree from the right-hand side
+before removing elements from the left-hand side. As all operations on the tree
+have <code class="language-plaintext highlighter-rouge">log n</code> complexity we know that they will finish really quickly, so all we
+need to care about is yielding in the outer loops.</p>
+
+<p>This also had the nice side-effect of reducing the worst-case complexity from
+<code class="language-plaintext highlighter-rouge">O(n²)</code> to <code class="language-plaintext highlighter-rouge">O(n log n)</code> and let us remove some warnings from the reference
+manual and <a href="http://erlang.org/documentation/doc-10.1/doc/efficiency_guide/commoncaveats.html#operator-----">efficiency guide</a>. It’s worth noting
+that the new implementation is always faster than the proposed workarounds, and
+that it falls back to the old algorithm when it’s faster to do so.</p>
+
+<p>This change will be rolled out in OTP 21.2, big thanks to
+Dmytro Lytovchenko (@kvakvs on GitHub) for writing the better half of it!</p>
+
+<p><a href="https://github.com/erlang/otp/pull/1998">Optimize list subtraction (A – B) and make it yield on large inputs #1998</a></p>
+      <h3 id="lookahead-in-bit-syntax-matching">
+        
+        
+          Lookahead in bit-syntax matching <a href="#lookahead-in-bit-syntax-matching">#</a>
+        
+        
+      </h3>
+    
+
+<p>The optimization pass for bit-syntax matching was completely rewritten in OTP
+22 to take advantage of the new SSA-based intermediate format. It applies the
+same optimizations as before so already well-optimized code is unlikely to see
+any benefit, but it manages to apply them in far more cases.</p>
+
+<p>For those who aren’t familiar, all bit-syntax matching operates on a
+<a href="http://erlang.org/doc/efficiency_guide/binaryhandling.html#matching-binaries">“match context”</a>
+internally, which is a mutable object that keeps track of the current
+match position. This helps a lot when matching complicated patterns as it can
+zip back and forth as required, saving us from having to match components more
+than once.</p>
+
+<p>This is great when matching several different patterns, but it comes in real
+handy in loops like the following:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">trim_zero</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="mi">0</span><span class="p">,</span><span class="nv">Tail</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">trim_zero</span><span class="p">(</span><span class="nv">Tail</span><span class="p">);</span>
+<span class="nf">trim_zero</span><span class="p">(</span><span class="nv">B</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_binary</span><span class="p">(</span><span class="nv">B</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">B</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>As the compiler can see that <code class="language-plaintext highlighter-rouge">Tail</code> is passed directly to <code class="language-plaintext highlighter-rouge">trim_zero</code>, which
+promptly begins with a bit-match, it can skip extracting <code class="language-plaintext highlighter-rouge">Tail</code> as a sub-binary
+and pass the match context instead. This is a pretty well-known optimization
+called “match context reuse” which greatly improves performance when applied,
+and a lot of code has been written with it in mind.</p>
+
+<p>The catch of passing a match context like this is that we have to maintain the
+illusion that we’re dealing with an immutable <em>binary</em>. Whenever it’s used in
+a non-matching expression we either need to convert the context to an
+equivalent binary, or admit defeat and skip the optimization.</p>
+
+<p>While the compiler did a pretty good job prior to OTP 22 it gave up a bit too
+easily in many cases, and the most trivial example is almost funny:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">calls_wrapper</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"hello"</span><span class="p">,</span><span class="nv">Tail</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">count_ones</span><span class="p">(</span><span class="nv">Tail</span><span class="p">).</span>
+
+<span class="c">%% This simple wrapper prevents context reuse in the call above. :(
+</span><span class="nf">count_ones</span><span class="p">(</span><span class="nv">Bin</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">count_ones_1</span><span class="p">(</span><span class="nv">Bin</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span>
+
+<span class="nf">count_ones_1</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="nv">Tail</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">count_ones_1</span><span class="p">(</span><span class="nv">Tail</span><span class="p">,</span> <span class="nv">Acc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nf">count_ones_1</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="p">_,</span> <span class="nv">Tail</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">count_ones_1</span><span class="p">(</span><span class="nv">Tail</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">);</span>
+<span class="nf">count_ones_1</span><span class="p">(</span><span class="o">&lt;&lt;&gt;&gt;</span><span class="p">,</span> <span class="nv">Acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Acc</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>A trickier example can be found in the <code class="language-plaintext highlighter-rouge">string</code> module:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">bin_search_inv_1</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="nv">CP1</span><span class="o">/</span><span class="n">utf8</span><span class="p">,</span> <span class="nv">BinRest</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;=</span><span class="nv">Bin0</span><span class="p">,</span> <span class="nv">Cont</span><span class="p">,</span> <span class="nv">Sep</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">BinRest</span> <span class="k">of</span>
+        <span class="c">%% 1
+</span>        <span class="o">&lt;&lt;</span><span class="nv">CP2</span><span class="o">/</span><span class="n">utf8</span><span class="p">,</span> <span class="p">_</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span> <span class="k">when</span> <span class="o">?</span><span class="nv">ASCII_LIST</span><span class="p">(</span><span class="nv">CP1</span><span class="p">,</span> <span class="nv">CP2</span><span class="p">)</span> <span class="o">-&gt;</span>
+            <span class="k">case</span> <span class="nv">CP1</span> <span class="k">of</span>
+                <span class="nv">Sep</span> <span class="o">-&gt;</span>
+                    <span class="c">%% 2
+</span>                    <span class="nf">bin_search_inv_1</span><span class="p">(</span><span class="nv">BinRest</span><span class="p">,</span> <span class="nv">Cont</span><span class="p">,</span> <span class="nv">Sep</span><span class="p">);</span>
+                <span class="p">_</span> <span class="o">-&gt;</span>
+                    <span class="c">%% 3
+</span>                    <span class="p">[</span><span class="nv">Bin0</span><span class="p">|</span><span class="nv">Cont</span><span class="p">]</span>
+            <span class="k">end</span><span class="p">;</span>
+        <span class="c">%% ... snip ...
+</span></code></pre></div></div>
+
+<p>What we’re looking at is a fast-path for ASCII characters; when both <code class="language-plaintext highlighter-rouge">CP1</code> and
+<code class="language-plaintext highlighter-rouge">CP2</code> are ASCII we know that <code class="language-plaintext highlighter-rouge">CP1</code> is not a part of a grapheme cluster and we
+can thus avoid a call to <code class="language-plaintext highlighter-rouge">unicode_util:gc/1</code>. It’s not a particularly expensive
+function but calling it once per character adds up quickly.</p>
+
+<p>At first glance it might seem safe to pass the context at <code class="language-plaintext highlighter-rouge">2</code>, but this is made
+difficult by <code class="language-plaintext highlighter-rouge">Bin0</code> being returned at <code class="language-plaintext highlighter-rouge">3</code>. As contexts are mutable and change
+their position whenever a match succeeds, naively converting <code class="language-plaintext highlighter-rouge">Bin0</code> back to a
+binary would give you what comes after <code class="language-plaintext highlighter-rouge">CP2</code> instead.</p>
+
+<p>Now, you might be wondering why we couldn’t simply restore the position before
+converting <code class="language-plaintext highlighter-rouge">Bin0</code> back to a binary. It’s an obvious thing to do but before OTP
+22 the context tracked not only the current position but also previous ones
+needed when backtracking. These were saved in per-context “slots” which were
+mutable and heavily reused, and the match at <code class="language-plaintext highlighter-rouge">1</code> clobbered the slot needed to
+restore <code class="language-plaintext highlighter-rouge">Bin0</code>.</p>
+
+<p>This also meant that a context couldn’t be used again after being passed to
+another function or entering a <code class="language-plaintext highlighter-rouge">try</code>/<code class="language-plaintext highlighter-rouge">catch</code>, which made it more or less
+impossible to apply this optimization in code that requires looking ahead.</p>
+
+<p>As of OTP 22 these positions are stored outside the context so there’s no need
+to worry about them becoming invalid, making it possible to optimize the above
+cases.</p>
+
+<p><a href="https://github.com/erlang/otp/pull/1958">Rewrite BSM optimizations in the new SSA-based intermediate format #1958</a></p>
+
+        
+    </div>
+</article>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-c.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-bash.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

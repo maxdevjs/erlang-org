@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0043 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0043 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Björn-Egil Dahlberg &lt;egil(at)Erlang.org&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>04-Apr-2013</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R17A</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-43-maps">EEP 43: Maps</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>The journey of Maps and this EEP has been long and by no means a
+straight-forward and continuous one. I had a crystal clear picture of what I
+wanted Maps to be when we first started discussing it within OTP about
+two-three years ago. This EEP resembles that vision but it has had a lot of
+contributions of other ideas from both within and outside of OTP.</p>
+
+<p>The idea was a data-type, a syntax aware mapping of key-value associations
+with pattern matching. A syntax similar to records but without the hazzle of
+compile-time dependency and with arbitrary terms as keys. Order was not
+important and it could be implemented with a Hash-Array-Mapped-Trie with good
+performance and memory trade-offs. This was a different approach than to replace
+records. It was meant to replace records where suitable and in other regards
+not be a replacement but its own <em>thing</em>.</p>
+
+<blockquote>
+  <p>From the community there has been many wishes of a Map like data-type and a
+few suggestions.  The one suggestion that stands out is of course the Frames
+proposal from Richard O’Keefe. It is the most complete proposal I’ve seen and
+is very well thought out. Its goal is to be a record replacement and the
+proposal satisfies this goal very well.</p>
+</blockquote>
+
+<ul>
+  <li>If Frames are that good, why a separate EEP?</li>
+  <li>It boils down to goals and constraints.</li>
+</ul>
+
+<p>A record replacement is just that, a replacement.
+It’s like asking the question, “What do we have?” instead of “What can we get?”
+The instant rebuttal would be “What do we need?” I say Maps.</p>
+
+<p>Frames has certainly inspired and influenced Maps. In many regards Maps also
+encompasses Frames but Maps tries to do more. In the end I believe they are
+two different things and have different goals.</p>
+
+<p>This EEP suggests a new built in data-type for Erlang, the map, 
+<code class="language-plaintext highlighter-rouge">#{ Key =&gt; Value }</code>.</p>
+
+<p>The new data-type shall have semantics, syntax and operations that:</p>
+
+<ul>
+  <li>provides an association set from key terms to value terms which can be
+constructed, accessed and updated using language syntax</li>
+  <li>can be uniquely distinguished from every other data-type in the language</li>
+  <li>has no compile-time dependency for constructing, accessing or updating
+contents of maps nor for passing maps between modules, processes or over
+Erlang distribution</li>
+  <li>can be used in matching expressions in the language</li>
+  <li>has a one-to-one association between printing and parsing the data-type</li>
+  <li>has a well defined order between terms of the type and other Erlang types</li>
+  <li>has at most O(log N) time complexity in insert and lookup operations, where 
+N is the number of key-value associations.</li>
+</ul>
+
+<p>Similar data-types exists in other languages, i.e.  <a href="http://perldoc.perl.org/perldata.html" title="perldata - perldoc.perl.org">perl hashes</a>,
+<a href="http://ruby-doc.org/core-1.9.3/Hash.html" title="Class: Hash (Ruby 1.9.3)">ruby hashes</a>, <a href="http://docs.python.org/tutorial/datastructures.html#dictionaries" title="5. Data Structures - Python v2.7.3 documentation">python dictionaries</a>, or
+<a href="http://docs.scala-lang.org/overviews/collections/maps.html" title="Collections - Maps - Scala Documentation">scala maps</a>.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>A map <code class="language-plaintext highlighter-rouge">M</code> consists of a number of <em>associations</em> and keeps an association
+from key terms <code class="language-plaintext highlighter-rouge">K1..Kn</code> to value terms <code class="language-plaintext highlighter-rouge">V1..Vn</code> where no two keys <em>match</em>.
+Any term, compound or otherwise, is a viable key or value. Terms of type Map
+are recognized by guard tests <code class="language-plaintext highlighter-rouge">erlang:is_map/1</code>. There are no operators
+acting on maps. Within maps there are two infix operators. An association
+operator, <code class="language-plaintext highlighter-rouge">=&gt;</code>, pairs a key to a value and is used in creation and updates.
+A set-value operator, <code class="language-plaintext highlighter-rouge">:=</code>, is used to update a value on an already
+existing and matching key. The set-value operator is also used in matching
+to get the associated value from a key.</p>
+
+<h2 id="terminology">Terminology</h2>
+
+<p>The <em>size</em> of a map is the number of associations in its set.</p>
+
+<p>An <em>association</em> is a key-value pair of key <em>K</em> to value <em>V</em> in a Map.</p>
+
+<p>Two keys, <code class="language-plaintext highlighter-rouge">K1</code> and <code class="language-plaintext highlighter-rouge">K2</code> are <em>matching</em> if, <code class="language-plaintext highlighter-rouge">true = K1 =:= K2</code>.</p>
+
+<h2 id="syntax">Syntax</h2>
+
+<p>Defined syntax for declaring, updating and matching maps.</p>
+
+<h3 id="construction-syntax">Construction syntax</h3>
+
+<p>Constructing a new map is done by letting an expression <code class="language-plaintext highlighter-rouge">K</code> be associated to
+another expression <code class="language-plaintext highlighter-rouge">V</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="o">=&gt;</span> <span class="nv">V</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>New maps may include multiple associations at construction by listing every
+association:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K1</span> <span class="o">=&gt;</span> <span class="nv">V1</span><span class="p">,</span> <span class="p">..</span> <span class="nv">Kn</span> <span class="o">=&gt;</span> <span class="nv">Vn</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>An empty map is constructed by not associating any terms with each other:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{}</span>        
+</code></pre></div></div>
+
+<p>All keys and values in the map are terms. Any expression is first evaluated and
+then the resulting terms are used as <em>key</em> and <em>value</em> respectively.</p>
+
+<p>Keys and values are separated by the <code class="language-plaintext highlighter-rouge">=&gt;</code> arrow and associations are
+separated by <code class="language-plaintext highlighter-rouge">,</code>.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M0</span> <span class="o">=</span> <span class="err">#</span><span class="p">{},</span>                   <span class="c">% empty map
+</span><span class="nv">M1</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="o">&lt;&lt;</span><span class="s">"hello"</span><span class="o">&gt;&gt;</span> <span class="p">},</span> <span class="c">% single association with literals
+</span><span class="nv">M2</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">},</span>   <span class="c">% multiple associations with literals
+</span><span class="nv">M3</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="nv">A</span> <span class="o">=&gt;</span> <span class="nv">B</span> <span class="p">},</span>           <span class="c">% single association with variables
+</span><span class="nv">M4</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="p">{</span><span class="nv">A</span><span class="p">,</span> <span class="nv">B</span><span class="p">}</span> <span class="o">=&gt;</span> <span class="nf">f</span><span class="p">()</span> <span class="p">}.</span>    <span class="c">% compound key associated to an evaluated expression
+</span></code></pre></div></div>
+
+<p>where, <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> are any expressions and <code class="language-plaintext highlighter-rouge">M0</code> through <code class="language-plaintext highlighter-rouge">M4</code> are the resulting
+map terms.</p>
+
+<p>If two matching keys are declared, the latter key will take precedent.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}</span>
+
+</code></pre></div></div>
+<p>The order in which the expressions constructing the keys and their
+associated values are evaluated is not defined. The syntactic order of
+the key-value pairs in the construction is of no relevance, except in
+the above mentioned case of two matching keys.</p>
+
+<p>A simple BNF grammar for the construction follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">map</span><span class="o">-</span><span class="n">construct</span><span class="o">&gt;</span>  <span class="p">::</span><span class="o">=</span> <span class="n">'#{'</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="n">'}'</span>
+<span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">/*</span> <span class="n">empty</span> <span class="o">*/</span>
+                    <span class="p">|</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> 
+                    <span class="p">|</span><span class="err"> </span><span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> <span class="n">','</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">'=&gt;'</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+           <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="nv">Erlang</span><span class="o">-</span><span class="n">expression</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="update-syntax">Update syntax</h3>
+
+<p>Updating a map has similar syntax as constructing it.</p>
+
+<p>An expression defining the map to be updated is put in front of the expression
+defining the keys to be updated and their respective values.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="o">=&gt;</span> <span class="nv">V</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">M</code> is an term of type map and <code class="language-plaintext highlighter-rouge">K</code> and <code class="language-plaintext highlighter-rouge">V</code> are any expression.</p>
+
+<p>If key <code class="language-plaintext highlighter-rouge">K</code> does not <em>match</em> any existing key in the map, a new association
+will be created from key <code class="language-plaintext highlighter-rouge">K</code> to value <code class="language-plaintext highlighter-rouge">V</code>.  If key <code class="language-plaintext highlighter-rouge">K</code> <em>matches</em> an existing
+key in map <code class="language-plaintext highlighter-rouge">M</code> its associated value will be replaced by the new value <code class="language-plaintext highlighter-rouge">V</code>. In both
+cases the evaluated map expression will return a new map.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">M</code> is not of type map an exception of type <code class="language-plaintext highlighter-rouge">badmap</code> is thrown.</p>
+
+<p>To only update an existing value, the following syntax is used,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">M</code> is an term of type map, <code class="language-plaintext highlighter-rouge">V</code> is an expression and <code class="language-plaintext highlighter-rouge">K</code> is an expression
+which evaluates to an existing key in <code class="language-plaintext highlighter-rouge">M</code>.</p>
+
+<p>If key <code class="language-plaintext highlighter-rouge">K</code> does not <em>match</em> any existing keys in map <code class="language-plaintext highlighter-rouge">M</code> an exception of type
+<code class="language-plaintext highlighter-rouge">badarg</code> will be triggered at runtime. If a <em>matching</em> key <code class="language-plaintext highlighter-rouge">K</code> is present in
+map <code class="language-plaintext highlighter-rouge">M</code> its associated value will be replaced by the new value <code class="language-plaintext highlighter-rouge">V</code> and the
+evaluated map expression returns a new map.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">M</code> is not of type map an exception of type <code class="language-plaintext highlighter-rouge">badmap</code> is thrown.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M0</span> <span class="o">=</span> <span class="err">#</span><span class="p">{},</span>
+<span class="nv">M1</span> <span class="o">=</span> <span class="nv">M0</span><span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">0</span> <span class="p">},</span>
+<span class="nv">M2</span> <span class="o">=</span> <span class="nv">M1</span><span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">},</span>
+<span class="nv">M3</span> <span class="o">=</span> <span class="nv">M2</span><span class="err">#</span><span class="p">{</span> <span class="s">"function"</span> <span class="o">=&gt;</span> <span class="k">fun</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">f</span><span class="p">()</span> <span class="k">end</span> <span class="p">},</span>
+<span class="nv">M4</span> <span class="o">=</span> <span class="nv">M3</span><span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="mi">3</span> <span class="p">}.</span>  <span class="c">% 'a' and 'b' was added in `M1` and `M2`.
+</span></code></pre></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">M0</code> is any map. It follows that <code class="language-plaintext highlighter-rouge">M1 .. M4</code> are maps as well.</p>
+
+<p>More Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">&gt;</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span><span class="o">&gt;</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="p">:</span><span class="o">=</span> <span class="n">b</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">4</span><span class="o">&gt;</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="p">:</span><span class="o">=</span> <span class="n">b</span> <span class="p">}.</span>
+<span class="o">**</span> <span class="n">exception</span> <span class="nn">error</span><span class="p">:</span> <span class="n">bad</span> <span class="n">argument</span>
+</code></pre></div></div>
+
+<p>As in construction, the order in which the key and value expressions
+are evaluated are not defined. The
+syntactic order of the key-value pairs in the update is of no
+relevance, except in the case where two keys match, in which
+case the latter value is used.</p>
+
+<p>A simple BNF grammar for map updates follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">&lt;</span><span class="n">map</span><span class="o">-</span><span class="n">construct</span><span class="o">&gt;</span>  <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">map</span><span class="o">-</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">'#{'</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="n">'}'</span>
+<span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">/*</span> <span class="n">empty</span> <span class="o">*/</span>
+                    <span class="p">|</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span> 
+                    <span class="p">|</span><span class="err"> </span><span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span> <span class="n">','</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span>
+                    <span class="p">|</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exact</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">'=&gt;'</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exact</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">':='</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+       <span class="o">&lt;</span><span class="n">map</span><span class="o">-</span><span class="n">expr</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="nv">Erlang</span> <span class="n">expression</span> <span class="n">evaluating</span> <span class="n">to</span> <span class="n">a</span> <span class="n">term</span> <span class="k">of</span> <span class="n">type</span> <span class="n">map</span><span class="o">&gt;</span>
+           <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="nv">Erlang</span> <span class="n">expression</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="accessing-a-single-value">Accessing a single value</h3>
+
+<p>For accessing single values in maps, let us use an de-association:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">V</span> <span class="o">=</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<p>Where <code class="language-plaintext highlighter-rouge">M</code> is a Map and <code class="language-plaintext highlighter-rouge">K</code> is any term.</p>
+
+<p>If key <code class="language-plaintext highlighter-rouge">K</code> <em>matches</em> to an existing key in map <code class="language-plaintext highlighter-rouge">M</code> the associated value
+will be bound to <code class="language-plaintext highlighter-rouge">V</code>. If key <code class="language-plaintext highlighter-rouge">K</code> does not <em>match</em> to any existing key in
+map <code class="language-plaintext highlighter-rouge">M</code> an exception <code class="language-plaintext highlighter-rouge">badarg</code> will occur in runtime.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M1</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span> <span class="p">},</span>
+<span class="mi">3</span> <span class="o">=</span> <span class="nv">M1</span><span class="err">#</span><span class="p">{</span> <span class="n">c</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M2</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">},</span>
+<span class="n">a</span> <span class="o">=</span> <span class="nv">M2</span><span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<h3 id="matching-syntax">Matching syntax</h3>
+
+<p>Matching of key-value associations from maps, exemplified with the
+matching operator, is done in the following way:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span>
+</code></pre></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">M</code> is any map. The key <code class="language-plaintext highlighter-rouge">K</code> has to be an expression with bound variables
+or a literals, and <code class="language-plaintext highlighter-rouge">V</code> can be any pattern with either bound or unbound variables.
+If variables in <code class="language-plaintext highlighter-rouge">V</code> are unbound, it will be bound to the value associated
+with the key <code class="language-plaintext highlighter-rouge">K</code>, which has to exist in the map <code class="language-plaintext highlighter-rouge">M</code>. If variables in <code class="language-plaintext highlighter-rouge">V</code> are
+bound, it has to match the value associated with <code class="language-plaintext highlighter-rouge">K</code> in <code class="language-plaintext highlighter-rouge">M</code>.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}},</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="nv">B</span><span class="p">}}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This will bind variable <code class="language-plaintext highlighter-rouge">B</code> to integer <code class="language-plaintext highlighter-rouge">2</code>.</p>
+
+<p>Similarly, multiple values from the map may be matched:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K1</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V1</span><span class="p">,</span> <span class="p">..,</span> <span class="nv">Kn</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Vn</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span>
+</code></pre></div></div>
+
+<p>where keys <code class="language-plaintext highlighter-rouge">K1 .. Kn</code> are any expressions with literals or bound variables. If all
+keys exists in map <code class="language-plaintext highlighter-rouge">M</code> all variables in <code class="language-plaintext highlighter-rouge">V1 .. Vn</code> will be matched to the
+associated values of there respective keys.</p>
+
+<p>If the matching conditions are not met, the match will fail, either with</p>
+
+<ol>
+  <li>a <code class="language-plaintext highlighter-rouge">badmatch</code> exception, if used in the context of the matching operator
+as in the example,</li>
+  <li>or resulting in the next clause being tested in function heads and
+case expressions.</li>
+</ol>
+
+<p>Matching in maps only allows for <code class="language-plaintext highlighter-rouge">:=</code> as delimiters of associations.</p>
+
+<p>The order in which keys are declared in matching has no relevance.</p>
+
+<p>Duplicate keys are allowed in matching and will match each pattern associated
+to the keys.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V1</span><span class="p">,</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V2</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span>
+</code></pre></div></div>
+
+<p>Matching an expression against an empty map literal will match its type but
+no variables will be bound:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{}</span> <span class="o">=</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+
+<p>This expression will match if the expression <code class="language-plaintext highlighter-rouge">Expr</code> is of type map, otherwise
+it will fail with an exception <code class="language-plaintext highlighter-rouge">badmatch</code>.</p>
+
+<p>The grammar for the matching syntax is similar to that of construction.</p>
+
+<h4 id="matching-syntax-example-with-literals-in-function-heads">Matching syntax: Example with literals in function heads</h4>
+
+<p>Matching of literals as keys are allowed in function heads.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% only start if not_started
+</span><span class="nf">handle_call</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">state</span> <span class="p">:</span><span class="o">=</span> <span class="n">not_started</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">S</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="p">...</span>
+    <span class="p">{</span><span class="n">reply</span><span class="p">,</span> <span class="n">ok</span><span class="p">,</span> <span class="nv">S</span><span class="err">#</span><span class="p">{</span> <span class="n">state</span> <span class="p">:</span><span class="o">=</span> <span class="n">start</span> <span class="p">}};</span>
+
+<span class="c">%% only change if started
+</span><span class="nf">handle_call</span><span class="p">(</span><span class="n">change</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">state</span> <span class="p">:</span><span class="o">=</span> <span class="n">start</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">S</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="p">...</span>
+    <span class="p">{</span><span class="n">reply</span><span class="p">,</span> <span class="n">ok</span><span class="p">,</span> <span class="nv">S</span><span class="err">#</span><span class="p">{</span> <span class="n">state</span> <span class="p">:</span><span class="o">=</span> <span class="n">changed</span> <span class="p">}};</span>
+</code></pre></div></div>
+
+<h4 id="matching-syntax-frequency-example">Matching syntax: Frequency example</h4>
+
+<p>More matching syntax, calculating frequency of terms in a list.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">)</span>                    <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="err">#</span><span class="p">{}).</span>
+<span class="nf">freq</span><span class="p">([</span><span class="nv">I</span><span class="p">|</span><span class="nv">Is</span><span class="p">],</span> <span class="err">#</span><span class="p">{</span><span class="nv">I</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span><span class="p">}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">I</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span> <span class="o">+</span> <span class="mi">1</span><span class="p">});</span>
+<span class="nf">freq</span><span class="p">([</span><span class="nv">I</span><span class="p">|</span><span class="nv">Is</span><span class="p">],</span> <span class="nv">M</span><span class="p">)</span>             <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">I</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">});</span>
+<span class="nf">freq</span><span class="p">([],</span> <span class="nv">M</span><span class="p">)</span>                 <span class="o">-&gt;</span> <span class="nn">maps</span><span class="p">:</span><span class="nf">to_list</span><span class="p">(</span><span class="nv">M</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Equivalent code with <code class="language-plaintext highlighter-rouge">gb_trees</code> for comparison:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">)</span>        <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="nf">empty</span><span class="p">()).</span>
+<span class="nf">freq</span><span class="p">([</span><span class="nv">I</span><span class="p">|</span><span class="nv">Is</span><span class="p">],</span> <span class="nv">T</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="nf">lookup</span><span class="p">(</span><span class="nv">I</span><span class="p">,</span> <span class="nv">T</span><span class="p">)</span> <span class="k">of</span> 
+        <span class="n">none</span>       <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="nf">enter</span><span class="p">(</span><span class="nv">I</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nv">T</span><span class="p">);</span>
+        <span class="p">{</span><span class="n">value</span><span class="p">,</span> <span class="nv">V</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nf">freq</span><span class="p">(</span><span class="nv">Is</span><span class="p">,</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="nf">enter</span><span class="p">(</span><span class="nv">I</span><span class="p">,</span> <span class="nv">V</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">T</span><span class="p">))</span>
+    <span class="k">end</span><span class="p">;</span>
+<span class="nf">freq</span><span class="p">([],</span> <span class="nv">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="nf">to_list</span><span class="p">(</span><span class="nv">T</span><span class="p">).</span>
+</code></pre></div></div>
+
+<h4 id="matching-syntax-file-information-example">Matching syntax: File information example</h4>
+
+<p>Old API’s could be refined to use map syntax:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">type</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Type</span><span class="p">,</span> <span class="n">mtime</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Mtime</span> <span class="p">}}</span> <span class="o">=</span> <span class="nn">file</span><span class="p">:</span><span class="nf">read_file_info</span><span class="p">(</span><span class="nv">File</span><span class="p">).</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="nn">io</span><span class="p">:</span><span class="nf">format</span><span class="p">(</span><span class="s">"type: </span><span class="si">~p</span><span class="s">, mtime: </span><span class="si">~p~n</span><span class="s">"</span><span class="p">,</span> <span class="p">[</span><span class="nv">Type</span><span class="p">,</span> <span class="nv">Mtime</span><span class="p">]).</span>
+<span class="nn">type</span><span class="p">:</span> <span class="n">regular</span><span class="p">,</span> <span class="nn">mtime</span><span class="p">:</span> <span class="p">{{</span><span class="mi">2012</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">18</span><span class="p">},{</span><span class="mi">19</span><span class="p">,</span><span class="mi">59</span><span class="p">,</span><span class="mi">18</span><span class="p">}}</span>
+<span class="n">ok</span>
+<span class="mi">3</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="map-comprehension-syntax">Map comprehension syntax</h3>
+
+<p>Map comprehension declaration:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M1</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="nv">E0</span> <span class="o">=&gt;</span> <span class="nv">E1</span> <span class="p">||</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="o">&lt;-</span> <span class="nv">M0</span>  <span class="p">}</span>
+</code></pre></div></div>
+
+<p>where <code class="language-plaintext highlighter-rouge">M0</code> is any Map, <code class="language-plaintext highlighter-rouge">E0</code> and <code class="language-plaintext highlighter-rouge">E1</code> are any erlang expression, <code class="language-plaintext highlighter-rouge">K</code> and <code class="language-plaintext highlighter-rouge">V</code>
+constitutes the pattern to be matched by each association in <code class="language-plaintext highlighter-rouge">M0</code>.</p>
+
+<p>For each sequence in the generator an association is created from the evaluated
+expression <code class="language-plaintext highlighter-rouge">E0</code> to the evaluated expression <code class="language-plaintext highlighter-rouge">E1</code>.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">M0</code> is not a Map, then a runtime exception of type <code class="language-plaintext highlighter-rouge">{bad_generator, M0}</code>
+will be generated.</p>
+
+<p>A simple BNF grammar for map comprehension follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="n">'#{'</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> <span class="n">'||'</span> <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="n">'}'</span>
+<span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">expr</span><span class="o">&gt;</span>
+                        <span class="p">|</span> <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">exprs</span><span class="o">&gt;</span> <span class="n">','</span> <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">expr</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">comprehension</span><span class="o">-</span><span class="n">expr</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">generator</span><span class="o">&gt;</span>
+                        <span class="p">|</span> <span class="o">&lt;</span><span class="n">filter</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">generator</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exact</span><span class="o">&gt;</span> <span class="n">'&lt;-'</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+             <span class="o">&lt;</span><span class="n">filter</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">assoc</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">'=&gt;'</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">key</span><span class="o">-</span><span class="n">value</span><span class="o">-</span><span class="n">exact</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="n">':='</span> <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span>
+               <span class="o">&lt;</span><span class="n">expr</span><span class="o">&gt;</span> <span class="p">::</span><span class="o">=</span> <span class="o">&lt;</span><span class="nv">Erlang</span> <span class="n">expression</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>Each association from all generators, which satisfies the filters, has an
+environment that consist of the initial environment and the environment
+for the association.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">M0</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="o">=&gt;</span> <span class="nv">V</span><span class="o">*</span><span class="mi">2</span>  <span class="p">||</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">()</span> <span class="p">},</span>
+<span class="nv">M1</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="nv">I</span> <span class="o">=&gt;</span> <span class="nf">f</span><span class="p">(</span><span class="nv">I</span><span class="p">)</span> <span class="p">||</span> <span class="nv">I</span> <span class="o">&lt;-</span> <span class="nf">list</span><span class="p">()</span> <span class="p">},</span>
+<span class="nv">M2</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="o">=&gt;</span> <span class="nv">V</span>    <span class="p">||</span> <span class="o">&lt;&lt;</span><span class="nv">L</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span><span class="nv">K</span><span class="p">:</span><span class="nv">L</span><span class="o">/</span><span class="n">binary</span><span class="p">,</span><span class="nv">V</span><span class="o">/</span><span class="nb">float</span><span class="o">&gt;&gt;</span> <span class="o">&lt;=</span> <span class="nf">binary</span><span class="p">()</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<p>Map generators may also be used in binary and list comprehensions.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">B1</span> <span class="o">=</span> <span class="o">&lt;&lt;</span> <span class="o">&lt;&lt;</span><span class="nv">V</span><span class="p">:</span><span class="mi">8</span><span class="o">&gt;&gt;</span> <span class="p">||</span> <span class="p">_</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">()</span> <span class="o">&gt;&gt;</span><span class="p">,</span>
+<span class="nv">L1</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">}</span> <span class="p">||</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="o">&lt;-</span> <span class="nf">map</span><span class="p">()</span> <span class="p">].</span>
+</code></pre></div></div>
+
+<h3 id="dialyzer-and-type-specification">Dialyzer and Type specification</h3>
+
+<p>Keys known before hand can be specified directly and uniquely for a map.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">spec</span> <span class="nf">func</span><span class="p">(</span><span class="nv">Opt</span><span class="p">,</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">'status'</span> <span class="o">=&gt;</span> <span class="nv">S</span><span class="p">,</span> <span class="n">'c'</span> <span class="o">=&gt;</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">}</span> <span class="k">when</span>
+      <span class="nv">Opt</span> <span class="p">::</span> <span class="n">'inc'</span> <span class="p">|</span> <span class="n">'dec'</span><span class="p">,</span>
+        <span class="nv">M</span> <span class="p">::</span> <span class="err">#</span><span class="p">{</span> <span class="n">'status'</span> <span class="o">=&gt;</span> <span class="nv">S</span><span class="p">,</span> <span class="n">'c'</span> <span class="o">=&gt;</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">},</span>
+        <span class="nv">S</span> <span class="p">::</span> <span class="n">'update'</span> <span class="p">|</span> <span class="n">'keep'</span><span class="p">.</span>
+
+<span class="nf">func</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">status</span> <span class="p">:</span><span class="o">=</span> <span class="n">update</span><span class="p">,</span> <span class="n">c</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span><span class="p">}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="n">c</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span> <span class="o">+</span> <span class="mi">1</span><span class="p">};</span>
+<span class="nf">func</span><span class="p">(</span><span class="n">dec</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">status</span> <span class="p">:</span><span class="o">=</span> <span class="n">update</span><span class="p">,</span> <span class="n">c</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span><span class="p">}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="n">c</span> <span class="p">:</span><span class="o">=</span> <span class="nv">C</span> <span class="o">-</span> <span class="mi">1</span><span class="p">};</span>
+<span class="nf">func</span><span class="p">(_,</span>   <span class="err">#</span><span class="p">{</span> <span class="n">status</span> <span class="p">:</span><span class="o">=</span> <span class="n">keep</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">)</span>          <span class="o">-&gt;</span> <span class="nv">M</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>It could also be specified by type only.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">spec</span> <span class="nf">plist_to_map</span><span class="p">(</span><span class="nv">Ls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="nf">binary</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">}</span> <span class="k">when</span>
+      <span class="nv">Ls</span> <span class="p">::</span> <span class="p">[{</span><span class="nf">binary</span><span class="p">(),</span> <span class="nf">integer</span><span class="p">()}].</span>
+
+<span class="nf">plist_to_map</span><span class="p">([],</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">M</span><span class="p">;</span>
+<span class="nf">plist_to_map</span><span class="p">([{</span><span class="nv">K</span><span class="p">,</span><span class="nv">V</span><span class="p">}|</span><span class="nv">Ls</span><span class="p">],</span> <span class="nv">M</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_binary</span><span class="p">(</span><span class="nv">K</span><span class="p">),</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">V</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">plist_to_map</span><span class="p">(</span><span class="nv">Ls</span><span class="p">,</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="o">=&gt;</span> <span class="nv">V</span> <span class="p">});</span>
+<span class="nf">plist_to_map</span><span class="p">([_|</span><span class="nv">Ls</span><span class="p">],</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">plist_to_map</span><span class="p">(</span><span class="nv">Ls</span><span class="p">,</span> <span class="nv">M</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>It can similarly be specified as a type.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">type</span> <span class="nf">map1</span><span class="p">()</span> <span class="p">::</span> <span class="err">#</span><span class="p">{</span> <span class="nf">binary</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">}.</span>
+<span class="p">-</span><span class="ni">type</span> <span class="nf">map2</span><span class="p">()</span> <span class="p">::</span> <span class="err">#</span><span class="p">{</span> <span class="o">&lt;&lt;</span><span class="s">"list1"</span><span class="o">&gt;&gt;</span> <span class="p">|</span> <span class="o">&lt;&lt;</span><span class="s">"list2"</span><span class="o">&gt;&gt;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nf">numbers</span><span class="p">()]</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<h2 id="functions-and-semantics">Functions and Semantics</h2>
+
+<p><em>The module implementing the functions is currently named in plural, <code class="language-plaintext highlighter-rouge">maps</code> in the
+same spirit as <code class="language-plaintext highlighter-rouge">lists</code>, <code class="language-plaintext highlighter-rouge">gb_trees</code>, <code class="language-plaintext highlighter-rouge">sets</code> etc but the singular <code class="language-plaintext highlighter-rouge">map</code> is shorter
+and may be more desirable.</em></p>
+
+<p>Functions and semantics for maps. Originally much inspiration was from
+Richard O’Keefes frames proposal.</p>
+
+<h3 id="erlang-module-extension">Erlang module extension</h3>
+
+<h5 id="erlangis_mapm--term---boolean"><code class="language-plaintext highlighter-rouge">erlang:is_map(M :: term()) -&gt; boolean().</code></h5>
+
+<p>This function is a guard function.</p>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">try #{} = M, true catch error:{badmatch,_} -&gt; false end</code>.</p>
+
+<p>The function returns <code class="language-plaintext highlighter-rouge">true</code> if M is a map otherwise <code class="language-plaintext highlighter-rouge">false</code>.</p>
+
+<h5 id="erlangmap_sizem--map---non_neg_integer"><code class="language-plaintext highlighter-rouge">erlang:map_size(M :: map()) -&gt; non_neg_integer().</code></h5>
+
+<p>This function is a guard function.</p>
+
+<p>Syntax equivalence: <em>none</em>.</p>
+
+<p>The function returns the number of key-value pairs in the map.
+  This operation happens in constant time.</p>
+
+<p>Same as <code class="language-plaintext highlighter-rouge">maps:size(M)</code>.</p>
+
+<h3 id="maps-module">maps module</h3>
+
+<h5 id="mapsremovek0--term-m0--map---m1--map"><code class="language-plaintext highlighter-rouge">maps:remove(K0 :: term(), M0 :: map()) -&gt; M1 :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">#{ K =&gt; V || K := V &lt;- M0, K =/= K0 }</code>.
+  <em>Only with comprehensions</em></p>
+
+<p>The function removes the key <code class="language-plaintext highlighter-rouge">K0</code>, if it exists, and its associated value from
+  map <code class="language-plaintext highlighter-rouge">M0</code> and returns a new map <code class="language-plaintext highlighter-rouge">M1</code> without key <code class="language-plaintext highlighter-rouge">K0</code>.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list([{K,V}||{K,V} &lt;- maps:to_list(M0), K =/= K0])</code></p>
+
+<h5 id="mapsgetk--term-m--map---v--term"><code class="language-plaintext highlighter-rouge">maps:get(K :: term(), M :: map()) -&gt; V :: term().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">M#{ K }</code>.</p>
+
+<p>Returns the value <code class="language-plaintext highlighter-rouge">V</code> associated with key <code class="language-plaintext highlighter-rouge">K</code> if map <code class="language-plaintext highlighter-rouge">M</code> contains a key
+  that <em>matches</em> <code class="language-plaintext highlighter-rouge">K</code>.  If no value is associated with key <code class="language-plaintext highlighter-rouge">K</code> then the call will
+  fail with an exception.</p>
+
+<h5 id="mapskeysm--map---k1--kn"><code class="language-plaintext highlighter-rouge">maps:keys(M :: map()) -&gt; [K1, .., Kn].</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">[K || K := _ &lt;- M]</code>.</p>
+
+<p>Returns a complete list of Keys, in arbitrary order, which resides within
+  map <code class="language-plaintext highlighter-rouge">M</code>.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">[K || {K,_} &lt;- maps:to_list(M)]</code>.</p>
+
+<h5 id="mapsfindk--term-m--map---ok-v--term--error"><code class="language-plaintext highlighter-rouge">maps:find(K :: term(), M :: map()) -&gt; {ok, V :: term()} | error.</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">try #{ K := V } = M, V catch error:{badmatch,_} -&gt; error end</code>.</p>
+
+<p>Returns a tuple <code class="language-plaintext highlighter-rouge">{ok, V}</code> with value <code class="language-plaintext highlighter-rouge">V</code> associated with key <code class="language-plaintext highlighter-rouge">K</code> if map <code class="language-plaintext highlighter-rouge">M</code>
+  contains key <code class="language-plaintext highlighter-rouge">K</code>.  If no value is associated with key <code class="language-plaintext highlighter-rouge">K</code> then the function
+  will return <code class="language-plaintext highlighter-rouge">error</code>.</p>
+
+<h5 id="mapsfoldf--funk--term-v--term-in--term---out--term-a--term-m--map---result--term"><code class="language-plaintext highlighter-rouge">maps:fold(F :: fun((K :: term(), V :: term(), In :: term()) -&gt; Out :: term()), A :: term(), M :: map()) -&gt; Result :: term().</code></h5>
+
+<p>Syntax equivalence: <em>none</em></p>
+
+<p>Calls <code class="language-plaintext highlighter-rouge">F(K, V, In)</code> for every key <code class="language-plaintext highlighter-rouge">K</code> to value <code class="language-plaintext highlighter-rouge">V</code> association in map <code class="language-plaintext highlighter-rouge">M</code> in
+  arbitrary order. The function fun <code class="language-plaintext highlighter-rouge">F/3</code> must return a new accumulator
+  which is passed to the next successive call. <code class="language-plaintext highlighter-rouge">maps:fold/3</code> returns the final
+  value of the accumulator. The initial accumulator value <code class="language-plaintext highlighter-rouge">A</code> is returned if
+  the map is empty.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">lists:foldl(fun({K,V}, In) -&gt; F(K,V,In) end, A, maps:to_list(M))</code>.</p>
+
+<h5 id="mapsfrom_listk1v1--knvn---m--map"><code class="language-plaintext highlighter-rouge">maps:from_list([{K1,V1}, .., {Kn,Vn}]) -&gt; M :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">#{ K1 =&gt; V1, .., Kn =&gt; Vn }</code></p>
+
+<p>The function takes a list of key-value tuples elements and builds a
+  map. The associations may be in any order and both keys and values in the
+  association may be of any term. If the same key appears more than once,
+  the latter (rightmost) value is used and the previous values are ignored.</p>
+
+<h5 id="mapsis_keyk--term-m--map---bool"><code class="language-plaintext highlighter-rouge">maps:is_key(K :: term(), M :: map()) -&gt; bool().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">try #{ K := _ } = M, true catch error:{badmatch, _} -&gt; false end</code>.</p>
+
+<p>Returns <code class="language-plaintext highlighter-rouge">true</code> if map <code class="language-plaintext highlighter-rouge">M</code> contains a key that <em>matches</em> <code class="language-plaintext highlighter-rouge">K</code>.</p>
+
+<h5 id="mapsmapf--function-m0--map---m1--map"><code class="language-plaintext highlighter-rouge">maps:map(F :: function(), M0 :: map()) -&gt; M1 :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">#{ K =&gt; F(K,V) || K := V &lt;- M }</code>.
+  <em>Only with comprehensions</em></p>
+
+<p>The function produces a new map <code class="language-plaintext highlighter-rouge">M1</code> by calling the function fun <code class="language-plaintext highlighter-rouge">F(K, V)</code> for
+  every key <code class="language-plaintext highlighter-rouge">K</code> to value <code class="language-plaintext highlighter-rouge">V</code> association in map <code class="language-plaintext highlighter-rouge">M0</code> in arbitrary order.
+  The function fun <code class="language-plaintext highlighter-rouge">F/2</code> must return the value to be associated with key <code class="language-plaintext highlighter-rouge">K</code> for
+  the new map <code class="language-plaintext highlighter-rouge">M1</code>.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list(lists:map(fun({K,V}) -&gt; {K, F(K,V)} end, maps:to_list(M)))</code>.</p>
+
+<h5 id="mapsnew---m--map"><code class="language-plaintext highlighter-rouge">maps:new() -&gt; M :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">#{}</code>.</p>
+
+<p>Returns a new empty map.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list([])</code>.</p>
+
+<h5 id="mapssizem--map---size--non_neg_integer"><code class="language-plaintext highlighter-rouge">maps:size(M :: map()) -&gt; Size :: non_neg_integer().</code></h5>
+
+<p>Syntax equivalence: <em>none</em>.</p>
+
+<p>The function returns the number of key-value associations in the map.
+  This operation happens in constant time.</p>
+
+<p>Same as <code class="language-plaintext highlighter-rouge">erlang:map_size(M)</code>.</p>
+
+<h5 id="mapsputk--term-v--term-m0--map---m1--map"><code class="language-plaintext highlighter-rouge">maps:put(K :: term(), V :: term(), M0 :: map()) -&gt; M1 :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">M0#{ K =&gt; V }</code>.</p>
+
+<p>Associates key <code class="language-plaintext highlighter-rouge">K</code> with value <code class="language-plaintext highlighter-rouge">V</code> and inserts the association into map <code class="language-plaintext highlighter-rouge">M0</code>.
+  If a key exists that <em>matches</em> <code class="language-plaintext highlighter-rouge">K</code>, the old associated value is
+  replaced by value <code class="language-plaintext highlighter-rouge">V</code>.
+  The function returns a new map <code class="language-plaintext highlighter-rouge">M1</code> containing the new association.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list(maps:to_list(M0) ++ [{K,V}])</code>.</p>
+
+<h5 id="mapsto_listm--map---k1v1--knvn"><code class="language-plaintext highlighter-rouge">maps:to_list(M :: map()) -&gt; [{K1,V1}, ..., {Kn,Vn}].</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">[{K, V} || K := V &lt;- M]</code>.</p>
+
+<p>Where the pairs, <code class="language-plaintext highlighter-rouge">[{K1,V1}, ..., {Kn,Vn}]</code>, are returned in arbitrary order.</p>
+
+<h5 id="mapsupdatek--term-v--term-m0--map---m1--map"><code class="language-plaintext highlighter-rouge">maps:update(K :: term(), V :: term, M0 :: map()) -&gt; M1 :: map()</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">M0#{ K := V }</code>.</p>
+
+<p>If a key exists that <em>matches</em> <code class="language-plaintext highlighter-rouge">K</code>, the old associated value is
+  replaced by value <code class="language-plaintext highlighter-rouge">V</code>. The function returns a new map <code class="language-plaintext highlighter-rouge">M1</code> containing
+  the new associated value.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list(maps:to_list(M0) ++ [{K,V}])</code>.</p>
+
+<h5 id="mapsvaluesm--map---v1--vn"><code class="language-plaintext highlighter-rouge">maps:values(M :: map()) -&gt; [V1, .., Vn].</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">[V || _ := V &lt;- M]</code>.</p>
+
+<p>Returns a complete list of values, in arbitrary order, contained in map <code class="language-plaintext highlighter-rouge">M</code>.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">[V || {_,V} &lt;- maps:to_list(M)]</code>.</p>
+
+<h5 id="mapswithoutk1--kn--ks-m0--map---m1--map"><code class="language-plaintext highlighter-rouge">maps:without([K1, .., Kn] = Ks, M0 :: map()) -&gt; M1 :: map().</code></h5>
+
+<p>Syntax equivalence: <code class="language-plaintext highlighter-rouge">#{ K =&gt; V || K := V &lt;- M0, not lists:member(K, Ks) }</code>. 
+  <em>Only with comprehensions</em></p>
+
+<p>Removes keys <code class="language-plaintext highlighter-rouge">K1</code> through <code class="language-plaintext highlighter-rouge">Kn</code>, and their associated values, from map <code class="language-plaintext highlighter-rouge">M0</code> and
+  returns a new map <code class="language-plaintext highlighter-rouge">M1</code>.</p>
+
+<p>Same as, <code class="language-plaintext highlighter-rouge">maps:from_list([{K,V}||{K,V} &lt;- maps:to_list(M0), not lists:member(K, Ks)])</code>.</p>
+
+<h5 id="mapsmergem0--map-m1--map---m2--map"><code class="language-plaintext highlighter-rouge">maps:merge(M0 :: map(), M1 :: map()) -&gt; M2 :: map().</code></h5>
+
+<p>Syntax equivalence: <em>none</em></p>
+
+<p>Merges two maps into a single map. If two <em>matching</em> keys exists in both maps the
+  value in map <code class="language-plaintext highlighter-rouge">M0</code> will be superseded by the value in map <code class="language-plaintext highlighter-rouge">M1</code>.</p>
+
+<h2 id="equality-and-ordering">Equality and Ordering</h2>
+
+<h3 id="equality">Equality</h3>
+
+<p>In the case of term <code class="language-plaintext highlighter-rouge">A</code> and term <code class="language-plaintext highlighter-rouge">B</code> both are maps,</p>
+
+<ul>
+  <li>If <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> have different sizes, then <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> are not equal.</li>
+  <li>Otherwise, if all corresponding keys of <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> are pair-
+wise equal with their corresponding values, then <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> are equal.</li>
+  <li>Otherwise, <code class="language-plaintext highlighter-rouge">A</code> and <code class="language-plaintext highlighter-rouge">B</code> are not equal.</li>
+</ul>
+
+<p>It follows that two maps are equal if, and only if, they are of
+the same, <em>type</em>, <em>size</em> and all corresponding key-value associations are
+pairwise equal.</p>
+
+<h3 id="ordering">Ordering</h3>
+
+<p>The term order is defined in <a href="http://www.Erlang.org/download/erl_spec47.ps.gz" title="Erlang specification 4.7">Erlang specification 4.7</a> and quoted
+below:</p>
+
+<blockquote>
+  <ul>
+    <li>
+      <p>The terms are primarily ordered according to their type, in the following order:</p>
+
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  numbers &lt; atoms &lt; refs &lt; ports &lt; PIDs &lt; tuples &lt; empty list &lt; conses &lt; binary
+</code></pre></div>      </div>
+    </li>
+  </ul>
+</blockquote>
+
+<p>The specification is incomplete here, the actual term order is:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">numbers</span> <span class="o">&lt;</span> <span class="n">atoms</span> <span class="o">&lt;</span> <span class="n">refs</span> <span class="o">&lt;</span> <span class="n">funs</span> <span class="o">&lt;</span> <span class="n">ports</span> <span class="o">&lt;</span> <span class="n">pids</span> <span class="o">&lt;</span> <span class="n">tuples</span> <span class="o">&lt;</span> <span class="n">empty</span> <span class="n">list</span> <span class="o">&lt;</span> <span class="n">conses</span> <span class="o">&lt;</span> <span class="n">binaries</span>
+
+</code></pre></div></div>
+
+<p>The Maps data-type are ordered next after tuples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">numbers</span> <span class="o">&lt;</span> <span class="n">atoms</span> <span class="o">&lt;</span> <span class="n">refs</span> <span class="o">&lt;</span> <span class="n">funs</span> <span class="o">&lt;</span> <span class="n">ports</span> <span class="o">&lt;</span> <span class="n">pids</span> <span class="o">&lt;</span> <span class="n">tuples</span> <span class="o">&lt;</span> <span class="n">maps</span> <span class="o">&lt;</span> <span class="n">empty</span> <span class="n">list</span> <span class="o">&lt;</span> <span class="n">conses</span> <span class="o">&lt;</span> <span class="n">binaries</span>
+                                                        <span class="o">----</span>
+</code></pre></div></div>
+
+<p>Maps are then ordered first by their size and then according to their
+respective keys and lastly by the associated values in Erlang term order.</p>
+
+<p>Given two maps, <code class="language-plaintext highlighter-rouge">M1</code> and <code class="language-plaintext highlighter-rouge">M2</code>, with the same size, they are compared
+so that each key, in Erlang term order of the keys, in <code class="language-plaintext highlighter-rouge">M1</code>
+is compared to the corresponding key of <code class="language-plaintext highlighter-rouge">M2</code>. All keys are
+compared first, then the values, until a difference is found. If a key
+or value differs, the order of the respective terms, in Erlang term
+order, is the order of the maps. If no key-value pairs differ, the
+maps are considered equal.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}</span> <span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}.</span>         <span class="c">% b &gt; a
+</span><span class="n">true</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}</span> <span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">}.</span> <span class="c">% size 1 &lt; size 2
+</span><span class="n">false</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span> <span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">}.</span>          <span class="c">% 1 &lt; 2
+</span><span class="n">false</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span> <span class="p">}</span> <span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">}.</span>  <span class="c">% c &gt; d, compared before 2 and 1
+</span><span class="n">false</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span> <span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">}.</span>          <span class="c">% b &gt; 1
+</span><span class="n">true</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}</span> <span class="o">==</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}.</span>      <span class="c">% 1.0 == 1
+</span><span class="n">true</span>
+<span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}</span> <span class="o">=:=</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}.</span>     <span class="c">% 1.0 =:= 1
+</span><span class="n">false</span>
+</code></pre></div></div>
+
+<p>Maps are printed with keys in arbitrary order.</p>
+
+<h2 id="operator-precedence">Operator Precedence</h2>
+
+<p>Map association operator and set-value operator is ordered last,
+after match-operator and <code class="language-plaintext highlighter-rouge">catch</code>.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">:</span>
+<span class="err">#</span>
+<span class="nv">Unary</span> <span class="o">+</span> <span class="o">-</span> <span class="ow">bnot</span> <span class="ow">not</span>
+<span class="o">/</span> <span class="o">*</span> <span class="ow">div</span> <span class="ow">rem</span> <span class="ow">band</span> <span class="ow">and</span>          <span class="nv">Left</span> <span class="n">associative</span>
+<span class="o">+</span> <span class="o">-</span> <span class="ow">bor</span> <span class="ow">bxor</span> <span class="ow">bsl</span> <span class="ow">bsr</span> <span class="ow">or</span> <span class="ow">xor</span>	  <span class="nv">Left</span> <span class="n">associative</span>
+<span class="o">++</span> <span class="o">--</span>                         <span class="nv">Right</span> <span class="n">associative</span>
+<span class="o">==</span> <span class="o">/=</span> <span class="o">=&lt;</span> <span class="o">&lt;</span> <span class="o">&gt;=</span> <span class="o">&gt;</span> <span class="o">=:=</span> <span class="o">=/=</span>
+<span class="ow">andalso</span>
+<span class="ow">orelse</span>
+<span class="o">=</span> <span class="o">!</span>	                          <span class="nv">Right</span> <span class="n">associative</span>
+<span class="k">catch</span>	 
+<span class="o">=&gt;</span> <span class="p">:</span><span class="o">=</span>
+</code></pre></div></div>
+
+<p>It follows that the map expression:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="n">key</span> <span class="o">=&gt;</span> <span class="nv">C</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>will evaluate in the following order:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="n">key</span> <span class="o">=&gt;</span> <span class="p">(</span> <span class="nv">C</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="pattern-matching">Pattern matching</h2>
+
+<p>Pattern matching is very powerful Erlang tool. Maps introduces a couple of new
+features with its pattern matching.</p>
+
+<h3 id="pattern-matching-basics">Pattern matching: Basics</h3>
+
+<p>We will exemplify using the match operator.</p>
+
+<p>Pattern matching with maps is similar to records on the surface. Keys requested
+in a LHS pattern will be bound with the values which is found in the
+RHS association map.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="mi">1</span> <span class="o">=</span> <span class="nv">V</span><span class="p">.</span>
+<span class="mi">1</span>
+</code></pre></div></div>
+
+<p>Keys requested in a LHS pattern which is not found in the RHS map will produce
+an exception, <code class="language-plaintext highlighter-rouge">exception error: no match of right hand side value ...</code>.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">not_in_map</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}.</span>
+<span class="o">**</span> <span class="n">exception</span> <span class="nn">error</span><span class="p">:</span> <span class="n">no</span> <span class="n">match</span> <span class="k">of</span> <span class="n">right</span> <span class="n">hand</span> <span class="n">side</span> <span class="n">value</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Similarly, if a value for a requested key in the LHS pattern
+does not match the keys associated value in the RHS map
+the match will produce an exception.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="mi">10</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}.</span>
+<span class="o">**</span> <span class="n">exception</span> <span class="nn">error</span><span class="p">:</span> <span class="n">no</span> <span class="n">match</span> <span class="k">of</span> <span class="n">right</span> <span class="n">hand</span> <span class="n">side</span> <span class="n">value</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Only the keys requested will bind to associations. Any unrequested keys which
+resides within the map being matched will be ignored.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V1</span><span class="p">,</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V2</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span> <span class="p">}</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="mi">1</span> <span class="o">=</span> <span class="nv">V1</span><span class="p">.</span>
+<span class="mi">1</span>
+<span class="mi">3</span><span class="o">&gt;</span> <span class="mi">2</span> <span class="o">=</span> <span class="nv">V2</span><span class="p">.</span>
+<span class="mi">2</span>
+</code></pre></div></div>
+
+<p>The order of keys requested has no significance when pattern matching a map.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="s">"1"</span><span class="p">,</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="s">"2"</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="s">"1"</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="s">"2"</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="s">"1"</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="s">"2"</span> <span class="p">}</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="s">"2"</span><span class="p">,</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="s">"1"</span> <span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="s">"1"</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="s">"2"</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="s">"1"</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="s">"2"</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="pattern-matching-continued">Pattern matching: Continued</h3>
+
+<p>The example below is a constructed example to illustrate the power of map
+pattern matching.</p>
+
+<p>A match expression is evaluated so that variables used as keys in the expression
+are bound before they are evaluated (if possible).</p>
+
+<p>As an example, keys can be bound by other key-value associations.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span><span class="p">,</span> <span class="n">id</span> <span class="p">:</span><span class="o">=</span> <span class="nv">K</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">id</span> <span class="o">=&gt;</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">id</span> <span class="o">=&gt;</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="n">c</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">}</span>
+<span class="mi">2</span><span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nv">K</span><span class="p">.</span>
+<span class="n">b</span>
+<span class="mi">3</span><span class="o">&gt;</span> <span class="mi">2</span> <span class="o">=</span> <span class="nv">V</span><span class="p">.</span>
+<span class="mi">2</span>
+</code></pre></div></div>
+
+<p>In this case, the bound key <code class="language-plaintext highlighter-rouge">id</code> is evaluated first and looked up in
+M, binding the variable <code class="language-plaintext highlighter-rouge">K</code>. The <code class="language-plaintext highlighter-rouge">K</code> bound to <code class="language-plaintext highlighter-rouge">b</code> can then be used to
+bind <code class="language-plaintext highlighter-rouge">V</code> to 2.</p>
+
+<p>Binding variables used as keys requires that there is a possible order of
+binding without cycles. The reordering extends to all terms in a matching
+expression, so that:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="p">{</span> <span class="err">#</span><span class="p">{</span> <span class="nv">X</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Y</span> <span class="p">},</span> <span class="nv">X</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="err">#</span><span class="p">{</span> <span class="mi">5</span> <span class="o">=&gt;</span> <span class="mi">10</span> <span class="p">},</span> <span class="mi">5</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<p>with <code class="language-plaintext highlighter-rouge">X</code> and <code class="language-plaintext highlighter-rouge">Y</code> unbound, results in a successful match binding <code class="language-plaintext highlighter-rouge">X</code> to 5 and
+<code class="language-plaintext highlighter-rouge">Y</code> to 10.</p>
+
+<p>This is particular useful when updating specifics in map associations:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% Function declared in module map_example
+</span><span class="nf">update_values</span><span class="p">([{</span><span class="nv">K</span><span class="p">,</span> <span class="nv">V1</span><span class="p">}|</span><span class="nv">Ls</span><span class="p">],</span> <span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V0</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">update_values</span><span class="p">(</span><span class="nv">Ls</span><span class="p">,</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V0</span> <span class="o">+</span> <span class="nv">V1</span> <span class="p">});</span>
+<span class="nf">update_values</span><span class="p">([_|</span><span class="nv">Ls</span><span class="p">],</span> <span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">update_values</span><span class="p">(</span><span class="nv">Ls</span><span class="p">,</span> <span class="nv">M</span><span class="p">);</span>
+<span class="nf">update_values</span><span class="p">([],</span> <span class="nv">M</span><span class="p">)</span>     <span class="o">-&gt;</span> <span class="nv">M</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The first function clause is important here. Key <code class="language-plaintext highlighter-rouge">K</code> is bound in the tuple and
+will be used to request value <code class="language-plaintext highlighter-rouge">V0</code> from map <code class="language-plaintext highlighter-rouge">M</code>. The map <code class="language-plaintext highlighter-rouge">M</code> is then updated to
+associate key <code class="language-plaintext highlighter-rouge">K</code> with the new value <code class="language-plaintext highlighter-rouge">V0 + V1</code>.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% In the Erlang shell
+</span><span class="mi">1</span><span class="o">&gt;</span> <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="s">"a"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"b"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s">"c"</span> <span class="o">=&gt;</span> <span class="mi">3</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="s">"a"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"b"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="s">"c"</span> <span class="o">=&gt;</span> <span class="mi">3</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">&gt;</span> <span class="nn">map_example</span><span class="p">:</span><span class="nf">update_values</span><span class="p">([{</span><span class="s">"b"</span><span class="p">,</span> <span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="s">"c"</span><span class="p">,</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s">"d"</span><span class="p">,</span> <span class="mi">30</span> <span class="p">}],</span> <span class="nv">M</span><span class="p">).</span>
+<span class="err">#</span><span class="p">{</span> <span class="s">"a"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"b"</span> <span class="o">=&gt;</span> <span class="mi">12</span><span class="p">,</span> <span class="s">"c"</span> <span class="o">=&gt;</span> <span class="mi">23</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Note that since key <code class="language-plaintext highlighter-rouge">"d"</code> does not reside in map <code class="language-plaintext highlighter-rouge">M</code> it fails to match the first
+clause and does not update the map with the association <code class="language-plaintext highlighter-rouge">"d" =&gt; 40</code>.</p>
+
+<p>An expression where the dependencies in the LHS of the match are cyclic, like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span>  <span class="err">#</span><span class="p">{</span><span class="nv">X</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Y</span><span class="p">,</span> <span class="nv">Y</span> <span class="p">:</span><span class="o">=</span> <span class="nv">X</span><span class="p">}</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span><span class="mi">5</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>will result in an evaluator error (variable is unbound) or a compilation error.</p>
+
+<h2 id="external-term-format">External Term Format</h2>
+
+<p>There are 255 tags that can be used to encode terms for external binary
+distribution.  All tags are defined in <code class="language-plaintext highlighter-rouge">external.h</code>. The encoding starts by a
+magic byte <code class="language-plaintext highlighter-rouge">131</code>.</p>
+
+<p>The encoding tags used in R15B01 are the following:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">SMALL_INTEGER_EXT</span>        <span class="n">'a'</span>     <span class="mi">97</span>
+<span class="nv">INTEGER_EXT</span>              <span class="n">'b'</span>     <span class="mi">98</span>
+<span class="nv">FLOAT_EXT</span>                <span class="n">'c'</span>     <span class="mi">99</span> 
+<span class="nv">ATOM_EXT</span>                 <span class="n">'d'</span>    <span class="mi">100</span>
+<span class="nv">SMALL_ATOM_EXT</span>           <span class="n">'s'</span>    <span class="mi">115</span>
+<span class="nv">REFERENCE_EXT</span>            <span class="n">'e'</span>    <span class="mi">101</span>
+<span class="nv">NEW_REFERENCE_EXT</span>        <span class="n">'r'</span>    <span class="mi">114</span>
+<span class="nv">PORT_EXT</span>                 <span class="n">'f'</span>    <span class="mi">102</span>
+<span class="nv">NEW_FLOAT_EXT</span>            <span class="n">'F'</span>     <span class="mi">70</span>
+<span class="nv">PID_EXT</span>                  <span class="n">'g'</span>    <span class="mi">103</span>
+<span class="nv">SMALL_TUPLE_EXT</span>          <span class="n">'h'</span>    <span class="mi">104</span>
+<span class="nv">LARGE_TUPLE_EXT</span>          <span class="n">'i'</span>    <span class="mi">105</span>
+<span class="nv">NIL_EXT</span>                  <span class="n">'j'</span>    <span class="mi">106</span> 
+<span class="nv">STRING_EXT</span>               <span class="n">'k'</span>    <span class="mi">107</span>
+<span class="nv">LIST_EXT</span>                 <span class="n">'l'</span>    <span class="mi">108</span> 
+<span class="nv">BINARY_EXT</span>               <span class="n">'m'</span>    <span class="mi">109</span> 
+<span class="nv">BIT_BINARY_EXT</span>           <span class="n">'M'</span>     <span class="mi">77</span>                                         
+<span class="nv">SMALL_BIG_EXT</span>            <span class="n">'n'</span>    <span class="mi">110</span>
+<span class="nv">LARGE_BIG_EXT</span>            <span class="n">'o'</span>    <span class="mi">111</span>
+<span class="nv">NEW_FUN_EXT</span>              <span class="n">'p'</span>    <span class="mi">112</span> 
+<span class="nv">EXPORT_EXT</span>               <span class="n">'q'</span>    <span class="mi">113</span>
+<span class="nv">FUN_EXT</span>                  <span class="n">'u'</span>    <span class="mi">117</span>
+            
+<span class="nv">DIST_HEADER</span>              <span class="n">'D'</span>     <span class="mi">68</span>
+<span class="nv">ATOM_CACHE_REF</span>           <span class="n">'R'</span>     <span class="mi">82</span>
+<span class="nv">ATOM_INTERNAL_REF2</span>       <span class="n">'I'</span>     <span class="mi">73</span>
+<span class="nv">ATOM_INTERNAL_REF3</span>       <span class="n">'K'</span>     <span class="mi">75</span>
+<span class="nv">BINARY_INTERNAL_REF</span>      <span class="n">'J'</span>     <span class="mi">74</span>
+<span class="nv">BIT_BINARY_INTERNAL_REF</span>  <span class="n">'L'</span>     <span class="mi">76</span>
+<span class="nv">COMPRESSED</span>               <span class="n">'P'</span>     <span class="mi">80</span>
+</code></pre></div></div>
+
+<p>For Maps we define tag <code class="language-plaintext highlighter-rouge">MAP_EXT</code> to 116 (<code class="language-plaintext highlighter-rouge">t</code>).</p>
+
+<p>Data layout:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">MAP_EXT</span>
+<span class="p">|</span><span class="o">-----------------------------------</span>	
+<span class="p">|</span>  <span class="mi">1</span>  <span class="p">|</span>    <span class="mi">4</span>   <span class="p">|</span>        <span class="p">|</span>          <span class="p">|</span>
+<span class="p">|</span><span class="o">-----------------------------------</span>
+<span class="p">|</span> <span class="mi">116</span> <span class="p">|</span>  <span class="nv">Size</span>  <span class="p">|</span>  <span class="nv">Keys</span>  <span class="p">|</span>  <span class="nv">Values</span>  <span class="p">|</span>
+<span class="p">|</span><span class="o">-----------------------------------</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Size</code> specifies the number of keys and values that follows the size
+descriptor.</p>
+
+<p>An open questions, optimize for:</p>
+
+<ol>
+  <li>encoding/decoding speed?</li>
+  <li>ease of access?</li>
+  <li>memory size?</li>
+</ol>
+
+<p>Memory size should be a priority since we send this data over the wire. We
+should promote ease of access so other languages can integrate towards the
+format.</p>
+
+<p>This leads to a flat and simple structure. It follows that encoding/decoding
+takes a performance hit.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Why would we need maps when we have <em>records</em>, <em>dicts</em>, <em>gb_trees</em>, <em>ets</em>
+and <em>proplists</em>?</p>
+
+<p>Maps are envisioned to be an easy to use, lightweight yet powerful key-value
+association store.</p>
+
+<p>Maps utilizes one of Erlang’s major strengths, pattern matching, to enrich user
+experience and provide a powerful tool to simplify code development. Pattern
+matching gives Maps a clear edge over dicts, gb_trees or proplists in usability.</p>
+
+<p>Maps provides the possibility to associate arbitrary terms as keys, not only
+atoms, with arbitrary terms as values in a matching capable data-type.</p>
+
+<p>Maps does not claim to be an replacement to records as the frames proposal does.
+Instead maps targets a larger usage domain and wishes to be a complement to
+records and supersede them where suitable.</p>
+
+<h3 id="maps---two-approaches">Maps - Two approaches</h3>
+
+<ol>
+  <li>Maps as an association array with pattern matching and syntax for
+constructing, accessing or updating them.</li>
+  <li>Maps as a record replacement.</li>
+</ol>
+
+<p>Maps were not envisioned as a record replacement at first, it was a hopeful
+requirement added later. A record replacement approach does not necessarily
+restrain any semantics but it may put some constraint on the implementation
+and underlying structure.</p>
+
+<h5 id="records">Records</h5>
+
+<p>Records are powerful under the right circumstances:</p>
+
+<ul>
+  <li>fast lookups, O(1), due to compile time indexing of keys, and fast stores for
+small record sizes (~50 values),</li>
+  <li>no memory overhead to store keys, only values and a name: 2 + N words
+consumption,</li>
+  <li>ease of use in function head matching.</li>
+</ul>
+
+<p>However some of the drawbacks are:</p>
+
+<ul>
+  <li>compile-time dependency and forces header file inclusions for inter-module usage,</li>
+  <li>only atoms as keys,</li>
+  <li>keys are not accessible in runtime,</li>
+  <li>no dynamic access of values, i.e. we cannot use variables to access values,</li>
+  <li>it is not a data-type and cannot be distinguished from tuples.</li>
+</ul>
+
+<p>When comparing maps with records the drawbacks are easily remedied by Maps,
+however the positive effects is not as easy to replicate in a built-in data-type
+where values are determined at runtime instead of at compile time.</p>
+
+<ul>
+  <li>Being faster than direct-indexing array, where indices and possibly the
+resulting value are determined at compile time, is hard.
+In fact it is impossible.</li>
+  <li>A memory model for Maps where the efficiency was near that of records
+could be achieved by essentially using two tuples, one for keys and one for
+values as demonstrated in Frames. This would be impact performance of
+updates on Maps with a large number of entries and thus constrain the
+capability of a dictionary approach.</li>
+  <li>Maps would be as easy, or even easier, to use with matching in function heads.</li>
+</ul>
+
+<h3 id="protocol-construction">Protocol Construction</h3>
+
+<p>Arguments for a simpler a JSON representation using frames or 
+maps has been raised. Using frames and thereby atoms for dynamic creation of keys
+would be a serious drawback.  Using maps would grant the possibility of string
+binaries to represent keys and would not put the global atom pool in disarray.</p>
+
+<h4 id="pattern-matching-example-the-json-files">Pattern Matching Example: The JSON Files</h4>
+
+<p>Changing json-decoding. Mochiwebs mochijson decodes Json dictionaries the as
+the following:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">"key"</span><span class="p">:</span> <span class="s">"value"</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[{</span><span class="s">"key"</span><span class="p">,</span> <span class="s">"value"</span><span class="p">}]}</span>
+</code></pre></div></div>
+
+<p>This could instead be:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">"key"</span><span class="p">:</span> <span class="s">"value"</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="s">"key"</span> <span class="o">=&gt;</span> <span class="s">"value"</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>Consider the following JSON examples, from <a href="http://json.org/example.html" title="JSON Example">json.org</a>.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="s">"menu"</span><span class="p">:</span> <span class="p">{</span>
+  <span class="s">"id"</span><span class="p">:</span> <span class="s">"file"</span><span class="p">,</span>
+  <span class="s">"value"</span><span class="p">:</span> <span class="s">"File"</span><span class="p">,</span>
+  <span class="s">"popup"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">"menuitem"</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span><span class="s">"value"</span><span class="p">:</span> <span class="s">"New"</span><span class="p">,</span> <span class="s">"onclick"</span><span class="p">:</span> <span class="s">"CreateNewDoc()"</span><span class="p">},</span>
+      <span class="p">{</span><span class="s">"value"</span><span class="p">:</span> <span class="s">"Open"</span><span class="p">,</span> <span class="s">"onclick"</span><span class="p">:</span> <span class="s">"OpenDoc()"</span><span class="p">},</span>
+      <span class="p">{</span><span class="s">"value"</span><span class="p">:</span> <span class="s">"Close"</span><span class="p">,</span> <span class="s">"onclick"</span><span class="p">:</span> <span class="s">"CloseDoc()"</span><span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">mochijson:decode/1</code> will currently look like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">"menu"</span><span class="p">,</span> <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s">"id"</span><span class="p">,</span><span class="s">"file"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">"value"</span><span class="p">,</span><span class="s">"File"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">"popup"</span><span class="p">,</span> <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s">"menuitem"</span><span class="p">,</span> <span class="p">{</span><span class="n">array</span><span class="p">,</span> <span class="p">[</span>
+                <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[{</span><span class="s">"value"</span><span class="p">,</span><span class="s">"New"</span><span class="p">},{</span><span class="s">"onclick"</span><span class="p">,</span><span class="s">"CreateNewDoc()"</span><span class="p">}]},</span>
+                <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[{</span><span class="s">"value"</span><span class="p">,</span><span class="s">"Open"</span><span class="p">},{</span><span class="s">"onclick"</span><span class="p">,</span><span class="s">"OpenDoc()"</span><span class="p">}]},</span>
+                <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[{</span><span class="s">"value"</span><span class="p">,</span><span class="s">"Close"</span><span class="p">},</span> <span class="p">{</span><span class="s">"onclick"</span><span class="p">,</span><span class="s">"CloseDoc()"</span><span class="p">}]}</span>
+            <span class="p">]}}</span>
+        <span class="p">]}}</span>
+    <span class="p">]}}</span>
+<span class="p">]}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">mochijson:decode/1</code> could look like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="s">"menu"</span> <span class="o">=&gt;</span> <span class="err">#</span><span class="p">{</span>
+    <span class="s">"id"</span> <span class="o">=&gt;</span> <span class="s">"file"</span><span class="p">,</span>
+    <span class="s">"value"</span> <span class="o">=&gt;</span> <span class="s">"File"</span><span class="p">,</span>
+    <span class="s">"popup"</span> <span class="o">=&gt;</span> <span class="err">#</span><span class="p">{</span>
+        <span class="s">"menuitem"</span> <span class="o">=&gt;</span> <span class="p">[</span>
+          <span class="err">#</span><span class="p">{</span> <span class="s">"value"</span> <span class="o">=&gt;</span> <span class="s">"New"</span><span class="p">,</span>   <span class="s">"onclick"</span> <span class="o">=&gt;</span> <span class="s">"CreateNewDoc()"</span><span class="p">},</span>
+          <span class="err">#</span><span class="p">{</span> <span class="s">"value"</span> <span class="o">=&gt;</span> <span class="s">"Open"</span><span class="p">,</span>  <span class="s">"onclick"</span> <span class="o">=&gt;</span> <span class="s">"OpenDoc()"</span><span class="p">},</span>
+          <span class="err">#</span><span class="p">{</span> <span class="s">"value"</span> <span class="o">=&gt;</span> <span class="s">"Close"</span><span class="p">,</span> <span class="s">"onclick"</span> <span class="o">=&gt;</span> <span class="s">"CloseDoc()"</span><span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}}</span>
+</code></pre></div></div>
+
+<p>Let us find <code class="language-plaintext highlighter-rouge">"menu"</code> -&gt; <code class="language-plaintext highlighter-rouge">"popup"</code> -&gt; <code class="language-plaintext highlighter-rouge">"menuitem"</code>.</p>
+
+<p>Traversing the first structure is a bit awkward. We would have to do
+the following:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Decoded</span>         <span class="o">=</span> <span class="nn">mochijson</span><span class="p">:</span><span class="nf">decode</span><span class="p">(</span><span class="nv">Json</span><span class="p">),</span>
+<span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="nv">Menu</span><span class="p">}</span>  <span class="o">=</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">get_value</span><span class="p">(</span><span class="s">"menu"</span><span class="p">,</span> <span class="nv">Decoded</span><span class="p">),</span>
+<span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="nv">PopUp</span><span class="p">}</span> <span class="o">=</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">get_value</span><span class="p">(</span><span class="s">"popup"</span><span class="p">,</span> <span class="nv">Menu</span><span class="p">),</span>
+<span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="nv">Items</span><span class="p">}</span> <span class="o">=</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">get_value</span><span class="p">(</span><span class="s">"menuitem"</span><span class="p">,</span> <span class="nv">PopUp</span><span class="p">),</span>
+</code></pre></div></div>
+
+<p>With maps it could look like the following:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="s">"menu"</span>     <span class="p">:</span><span class="o">=</span> <span class="nv">Menu</span>  <span class="p">}</span> <span class="o">=</span> <span class="nn">mochijson</span><span class="p">:</span><span class="nf">decode</span><span class="p">(</span><span class="nv">Json</span><span class="p">),</span>
+<span class="err">#</span><span class="p">{</span> <span class="s">"popup"</span>    <span class="p">:</span><span class="o">=</span> <span class="nv">PopUp</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">Menu</span><span class="p">,</span>
+<span class="err">#</span><span class="p">{</span> <span class="s">"menuitem"</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Items</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">PopUp</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>or even:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Decoded</span> <span class="o">=</span> <span class="nn">mochijson</span><span class="p">:</span><span class="nf">decode</span><span class="p">(</span><span class="nv">Json</span><span class="p">),</span>
+<span class="err">#</span><span class="p">{</span> <span class="s">"menu"</span> <span class="p">:</span><span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="s">"popup"</span> <span class="p">:</span><span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="s">"menuitem"</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Items</span> <span class="p">}</span> <span class="p">}</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">Decoded</span><span class="p">,</span>
+</code></pre></div></div>
+
+<p>With maps, and single value access, it could look really simple:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Decoded</span> <span class="o">=</span> <span class="nn">mochijson</span><span class="p">:</span><span class="nf">decode</span><span class="p">(</span><span class="nv">Json</span><span class="p">),</span>
+<span class="nv">Items</span> <span class="o">=</span> <span class="nv">Decoded</span><span class="err">#</span><span class="p">{</span> <span class="s">"menu"</span> <span class="p">}</span><span class="err">#</span><span class="p">{</span> <span class="s">"popup"</span> <span class="p">}</span><span class="err">#</span><span class="p">{</span> <span class="s">"menuitem "</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<h3 id="open-questions">Open Questions</h3>
+
+<p>We have some usage scenarios that are still open for debate. A proposed answer
+is given for each question and stems from discussions in this proposal.</p>
+
+<ol>
+  <li>What type of keys will we need to store in our Map? Will atoms suffice?
+    <ul>
+      <li>It is the authors view that we should refrain from any key restrictions
+  unless there is overwhelmingly evidence that we can gain something from
+  such a restriction.</li>
+      <li>A non atom key restriction satisfies our goal of a powerful Map mechanism.</li>
+      <li>Proposal: <em>Any term as keys.</em></li>
+    </ul>
+  </li>
+  <li>How many key-value associations will we store in our map?
+    <ul>
+      <li>This question has less to do with syntax and semantics than it has with
+  the choice of the underlying implementation.</li>
+      <li>If we enable the user to add key-value pairs dynamically surely he will
+  use it.  Since it is a powerful mechanism not afforded to us by records
+  the usage pattern will also be different. This will in all likelihood
+  produce larger Maps than records are today. This implies that we cannot
+  compare records sizes with that of maps sizes since the usage scenario
+  would be different.</li>
+      <li>Proposal: <em>Arbitrary number of keys-value pairs.</em></li>
+    </ul>
+  </li>
+  <li>How many Map instances will we create for each Map with a specific set of keys?
+    <ul>
+      <li>This question is closely related to how we use records and if Maps should
+  emulate this behavior and this should have no impact on semantics, only
+  implementation.</li>
+      <li>The significant difference is the memory overhead in the storing structure.
+  Since memory overhead for keys and values has the same behavior as in any
+  compound term or abstract data-type, i.e. dict or gb_trees, the main
+  difference occurs when comparing maps to records and frames. To ensure a
+  logarithmic worst-case performance in update or retrieval some sort tree
+  structure would likely be used for maps. Maps would then stores keys
+  together with its values whereas frames stores keys outside its value
+  structure and records generates key indexes at compile-time. This would
+  indicate a memory overhead for Maps over Frames and records for each
+  instance.</li>
+      <li>Proposal: <em>Two tier approach, similar to binaries. Use flat compact,
+  key-sharing approach for few associations (~50 associations). Use sorted
+  tree approach and store keys with values beyond first tier limit.
+  The rationale being it is more likely to have multiple instance where
+  we have few keys.</em></li>
+    </ul>
+  </li>
+  <li>Only allow updates of already defined keys within a Map in syntax?
+    <ul>
+      <li>The question stems from a record replacement approach and the argument for
+  it is to mitigate typos, i.e. trying to update key <code class="language-plaintext highlighter-rouge">behavior</code> where key
+  <code class="language-plaintext highlighter-rouge">behaviour</code> was actually intended. Instead of getting two different keys,
+  a runtime exception occurs at this point.</li>
+      <li>This approach will <em>deny</em> any dictionary like behavior, for instance
+  storing spawned processes as keys in the map using syntax.</li>
+      <li>Proposal: <em>Allow for any key to be stored by default syntax,
+  existing or not, and use a special syntax for setting of values of
+  existing keys only.</em></li>
+    </ul>
+  </li>
+</ol>
+
+<p>The answers from these questions are instrumental to how we should design and
+implement Maps. What we also should keep in the back of our minds is that we
+will never get rid of records completely and some of the frames arguments might
+thus be superfluous.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<h2 id="what-should-we-expect-from-our-syntax">What should we expect from our syntax?</h2>
+
+<p>As stated earlier, the current syntax is not set in stone but what should we
+expect from it?</p>
+
+<ol>
+  <li>
+    <p>First and foremost it has to be unambiguous, meaning the syntax must produce
+single clearly defined behavior that cannot be misinterpreted by humans
+nor machines.</p>
+
+    <p>1.1  Here we also include the notion that similar syntax should have similar
+     behavior, or at least not completely different behavior.
+ For example records, <code class="language-plaintext highlighter-rouge">#record{ key = Value }</code>, have O(1) performance and
+ 2 + N words memory overhead.  If we use a similar syntax,
+ i.e. <code class="language-plaintext highlighter-rouge">#{ key = Value }</code>, we should also expect similar behavior both in
+ regard to semantics and performance for any and all sizes of the map.</p>
+  </li>
+  <li>
+    <p>The syntax must be as short as possible. It must not use more characters than
+necessary to describe a certain behavior as long as it
+does not violate rule 1.</p>
+
+    <p>2.2  We want to avoid verbosity in the language. Verbosity pushes away
+information from our field of vision and obfuscates it.
+This needs to be avoided.</p>
+  </li>
+</ol>
+
+<h2 id="syntax-choice-for-maps">Syntax choice for Maps</h2>
+
+<p><em>The author argues for:</em> <code class="language-plaintext highlighter-rouge">=&gt;</code> <em>as delimiter in ‘set-or-update’ and</em>
+<code class="language-plaintext highlighter-rouge">:=</code> <em>in ‘set-existing’ and ‘matching’ syntax.</em></p>
+
+<p>In the examples below we use <code class="language-plaintext highlighter-rouge">#{ Key =&gt; Value }</code> to describe map semantics and
+use-cases, but this is only one suggestion out of many.</p>
+
+<p>Several syntax proposals exists, frames proposes <code class="language-plaintext highlighter-rouge">&lt;{ key ~ Value }&gt;</code> syntax and
+another syntax suggestion is very similar to record syntax <code class="language-plaintext highlighter-rouge">#{ key = Value }</code>.</p>
+
+<p>The current variable and atom definitions puts restrictions on what we can use
+as delimiters and leaves us <code class="language-plaintext highlighter-rouge">~</code> and <code class="language-plaintext highlighter-rouge">=</code> as the only sane <em>single</em> character
+delimiters we can use. The case is very well argued in Richard O’Keefes
+<a href="http://www.cs.otago.ac.nz/staffpriv/ok/frames.pdf" title="No more need for records">No more need for records (fifth draft)</a>.</p>
+
+<h3 id="delimiter-discussion">Delimiter discussion</h3>
+
+<p>Arguments against a <code class="language-plaintext highlighter-rouge">=</code> delimiter are:</p>
+
+<ul>
+  <li>It lacks distinction from match, consider <code class="language-plaintext highlighter-rouge">#{ A = B = v }</code>,
+does <code class="language-plaintext highlighter-rouge">A</code> match <code class="language-plaintext highlighter-rouge">B</code> or does <code class="language-plaintext highlighter-rouge">B</code> match <code class="language-plaintext highlighter-rouge">v</code>?
+Which <code class="language-plaintext highlighter-rouge">=</code> is a match operation and which <code class="language-plaintext highlighter-rouge">=</code> delimits the key-value pair?</li>
+  <li>It might be interpreted as <code class="language-plaintext highlighter-rouge">Key</code> ‘equal’ <code class="language-plaintext highlighter-rouge">Value</code>,</li>
+</ul>
+
+<p>and hence <code class="language-plaintext highlighter-rouge">=</code> is in violation of rule #1 from <em>What do we expect from our syntax?</em>.
+The interpretation of this syntax is ambiguous.</p>
+
+<p>Arguments against a <code class="language-plaintext highlighter-rouge">~</code> delimiter are:</p>
+
+<ul>
+  <li>it might be interpreted as <code class="language-plaintext highlighter-rouge">Key</code> ‘NOT’ <code class="language-plaintext highlighter-rouge">Value</code>
+as <code class="language-plaintext highlighter-rouge">~</code> is the bitwise NOT operator in C,</li>
+  <li>it might be interpreted as <code class="language-plaintext highlighter-rouge">Key</code> ‘about equal’ <code class="language-plaintext highlighter-rouge">Value</code>
+as <code class="language-plaintext highlighter-rouge">~</code> is similar to mathematics <code class="language-plaintext highlighter-rouge">≃</code>,</li>
+  <li>it lacks typographical distinction,
+i.e. it lacks distinction from <code class="language-plaintext highlighter-rouge">-</code> in certain fonts, 
+ex. <code class="language-plaintext highlighter-rouge">K ~ V</code> might be interpreted as <code class="language-plaintext highlighter-rouge">K - V</code>, consider <code class="language-plaintext highlighter-rouge">#{ K - 1 ~ 2 - V }</code>,</li>
+</ul>
+
+<p>and hence this is in violation of rule #1 from <em>What do we expect from our syntax?</em>.
+The interpretation of this syntax is ambiguous.</p>
+
+<p>Two two-character delimiter suggestions are <code class="language-plaintext highlighter-rouge">#{ Key := Value }</code> and
+<code class="language-plaintext highlighter-rouge">#{ Key =&gt; Value}</code>, where <code class="language-plaintext highlighter-rouge">:=</code> is a common denominator for assignment and <code class="language-plaintext highlighter-rouge">=&gt;</code>
+should be read as <em>maps to</em>. A two-character delimiter should be avoided if at
+all possible since it increases the syntax footprint of the source code.</p>
+
+<p>The assignment delimiter reads well for just assignment but suffers from the
+same reversed logic flaw as records when it comes to pattern matching. The match
+<code class="language-plaintext highlighter-rouge">#{ key := Value } = M</code> reads <em>match M to the map pattern where Value is equal
+to key</em>. That does not read well unless we call the assignment delimiter <code class="language-plaintext highlighter-rouge">:=</code>
+for something that its not meant to be.</p>
+
+<p>However, <code class="language-plaintext highlighter-rouge">:=</code> is also similar to <code class="language-plaintext highlighter-rouge">=:=</code> which means “is exactly equal”,
+i.e. matches. This is a valuable meaning since we have a difference
+between <code class="language-plaintext highlighter-rouge">==</code> and <code class="language-plaintext highlighter-rouge">=:=</code> when dealing with numbers and thus <code class="language-plaintext highlighter-rouge">:=</code> could be a more
+correct delimiter for matching syntax.</p>
+
+<p>The delimiter <code class="language-plaintext highlighter-rouge">-&gt;</code> would be suitable choice if it weren’t for the fact that it
+would overload the function clause meaning.</p>
+
+<p>Both <code class="language-plaintext highlighter-rouge">-&gt;</code> and <code class="language-plaintext highlighter-rouge">=&gt;</code> might be confusing when dealing with binaries.
+Consider <code class="language-plaintext highlighter-rouge">#{ &lt;&lt;"key"&gt;&gt; -&gt; &lt;&lt;"value"&gt;&gt; }</code> and <code class="language-plaintext highlighter-rouge">#{ &lt;&lt;"key"&gt;&gt; =&gt; &lt;&lt;"value"&gt;&gt; }</code>,
+where <code class="language-plaintext highlighter-rouge">=&gt;</code> appears to be slightly more confusing than <code class="language-plaintext highlighter-rouge">-&gt;</code>.</p>
+
+<p>Listing of delimiters from above perceived desirability:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">#{ K =&gt; V }</code> - No ambiguity, no overloading, reads as an association</li>
+  <li><code class="language-plaintext highlighter-rouge">#{ K := V }</code> - No ambiguity, no overloading, reads as an assignment or exact match</li>
+  <li><code class="language-plaintext highlighter-rouge">#{ K ~ V }</code>  - Typographical ambiguity, no overloading, no clear meaning</li>
+  <li><code class="language-plaintext highlighter-rouge">#{ K -&gt; V }</code> - Overloads function clause head and body separator, reads as an association</li>
+  <li><code class="language-plaintext highlighter-rouge">#{ K = V }</code>  - Overloads match operator, reads as a match or an assignment</li>
+</ol>
+
+<p>Using <code class="language-plaintext highlighter-rouge">:=</code> assignment for existing keys seems as a good choice. The choice for
+set-or-update is between <code class="language-plaintext highlighter-rouge">=&gt;</code> and <code class="language-plaintext highlighter-rouge">~</code>.</p>
+
+<h3 id="the-case-for-two-set-or-update-semantics-and-its-syntax">The case for two set-or-update semantics and its syntax</h3>
+
+<p>A case for two different ways to update values in a Map is proposed.</p>
+
+<p>One syntax if, and only if, we want to update a value for an already <em>existing</em>
+key and another if we want to update the Map with any key.</p>
+
+<ul>
+  <li>Use <code class="language-plaintext highlighter-rouge">M#{ K =&gt; V }</code> to declare new key value pairs <em>or</em> update already existing keys</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">M#{ K := V }</code> to update already existing keys.</li>
+  <li>Use ` #{ K := V } = M` to match maps.</li>
+</ul>
+
+<p>Example 1:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">key1</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">key2</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">},</span> <span class="c">% M is declared with keys 'key1' and 'key2'
+</span>    <span class="nf">bar</span><span class="p">(</span><span class="nv">M</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">bar</span><span class="p">(</span><span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">M</span><span class="err">#</span><span class="p">{</span>
+        <span class="n">key1</span> <span class="p">:</span><span class="o">=</span> <span class="s">"1"</span><span class="p">,</span>  <span class="c">%% 'key1' will be set to "1"
+</span>        <span class="n">key2</span> <span class="p">:</span><span class="o">=</span> <span class="s">"2"</span><span class="p">,</span>  <span class="c">%% 'key2' will be set to "2"
+</span>        <span class="n">key3</span> <span class="p">:</span><span class="o">=</span> <span class="s">"3"</span>   <span class="c">%% this causes an exception since 'key3' does not exist in M
+</span>    <span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nf">foo</span><span class="p">().</span>
+<span class="o">**</span> <span class="n">exception</span> <span class="nn">error</span><span class="p">:</span> <span class="n">no</span> <span class="n">match</span> <span class="k">of</span> <span class="n">'key3'</span> <span class="n">in</span> <span class="n">map</span>
+</code></pre></div></div>
+
+<p>Example 2:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="n">key1</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">key2</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="p">},</span> <span class="c">% M is declared with keys 'key1' and 'key2'
+</span>    <span class="nf">bar</span><span class="p">(</span><span class="nv">M</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">bar</span><span class="p">(</span><span class="nv">M</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">M</span><span class="err">#</span><span class="p">{</span>
+        <span class="n">key1</span> <span class="o">=&gt;</span> <span class="s">"1"</span><span class="p">,</span>  <span class="c">%% 'key1' will be set to "1"
+</span>        <span class="n">key2</span> <span class="o">=&gt;</span> <span class="s">"2"</span><span class="p">,</span>  <span class="c">%% 'key2' will be set to "2"
+</span>        <span class="n">key3</span> <span class="o">=&gt;</span> <span class="s">"3"</span>   <span class="c">%% 'key3' will be set to "3"
+</span>    <span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nf">foo</span><span class="p">().</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">key1</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">key2</span> <span class="o">=&gt;</span> <span class="s">"2"</span><span class="p">,</span> <span class="n">key3</span> <span class="o">=&gt;</span> <span class="s">"3"</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="impact-of-syntax-footprint">Impact of syntax footprint</h2>
+
+<p>We must lessen the syntax footprint impact on the source code and the language.</p>
+
+<p>Currently the two normal ways of sending options to a functions are either via
+records or property lists. Both have some drawbacks. Records are compile time
+dependent and syntactic sugar for tuples. Property lists are generic but
+produces a lot of texts when defining them and operating on them.</p>
+
+<p>Consider this example when parsing a list of arguments:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">)</span> <span class="o">-&gt;</span> 
+     <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="p">[{</span><span class="n">analyze</span><span class="p">,</span> <span class="n">false</span><span class="p">},</span> <span class="p">{</span><span class="n">suppression</span><span class="p">,</span> <span class="n">false</span><span class="p">},</span> <span class="p">{</span><span class="n">target</span><span class="p">,</span> <span class="n">none</span><span class="p">}]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">args</span><span class="p">([</span><span class="s">"-r"</span> <span class="p">|</span> <span class="nv">Args</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="p">[{</span><span class="n">analyze</span><span class="p">,</span> <span class="n">true</span><span class="p">}</span>     <span class="p">|</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">delete</span><span class="p">(</span><span class="n">analyze</span><span class="p">,</span> <span class="nv">Opts</span><span class="p">)]);</span>
+<span class="nf">args</span><span class="p">([</span><span class="s">"-s="</span><span class="o">++</span><span class="nv">File</span> <span class="p">|</span> <span class="nv">Args</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="p">[{</span><span class="n">suppression</span><span class="p">,</span> <span class="nv">File</span><span class="p">}</span> <span class="p">|</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">delete</span><span class="p">(</span><span class="n">suppression</span><span class="p">,</span> <span class="nv">Opts</span><span class="p">)]);</span>
+<span class="nf">args</span><span class="p">([</span><span class="nv">Target</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="p">[{</span><span class="n">target</span><span class="p">,</span> <span class="nv">Target</span><span class="p">}</span> <span class="p">|</span> <span class="nn">proplists</span><span class="p">:</span><span class="nf">delete</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nv">Opts</span><span class="p">)].</span>
+    
+</code></pre></div></div>
+
+<p>The textual impact, the number of characters, is quite heavy when operating on 
+property lists.</p>
+
+<p>If we instead use some kind of map with syntax, how would that look?</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="err">#</span><span class="p">{</span> <span class="n">analyze</span> <span class="o">=&gt;</span> <span class="n">false</span><span class="p">,</span> <span class="n">suppression</span> <span class="o">=&gt;</span> <span class="n">false</span><span class="p">,</span> <span class="n">target</span> <span class="o">=&gt;</span> <span class="n">none</span><span class="p">}).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">args</span><span class="p">([</span><span class="s">"-r"</span> <span class="p">|</span> <span class="nv">Args</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span>        <span class="o">-&gt;</span> <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="nv">Opts</span><span class="err">#</span><span class="p">{</span> <span class="n">analyze</span> <span class="p">:</span><span class="o">=</span> <span class="n">true</span> <span class="p">});</span>
+<span class="nf">args</span><span class="p">([</span><span class="s">"-s="</span><span class="o">++</span><span class="nv">File</span> <span class="p">|</span> <span class="nv">Args</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nf">args</span><span class="p">(</span><span class="nv">Args</span><span class="p">,</span> <span class="nv">Opts</span><span class="err">#</span><span class="p">{</span> <span class="n">suppression</span> <span class="p">:</span><span class="o">=</span> <span class="nv">File</span><span class="p">});</span>
+<span class="nf">args</span><span class="p">([</span><span class="nv">Target</span><span class="p">],</span> <span class="nv">Opts</span><span class="p">)</span>             <span class="o">-&gt;</span> <span class="nv">Opts</span><span class="err">#</span><span class="p">{</span> <span class="n">target</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Target</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<p>This looks cleaner in my opinion but that is a very subjective view. To use some
+data we can count the characters, and we see that the property lists example has
+390 characters versus the map examples 306. Property lists uses almost 30% more
+characters in this example.</p>
+
+<h2 id="semantics-and-api-functions">Semantics and API-functions</h2>
+
+<h3 id="list-conversions">List conversions</h3>
+
+<p>Perhaps the most sane <code class="language-plaintext highlighter-rouge">maps:from_list/1</code> semantics would be to have the key-value
+significance order in left to right, meaning the first association is used and
+the latter values with matching keys are ignored.</p>
+
+<p>This differs from the <code class="language-plaintext highlighter-rouge">dict:from_list/1</code> behavior.</p>
+
+<p>Consider the following <code class="language-plaintext highlighter-rouge">dict</code> example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[{</span><span class="n">a</span><span class="p">,</span><span class="mi">2</span><span class="p">}]</span> <span class="o">=</span> <span class="nn">dict</span><span class="p">:</span><span class="nf">to_list</span><span class="p">(</span><span class="nn">dict</span><span class="p">:</span><span class="nf">from_list</span><span class="p">([{</span><span class="n">a</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="n">a</span><span class="p">,</span><span class="mi">2</span><span class="p">}])).</span>
+</code></pre></div></div>
+
+<p>By letting the leftmost be the most significant key we could simplify conversion
+from and to lists.</p>
+
+<p>Current suggestion has the following semantics:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Ls</span> <span class="o">=</span> <span class="p">[{</span><span class="n">a</span><span class="p">,</span><span class="n">old</span><span class="p">}],</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="n">old</span> <span class="p">}</span> <span class="o">=</span> <span class="nn">maps</span><span class="p">:</span><span class="nf">from_list</span><span class="p">([{</span><span class="n">a</span><span class="p">,</span><span class="n">new</span><span class="p">}|</span><span class="nv">Ls</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<p>The reversal would be:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Ls</span> <span class="o">=</span> <span class="p">[{</span><span class="n">a</span><span class="p">,</span><span class="n">old</span><span class="p">}],</span>
+<span class="err">#</span><span class="p">{</span> <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="n">new</span> <span class="p">}</span> <span class="o">=</span> <span class="nn">maps</span><span class="p">:</span><span class="nf">from_list</span><span class="p">([{</span><span class="n">a</span><span class="p">,</span><span class="n">new</span><span class="p">}|</span><span class="nv">Ls</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<h2 id="equality-and-ordering-1">Equality and Ordering</h2>
+
+<p>A restriction set on the implementation by the Erlang specification is that
+order is total, i.e. satisfies <em>antisymmetry</em>, <em>transitivity</em> and <em>totality</em>.</p>
+
+<ul>
+  <li>If <code class="language-plaintext highlighter-rouge">M1 =&lt; M2</code> and <code class="language-plaintext highlighter-rouge">M2 =&lt; M1</code> then <code class="language-plaintext highlighter-rouge">M1 == M2</code>,</li>
+  <li>If <code class="language-plaintext highlighter-rouge">M1 =&lt; M2</code> and <code class="language-plaintext highlighter-rouge">M2 =&lt; M3</code> then <code class="language-plaintext highlighter-rouge">M1 =&lt; M3</code>,</li>
+  <li>If <code class="language-plaintext highlighter-rouge">M1 =&lt; M2</code> or <code class="language-plaintext highlighter-rouge">M2 =&lt; M1</code> (always comparable)
+where <code class="language-plaintext highlighter-rouge">M1</code>, <code class="language-plaintext highlighter-rouge">M2</code> and <code class="language-plaintext highlighter-rouge">M3</code> are any Map term.</li>
+</ul>
+
+<p>This only holds true in Erlang if we treat floats and integers as union of types,
+namely numbers. In the case of a Maps, <code class="language-plaintext highlighter-rouge">true = #{ 1.0 =&gt; V } == #{ 1 =&gt; V}</code>.</p>
+
+<ul>
+  <li>The need for order arises in a few cases.
+    <ul>
+      <li>comparison, for example sorting, <code class="language-plaintext highlighter-rouge">lists:sort([M1, .., Mn])</code></li>
+      <li>introspection, for example when printed.</li>
+    </ul>
+  </li>
+  <li>Ordered maps impose restrictions on the underlying implementation and a
+hashing approach will be nearly impossible.</li>
+  <li>The underlying structure does not need to be sorted, an order could be
+produced when needed,
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">M1</code> &lt; <code class="language-plaintext highlighter-rouge">M2</code>, would result in an internal sort but would cost
+O( <em>N1</em> * lg <em>N1</em> + <em>N2</em> * lg <em>N2</em> ), where
+<code class="language-plaintext highlighter-rouge">N1 = maps:size(M1) and N2 = maps:size(M2)</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="accessing-a-single-value-1">Accessing a single value</h2>
+
+<p>Do we need to have single access or is matching sufficient?</p>
+
+<p>Consider the following,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">V</span> <span class="o">=</span> <span class="nv">M</span><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>is shorter than</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span><span class="p">{</span> <span class="nv">K</span> <span class="p">:</span><span class="o">=</span> <span class="nv">V</span> <span class="p">}</span> <span class="o">=</span> <span class="nv">M</span>
+</code></pre></div></div>
+
+<p>It also allows for easy access of associated values in deep structures.</p>
+
+<p>The syntax for single value access is the least developed (and contemplated)
+feature in this proposal and certainly could use some input.</p>
+
+<p>More over, the dot syntax must be abolished. Currently it is used for records
+but it will not be used for maps. Dot represents end of expression list in last
+clause, or end of attribute.</p>
+
+<p>It cannot be used to distinguish between floats or associations.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="nv">M</span> <span class="o">=</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span><span class="p">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">}</span> <span class="p">}.</span>
+<span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="err">#</span><span class="p">{</span> <span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">b</span> <span class="p">},</span> <span class="mi">1</span><span class="p">.</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="p">}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">&gt;</span> <span class="err">#</span><span class="nv">M</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span>
+<span class="n">a</span> <span class="p">|</span> <span class="n">b</span> <span class="o">?</span>
+</code></pre></div></div>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Erlang code written with Maps will only be parseable, loadable and executable 
+on Erlang/OTP R17A and later releases of Erlang/OTP but not on previous
+releases.</p>
+
+<p>Erlang code written before Erlang/OTP R17A will be perfectly compatible, i.e.
+parseable, loadable and executable with these Maps changes.</p>
+
+<p>Distribution will not be backwards compatible.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0032 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0032 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>09-Feb-2010</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R13B-3</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-32-module-local-process-names">EEP 32: Module-local process names</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>The process registry in Erlang is convenient, but counts as
+a global shared mutable variable, with two major defects:
+the possibility of data races (shared mutable variable) and
+the impossibility of encapsulation (global).  This EEP
+resurrects the old (1997 or earlier) proposal of module-
+local process-valued variables, providing a replacement for
+node-local uses of the registry with encapsulation and without
+races.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>A module (or an instance of a parameterized module) may have
+one or more top level pid-valued variables, and if so, has a
+lock associated with them.  The directive has the form</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">pid_name</span><span class="p">(</span><span class="nv">Atom</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>where Atom is an atom.  To avoid confusing programmers who
+still have to deal with the registry, this Atom may not be
+‘undefined’.</p>
+
+<p>If there is at least one such directive in a module, the
+compiler automatically generates a function called
+<code class="language-plaintext highlighter-rouge">pid_name/1</code>.  In the scope of directives</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">pid_name</span><span class="p">(</span><span class="n">pn_1</span><span class="p">).</span>
+<span class="p">...</span>
+<span class="p">-</span><span class="ni">pid_name</span><span class="p">(</span><span class="n">pn_k</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>the <code class="language-plaintext highlighter-rouge">pid_name/1</code> function is rather like</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name</span><span class="p">(</span><span class="n">pn_1</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">with_module_lock</span><span class="p">(</span><span class="n">read</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">X</span> <span class="o">=</span> <span class="o">*</span><span class="n">pn_1</span> <span class="k">end</span><span class="p">,</span> <span class="nv">X</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="nf">pid_name</span><span class="p">(</span><span class="n">pn_k</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">with_module_lock</span><span class="p">(</span><span class="n">read</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">X</span> <span class="o">=</span> <span class="o">*</span><span class="n">pn_k</span> <span class="k">end</span><span class="p">,</span> <span class="nv">X</span><span class="p">.</span>
+    
+</code></pre></div></div>
+<p>except that we expect there to be a VM instruction
+<code class="language-plaintext highlighter-rouge">get_pid_safely(Address)</code>, and we expect the compiler to
+inline calls to pid_name(Atom) when Atom is known.
+On a machine like the <code class="language-plaintext highlighter-rouge">X86</code> or <code class="language-plaintext highlighter-rouge">X86_64</code>, this could be a
+single locked load instruction.</p>
+
+<p>The value of a <code class="language-plaintext highlighter-rouge">-pid_name</code> is always a process id.  <br />
+There is a special process id value which at all times represents
+a dead process.  So within a module,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o">!</span> <span class="nv">Message</span>
+</code></pre></div></div>
+
+<p>is legal if and only if X is one of the pid-names declared in
+the module, and whether or not the process it names has died.</p>
+
+<p>If there is a need to discover whether a <code class="language-plaintext highlighter-rouge">-pid_name</code> has within
+the recent but unpredictable past been associated with a live
+process, that can be found out by combining <code class="language-plaintext highlighter-rouge">pid_name/1</code> with
+<code class="language-plaintext highlighter-rouge">process_info/2</code>.</p>
+
+<p>As with the registry, a process may have at most one <code class="language-plaintext highlighter-rouge">pid_name</code>.
+For debugging purposes, I suppose that <code class="language-plaintext highlighter-rouge">process_info</code> could be
+extended to return a <code class="language-plaintext highlighter-rouge">{pid_name,{Module,Name}}</code> tuple.</p>
+
+<p>When a process exits, it is automatically unregistered.
+That is, if it was bound to a <code class="language-plaintext highlighter-rouge">-pid_name</code>, that <code class="language-plaintext highlighter-rouge">-pid_name</code>
+now refers to the conventional dead process.  This draft of
+this EEP includes no other way for a process to be unregistered.</p>
+
+<p>The important thing about registering a process is that it
+should be atomic.  So there are two new functions</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name_spawn</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span>
+<span class="nf">pid_name_spawn_link</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We can understand them as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name_spawn</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">),</span> <span class="nb">is_function</span><span class="p">(</span><span class="nv">Fun</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">with_module_lock</span><span class="p">(</span><span class="n">write</span><span class="p">)</span> <span class="o">-&gt;</span>
+	<span class="nv">P</span> <span class="o">=</span> <span class="o">*</span><span class="nv">Name</span><span class="p">,</span>
+	<span class="k">if</span> <span class="nv">P</span> <span class="n">is</span> <span class="n">a</span> <span class="n">live</span> <span class="n">process</span> <span class="o">-&gt;</span>
+	    <span class="nv">P</span>
+	 <span class="p">;</span> <span class="nv">P</span> <span class="n">is</span> <span class="n">a</span> <span class="n">dead</span> <span class="n">process</span> <span class="o">-&gt;</span>
+	    <span class="nv">Q</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>
+	    <span class="o">*</span><span class="nv">Name</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Q</span><span class="p">,</span>
+	    <span class="nv">Q</span>
+	<span class="k">end</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name_spawn_link</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span>
+  <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">),</span> <span class="nb">is_function</span><span class="p">(</span><span class="nv">Fun</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">with_module_lock</span><span class="p">(</span><span class="n">write</span><span class="p">)</span> <span class="o">-&gt;</span>
+	<span class="nv">P</span> <span class="o">=</span> <span class="o">*</span><span class="nv">Name</span><span class="p">,</span>
+	<span class="k">if</span> <span class="nv">P</span> <span class="n">is</span> <span class="n">a</span> <span class="n">live</span> <span class="n">process</span> <span class="o">-&gt;</span>
+	    <span class="nv">P</span>
+	 <span class="p">;</span> <span class="nv">P</span> <span class="n">is</span> <span class="n">a</span> <span class="n">dead</span> <span class="n">process</span> <span class="o">-&gt;</span>
+	    <span class="nv">Q</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>
+	    <span class="o">*</span><span class="nv">Name</span> <span class="p">:</span><span class="o">=</span> <span class="nv">Q</span><span class="p">,</span>
+	    <span class="nv">Q</span>
+	<span class="k">end</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Here, as earlier, <code class="language-plaintext highlighter-rouge">with_module_lock</code> is pseudo-code, meant to
+suggest some sort of reader-writer locking on a private lock,
+existing only inside a module that has declared a <code class="language-plaintext highlighter-rouge">-pid_name</code>.</p>
+
+<p>These two functions are automatically declared inside the
+module, like <code class="language-plaintext highlighter-rouge">pid_name/1</code>.  The three functions are not functions
+automatically inherited from the <code class="language-plaintext highlighter-rouge">erlang:</code> module but functions
+that are logically inside the module, however they might be
+actually implemented.  There doesn’t seem to be any good
+reason for a module to export any of these functions, and the
+compiler should at least warn if that is attempted.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<ul>
+  <li>Encapsulation.</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">The</span> <span class="n">process</span> <span class="n">registry</span> <span class="n">is</span> <span class="n">often</span> <span class="n">used</span> <span class="k">when</span> <span class="n">clients</span> <span class="k">of</span> <span class="n">a</span> <span class="n">module</span>
+<span class="n">need</span> <span class="n">to</span> <span class="n">communicate</span> <span class="n">with</span> <span class="n">one</span> <span class="ow">or</span> <span class="n">more</span> <span class="n">servers</span> <span class="n">managed</span> <span class="n">by</span> <span class="n">the</span>
+<span class="n">module</span><span class="p">,</span> <span class="n">but</span> <span class="n">the</span> <span class="n">interface</span> <span class="n">code</span> <span class="n">is</span> <span class="n">inside</span> <span class="n">the</span> <span class="n">module</span><span class="p">.</span>  <span class="nv">There</span>
+<span class="n">is</span> <span class="n">no</span> <span class="n">advantage</span><span class="p">,</span> <span class="ow">and</span> <span class="n">much</span> <span class="n">risk</span><span class="p">,</span> <span class="n">in</span> <span class="n">exposing</span> <span class="n">the</span> <span class="n">process</span><span class="p">.</span>  <span class="nv">A</span>
+<span class="n">big</span> <span class="n">reason</span> <span class="n">for</span> <span class="n">this</span> <span class="n">process</span> <span class="n">is</span> <span class="n">to</span> <span class="nb">get</span> <span class="n">the</span> <span class="n">benefit</span> <span class="k">of</span> <span class="n">having</span>
+<span class="n">mutable</span> <span class="n">process</span> <span class="n">variables</span> <span class="n">without</span> <span class="n">the</span> <span class="n">loss</span> <span class="k">of</span> <span class="n">encapsulation</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Efficiency.</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">As</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">mutable</span> <span class="n">data</span> <span class="n">structure</span><span class="p">,</span> <span class="n">the</span> <span class="n">registry</span> <span class="n">has</span> <span class="n">to</span> <span class="n">be</span>
+<span class="n">accessed</span> <span class="n">within</span> <span class="n">the</span> <span class="n">scope</span> <span class="k">of</span> <span class="n">suitable</span> <span class="n">locks</span><span class="p">.</span>  <span class="nv">With</span> <span class="n">this</span>
+<span class="n">approach</span><span class="p">,</span> <span class="n">each</span> <span class="n">module</span> <span class="n">has</span> <span class="n">its</span> <span class="n">own</span> <span class="n">lock</span><span class="p">,</span> <span class="n">contention</span> <span class="n">ought</span>
+<span class="n">to</span> <span class="n">be</span> <span class="n">pretty</span> <span class="n">nearly</span> <span class="n">zero</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">commonest</span> <span class="n">use</span> <span class="k">case</span> <span class="k">of</span>
+<span class="n">the</span> <span class="n">registry</span> <span class="n">can</span><span class="p">,</span> <span class="nv">I</span> <span class="n">believe</span><span class="p">,</span> <span class="n">be</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">load</span> <span class="n">instruction</span><span class="p">.</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Safety.</li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">It</span> <span class="n">is</span> <span class="n">actually</span> <span class="n">surprisingly</span> <span class="n">hard</span> <span class="n">to</span> <span class="nb">register</span> <span class="n">a</span> <span class="n">process</span>
+<span class="n">safely</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">use</span> <span class="k">of</span> <span class="n">registered</span> <span class="n">names</span> <span class="n">is</span> <span class="n">oddly</span> <span class="n">inconsistent</span>
+<span class="n">with</span> <span class="n">the</span> <span class="n">use</span> <span class="k">of</span> <span class="n">direct</span> <span class="n">process</span> <span class="n">ids</span><span class="p">.</span>  <span class="nv">This</span> <span class="n">interface</span> <span class="n">is</span> <span class="n">meant</span>
+<span class="n">to</span> <span class="n">be</span> <span class="n">simpler</span> <span class="n">to</span> <span class="n">use</span> <span class="n">safely</span><span class="p">.</span>
+</code></pre></div></div>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>The old Erlang book describes four functions for dealing with
+registered process names.  There are two more main interfaces.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Name</span> <span class="o">!</span> <span class="nv">Message</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="c">% Also available as erlang:send(Name, Message).
+</span>  <span class="c">% A 'badarg' exception results if Pid is an atom that is
+</span>  <span class="c">% not the registered name of a live local process or port.
+</span>    <span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">!</span> <span class="nv">Message</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Pid</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">),</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="c">% A 'badarg' exception results if Pid is not a live local
+</span>  <span class="c">% process or port, if Name is not an atom or is already in
+</span>  <span class="c">% use, if Pid already has a registered name, or if Name is
+</span>  <span class="c">% 'undefined'.
+</span>    <span class="s">"whereis(Name) := Pid"</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">unregister</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="c">% A 'badarg' exception results if Name is not an atom
+</span>  <span class="c">% currently in use as the registered name of some process
+</span>  <span class="c">% or port.  'undefined' is always an error.
+</span>    <span class="s">"whereis(Name) := undefined"</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="c">% A 'badarg' exception results if Name is not a name.
+</span>  <span class="c">% in effect, a global mutable hash table with
+</span>  <span class="c">% atom keys and pid-or-'undefined' values.
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">registered</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="c">% yes, I know this is not executable Erlang.
+</span>    <span class="p">[</span><span class="nv">Name</span> <span class="p">||</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">),</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">))].</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">process_info</span><span class="p">(</span><span class="nv">Pid</span><span class="p">,</span> <span class="n">registered_name</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="c">% yes, I know this is not executable Erlang.
+</span>    <span class="k">case</span> <span class="p">[</span><span class="nv">Name</span> <span class="p">||</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">),</span> <span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">=:=</span> <span class="nv">Pid</span><span class="p">]</span>
+      <span class="k">of</span> <span class="p">[</span><span class="nv">N</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">registered_name</span><span class="p">,</span><span class="nv">N</span><span class="p">}</span>
+       <span class="p">;</span> <span class="p">[]</span>  <span class="o">-&gt;</span> <span class="p">[]</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>When a process terminates, for whatever reason, it does the
+equivalent of</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="nb">process_info</span><span class="p">(</span><span class="nf">self</span><span class="p">(),</span> <span class="n">registered_name</span><span class="p">)</span>
+  <span class="k">of</span> <span class="p">{_,</span><span class="nv">Name</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nb">unregister</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span>
+   <span class="p">;</span> <span class="p">[]</span>       <span class="o">-&gt;</span> <span class="n">ok</span>
+<span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This has an astonishing consequence.</p>
+
+<p>Suppose I do</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Pid</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>
+<span class="p">...</span>
+<span class="nv">Pid</span> <span class="o">!</span> <span class="nv">Message</span>
+</code></pre></div></div>
+
+<p>and between the time the process was created and the time I send
+the message to it, the process dies.  In Erlang this is
+perfectly ok, and the message just disappears.</p>
+
+<p>Now suppose I do</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">)),</span>
+<span class="p">...</span>
+<span class="nv">Name</span> <span class="o">!</span> <span class="nv">Message</span>
+</code></pre></div></div>
+
+<p>and between the time the process was created and the time I send
+the message to it, the process dies.  Anyone would expect the
+result to be exactly the same: because the <code class="language-plaintext highlighter-rouge">Name</code> pointed to a
+process which has died, this amounts to sending a message to a
+dead process, which is perfectly ok, and the message just
+disappears.  Most confusingly, that is not what happens, and
+instead you get a ‘badarg’ exception.</p>
+
+<p>Now suppose I do</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">send</span><span class="p">(</span><span class="nv">Pid</span><span class="p">,</span> <span class="nv">Message</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Pid</span> <span class="o">!</span> <span class="nv">Message</span><span class="p">;</span>
+<span class="nb">send</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Message</span><span class="p">)</span> <span class="k">when</span> <span class="nb">is_atom</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span>
+      <span class="k">of</span> <span class="n">undefined</span> <span class="o">-&gt;</span> <span class="n">ok</span>
+       <span class="p">;</span> <span class="nv">Pid</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Pid</span> <span class="o">!</span> <span class="nv">Message</span>
+    <span class="k">end</span><span class="p">.</span>
+<span class="p">...</span>
+    <span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">)),</span>
+    <span class="p">...</span>
+    <span class="nb">send</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Message</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This works the way we would expect, but why is it necessary?</p>
+
+<p>In Erlang as it stands, <code class="language-plaintext highlighter-rouge">Name ! Message</code> will raise an error if
+<code class="language-plaintext highlighter-rouge">Name</code> would have referred to the right process but that process
+has died.  It might be argued that this is a useful debugging
+aid, but nothing helps us if <code class="language-plaintext highlighter-rouge">Name</code> now refers to the WRONG
+process.  Right now, consider</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">!</span> <span class="nv">Message</span>
+</code></pre></div></div>
+
+<p>This will raise an exception if the named process had died
+before whereis/1 was called, but consider this timing:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">live</span>           <span class="n">dies</span>
+   <span class="nb">whereis</span> <span class="n">runs</span>      <span class="n">message</span> <span class="n">sent</span>
+</code></pre></div></div>
+
+<p>A slight change in timing can unpredictably change the
+behaviour from silence-on-late-death to error-on-early-death
+and vice versa.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pid_name</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span> <span class="o">!</span> <span class="nv">Message</span>
+</code></pre></div></div>
+
+<p>is <em>consistently</em> silent.</p>
+
+<p>The current process registry is also used for ports, which act in
+many ways like processes.</p>
+
+<p>The old Erlang book is absolutely right that sometimes you
+need a way to talk to a process you haven’t been previously
+introduced to.  However, it is not true that this must be
+done by means of a global hash table.  You could always ask
+a module for the information.</p>
+
+<p>Let’s take program 5.5 from the book.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">module</span><span class="p">(</span><span class="n">number_analyser</span><span class="p">).</span> 
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">start</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span><span class="n">server</span><span class="o">/</span><span class="mi">1</span><span class="p">]).</span> 
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">add_number</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">analyse</span><span class="o">/</span><span class="mi">1</span><span class="p">]).</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span> 
+    <span class="nb">register</span><span class="p">(</span><span class="n">number_analyser</span><span class="p">,</span> 
+	<span class="nb">spawn</span><span class="p">(</span><span class="n">number_analyser</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="p">[</span><span class="n">nil</span><span class="p">])).</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% The interface functions. 
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">add_number</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="nf">request</span><span class="p">({</span><span class="n">add_number</span><span class="p">,</span><span class="nv">Seq</span><span class="p">,</span><span class="nv">Dest</span><span class="p">}).</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">analyse</span><span class="p">(</span><span class="nv">Seq</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="nf">request</span><span class="p">({</span><span class="n">analyse</span><span class="p">,</span><span class="nv">Seq</span><span class="p">}).</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">request</span><span class="p">(</span><span class="nv">Req</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="n">number_analyser</span> <span class="o">!</span> <span class="p">{</span><span class="nf">self</span><span class="p">(),</span> <span class="nv">Req</span><span class="p">},</span> 
+    <span class="k">receive</span> 
+	<span class="p">{</span><span class="n">number_analyser</span><span class="p">,</span><span class="nv">Reply</span><span class="p">}</span> <span class="o">-&gt;</span> 
+            <span class="nv">Reply</span> 
+    <span class="k">end</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% The server. 
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">server</span><span class="p">(</span><span class="nv">Analyser_Table</span><span class="p">)</span> <span class="o">-&gt;</span> 
+    <span class="k">receive</span> 
+        <span class="p">{</span><span class="nv">From</span><span class="p">,</span> <span class="p">{</span><span class="n">analyse</span><span class="p">,</span> <span class="nv">Seq</span><span class="p">}}</span> <span class="o">-&gt;</span> 
+	    <span class="nv">Result</span> <span class="o">=</span> <span class="nf">lookup</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Analyser_Table</span><span class="p">),</span> 
+	    <span class="nv">From</span> <span class="o">!</span> <span class="p">{</span><span class="n">number_analyser</span><span class="p">,</span> <span class="nv">Result</span><span class="p">},</span> 
+	    <span class="nf">server</span><span class="p">(</span><span class="nv">Analyser_Table</span><span class="p">)</span>
+      <span class="p">;</span> <span class="p">{</span><span class="nv">From</span><span class="p">,</span> <span class="p">{</span><span class="n">add_number</span><span class="p">,</span> <span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">}}</span> <span class="o">-&gt;</span> 
+	    <span class="nv">From</span> <span class="o">!</span> <span class="p">{</span><span class="n">number_analyser</span><span class="p">,</span> <span class="n">ack</span><span class="p">},</span> 
+	    <span class="nf">server</span><span class="p">(</span><span class="nf">insert</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">,</span> <span class="nv">Analyser_Table</span><span class="p">))</span> 
+    <span class="k">end</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<p>The first thing we notice about this is that the registry is used
+to allow a process that is a client of this module to communicate
+with a process managed by this module through interface functions
+in this module.  There is no reason why the process should be
+given a GLOBALLY visible name, and every reason why it should NOT.
+We would like to ensure that all communication with the server
+process goes through the interface functions, and as long as the
+process is in a global registry, anything could happen.  The
+global process registry thus defeats its own purpose.</p>
+
+<p>Similarly, because the reply messages to the interface functions
+are tagged, not with the server’s identity, but with its public
+name, they are easy to forge.  Both of these problems also apply
+to Program 5.6 in the old book.</p>
+
+<p>But there is worse.  It is NEVER safe to call <code class="language-plaintext highlighter-rouge">register/2</code> or
+<code class="language-plaintext highlighter-rouge">unregister/1</code>.  Recall that the precondition for <code class="language-plaintext highlighter-rouge">register/2</code>
+requires that the <code class="language-plaintext highlighter-rouge">Name</code> not be in use.  But there is no way to
+ever be sure of that.  For example, you might try</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">spawn_if_necessary</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span>		<span class="c">% T1
+</span>      <span class="k">of</span> <span class="n">undefined</span> <span class="o">-&gt;</span>
+	 <span class="nv">Pid</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>	<span class="c">% T2
+</span>	 <span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Pid</span><span class="p">)</span>	<span class="c">% T3
+</span>       <span class="p">;</span> <span class="nv">Pid</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+         <span class="n">ok</span>
+    <span class="k">end</span><span class="p">,</span>
+    <span class="nv">Pid</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Unfortunately, between time T1, when <code class="language-plaintext highlighter-rouge">whereis/1</code> reports that the
+<code class="language-plaintext highlighter-rouge">Name</code> is not in use, and time T3, when we try to assign it, some
+other process might have been registered.  Also, between time T2,
+when the new process is created, and T3, when we use the <code class="language-plaintext highlighter-rouge">Pid</code>, the
+process might have died.</p>
+
+<p>Because the registry is global, it is no use searching existing
+code to see whether the <code class="language-plaintext highlighter-rouge">Name</code> is clobbered; the bug might be
+introduced in future code.</p>
+
+<p>There appears to be no way to protect against the possibility of a
+process dying between T2 and T3.  The obvious hack,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Pid</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>
+<span class="nn">erlang</span><span class="p">:</span><span class="nb">suspend_process</span><span class="p">(</span><span class="nv">Pid</span><span class="p">),</span>
+<span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Pid</span><span class="p">),</span>
+<span class="nn">erlang</span><span class="p">:</span><span class="nb">resume_process</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>won’t work because <code class="language-plaintext highlighter-rouge">erlang:suspend_process/1</code> is documented as
+having the same ‘badarg if Pid is not the pid of a live local
+process’ snafu as <code class="language-plaintext highlighter-rouge">register/2</code>.  The only really safe way around the
+issue would be for the new process to be born suspended, and
+there’s no way to do that.  There is no ‘suspended’ option allowed
+in the options list of <code class="language-plaintext highlighter-rouge">spawn_opt/[2-5]</code>.</p>
+
+<p>In practice, of course, the new process WON’T die, typically
+because it goes into a loop waiting for a message.  Even so, this
+amount of fragility in a primitive is a bit worrying.</p>
+
+<p>Let’s take a quick check to see how real all this is.</p>
+
+<p><code class="language-plaintext highlighter-rouge">sounder.erl</code> has</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="n">sounder</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">undefined</span> <span class="o">-&gt;</span>
+    	<span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">read_file_info</span><span class="p">(</span><span class="n">'/dev/audio'</span><span class="p">)</span> <span class="k">of</span>
+    	    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">FI</span><span class="p">}</span> <span class="k">when</span> <span class="nv">FI</span><span class="nl">#file_info.access</span><span class="o">==</span><span class="n">read_write</span> <span class="o">-&gt;</span>
+    		<span class="nb">register</span><span class="p">(</span><span class="n">sounder</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="n">sounder</span><span class="p">,</span><span class="n">go</span><span class="p">,[])),</span>
+    		<span class="n">ok</span><span class="p">;</span>
+    	    <span class="p">_</span><span class="nv">Other</span> <span class="o">-&gt;</span>
+    		<span class="nb">register</span><span class="p">(</span><span class="n">sounder</span><span class="p">,</span> <span class="nb">spawn</span><span class="p">(</span><span class="n">sounder</span><span class="p">,</span><span class="n">nosound</span><span class="p">,[])),</span>
+    		<span class="n">silent</span>
+    	<span class="k">end</span><span class="p">;</span>
+        <span class="p">_</span><span class="nv">Pid</span> <span class="o">-&gt;</span>
+    	<span class="n">ok</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Here’s a curious thing:  the first time <code class="language-plaintext highlighter-rouge">sounder:start/0</code> is
+called, it will return different values (ok, silent) depending
+on whether sound (is, is not) supported.  Later calls always
+return ok.  This contradicts the documentation.  Whoops!
+Apart from that, it’s a straightforward <code class="language-plaintext highlighter-rouge">spawn_if_necessary</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">man.erl</code> has</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="n">man</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">undefined</span> <span class="o">-&gt;</span>
+    	<span class="nb">register</span><span class="p">(</span><span class="n">man</span><span class="p">,</span><span class="nv">Pid</span><span class="o">=</span><span class="nb">spawn</span><span class="p">(</span><span class="n">man</span><span class="p">,</span><span class="n">init</span><span class="p">,[])),</span>
+    	<span class="nv">Pid</span><span class="p">;</span>
+        <span class="nv">Pid</span> <span class="o">-&gt;</span>
+    	<span class="nv">Pid</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This is precisely</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">spawn_if_necessary</span><span class="p">(</span><span class="k">fun</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">man</span><span class="p">:</span><span class="nf">init</span><span class="p">()</span> <span class="k">end</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">tv_table_owner</code> has</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="o">?</span><span class="nv">REGISTERED_NAME</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">undefined</span> <span class="o">-&gt;</span>
+    	<span class="nv">ServerPid</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="p">[]),</span>
+    	<span class="k">case</span> <span class="k">catch</span> <span class="nb">register</span><span class="p">(</span><span class="o">?</span><span class="nv">REGISTERED_NAME</span><span class="p">,</span> <span class="nv">ServerPid</span><span class="p">)</span> <span class="k">of</span>
+    	    <span class="n">true</span> <span class="o">-&gt;</span>
+    		<span class="n">ok</span><span class="p">;</span>
+    	    <span class="p">{</span><span class="n">'EXIT'</span><span class="p">,</span> <span class="p">_</span><span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+    		<span class="nb">exit</span><span class="p">(</span><span class="nv">ServerPid</span><span class="p">,</span> <span class="n">kill</span><span class="p">),</span>
+    		<span class="nn">timer</span><span class="p">:</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span>
+    		<span class="nf">start</span><span class="p">()</span>
+    	<span class="k">end</span><span class="p">;</span>
+        <span class="nv">Pid</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+    	<span class="n">ok</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Let’s repackage that to see what’s going on:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">spawn_if_necessary</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nb">whereis</span><span class="p">(</span><span class="nv">Name</span><span class="p">)</span>
+      <span class="k">of</span> <span class="n">undefined</span> <span class="o">-&gt;</span>
+         <span class="nv">Pid</span> <span class="o">=</span> <span class="nb">spawn</span><span class="p">(</span><span class="nv">Fun</span><span class="p">),</span>		    
+         <span class="k">case</span> <span class="k">catch</span> <span class="nb">register</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Pid</span><span class="p">)</span>
+           <span class="k">of</span> <span class="n">true</span> <span class="o">-&gt;</span>
+              <span class="nv">Pid</span>
+            <span class="p">;</span> <span class="p">{</span><span class="n">'EXIT'</span><span class="p">,</span> <span class="p">_}</span> <span class="o">-&gt;</span>
+              <span class="nb">exit</span><span class="p">(</span><span class="nv">Pid</span><span class="p">,</span> <span class="n">kill</span><span class="p">),</span>
+              <span class="nn">timer</span><span class="p">:</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span>
+              <span class="nf">spawn_if_necessary</span><span class="p">(</span><span class="nv">Name</span><span class="p">,</span> <span class="nv">Fun</span><span class="p">)</span>
+         <span class="k">end</span>
+       <span class="p">;</span> <span class="nv">Pid</span> <span class="k">when</span> <span class="nb">is_pid</span><span class="p">(</span><span class="nv">Pid</span><span class="p">)</span> <span class="o">-&gt;</span>
+	 <span class="n">ok</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>If there is a live local process registered under <code class="language-plaintext highlighter-rouge">Name</code>, return its
+<code class="language-plaintext highlighter-rouge">Pid</code>.  Of course, after the function returns to believe that there
+is STILL a live local process registered under Name, but that’s
+just as true of <code class="language-plaintext highlighter-rouge">whereis/1</code>.</p>
+
+<p>If there is not, then create a new process, regardless of whether
+that turns out to be useful.  Try to register it.  The <code class="language-plaintext highlighter-rouge">Pid</code> will be
+the pid of a live local process that is not registered under any
+other name, and <code class="language-plaintext highlighter-rouge">Name</code> must be an atom other than ‘undefined’, or
+<code class="language-plaintext highlighter-rouge">whereis/1</code> would have crashed.  So it should be that the only thing
+that can go wrong is that some other process has snuck in and
+swiped the registry slot.  In that case, kill the process, wait a
+long time, and try again.</p>
+
+<p>In theory, it is possible for this to loop forever, with just the
+right malevolent timing by an adversary.  In practice, I’m sure it
+works very well.</p>
+
+<p>The thing is, if the ‘primitives’ are this fragile, I would rather
+not expose beginners to them.  Or for that matter, most people:
+there are plenty of uses of <code class="language-plaintext highlighter-rouge">register/1</code> in the Erlang/OTP sources
+that are not this well protected.</p>
+
+<p>The simplest fix to the ‘registration race’ problem would be to
+verify that <code class="language-plaintext highlighter-rouge">spawn_if_necessary/2</code> is sound, correct it if
+necessary, and put it in a library.  However, that does nothing to
+fix the globality of the registry.</p>
+
+<p>There is no analogue of registered().  Inside a module, you can
+see what names are available; outside the module, you have no
+right to know.</p>
+
+<p>This EEP does not propose abolishing the old registry.  There
+is a lot of code, and a lot of training material, that still
+uses or mentions it.  Above all, the old registry can do one
+thing that this EEP cannot do and isn’t meant to, and that is
+to provide names that can be used in other nodes, in <code class="language-plaintext highlighter-rouge">{Node,Name}</code>
+form.  The aim of this proposal is to provide something that can
+replace MOST uses of the registry with something safer, and in
+particular to allow gradual migration to per-module registration.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>The only modules that are affected by the new feature are
+those that visibly contain an explicit <code class="language-plaintext highlighter-rouge">-pid_name</code> directive.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>None.</p>
+
+<h1 id="example">Example</h1>
+
+<p>Here is the old book’s Program 5.5 again, brought up to date.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">module</span><span class="p">(</span><span class="n">number_analyser</span><span class="p">).</span> 
+<span class="p">-</span><span class="ni">export</span><span class="p">([</span>
+    <span class="n">add_number</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">analyse</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">start</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">stop</span><span class="o">/</span><span class="mi">0</span>
+ <span class="p">]).</span>
+<span class="p">-</span><span class="ni">pid_name</span><span class="p">(</span><span class="n">server</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">start</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nf">pid_name_spawn</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="k">fun</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nf">server</span><span class="p">(</span><span class="n">nil</span><span class="p">)</span> <span class="k">end</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">stop</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nf">pid_name</span><span class="p">(</span><span class="n">server</span><span class="p">)</span> <span class="o">!</span> <span class="n">stop</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">add_number</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">request</span><span class="p">({</span><span class="n">add_number</span><span class="p">,</span><span class="nv">Seq</span><span class="p">,</span><span class="nv">Dest</span><span class="p">}).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">analyse</span><span class="p">(</span><span class="nv">Seq</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">request</span><span class="p">({</span><span class="n">analyse</span><span class="p">,</span><span class="nv">Seq</span><span class="p">}).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">request</span><span class="p">(</span><span class="nv">Request</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">P</span> <span class="o">=</span> <span class="nf">pid_name</span><span class="p">(</span><span class="n">server</span><span class="p">),</span>
+    <span class="nv">P</span> <span class="o">!</span> <span class="p">{</span><span class="nf">self</span><span class="p">(),</span> <span class="nv">Request</span><span class="p">},</span>
+    <span class="k">receive</span> <span class="p">{</span><span class="nv">P</span><span class="p">,</span><span class="nv">Reply</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nv">Reply</span> <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">server</span><span class="p">(</span><span class="nv">Analyser_Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">receive</span> 
+        <span class="p">{</span><span class="nv">From</span><span class="p">,</span> <span class="p">{</span><span class="n">analyse</span><span class="p">,</span> <span class="nv">Seq</span><span class="p">}}</span> <span class="o">-&gt;</span> 
+	    <span class="nv">From</span> <span class="o">!</span> <span class="p">{</span><span class="nf">self</span><span class="p">(),</span> <span class="nf">lookup</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Analyser_Table</span><span class="p">)},</span>
+	    <span class="nf">server</span><span class="p">(</span><span class="nv">Analyser_Table</span><span class="p">)</span>
+      <span class="p">;</span> <span class="p">{</span><span class="nv">From</span><span class="p">,</span> <span class="p">{</span><span class="n">add_number</span><span class="p">,</span> <span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">}}</span> <span class="o">-&gt;</span> 
+	    <span class="nv">From</span> <span class="o">!</span> <span class="p">{</span><span class="nf">self</span><span class="p">(),</span> <span class="n">ok</span><span class="p">},</span> 
+	    <span class="nf">server</span><span class="p">(</span><span class="nf">insert</span><span class="p">(</span><span class="nv">Seq</span><span class="p">,</span> <span class="nv">Dest</span><span class="p">,</span> <span class="nv">Analyser_Table</span><span class="p">))</span> 
+    <span class="k">end</span><span class="p">.</span> 
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>It is now possible to use a programming convention where the
+<code class="language-plaintext highlighter-rouge">-pid_name</code> of every server is ‘server’.</p>
+  </li>
+  <li>
+    <p>It is no longer possible for code outside the module to send
+messages to the server process.</p>
+  </li>
+  <li>
+    <p>It is no longer possible (well, no longer embarrassingly easy)
+for an outsider to forge responses from the server.</p>
+  </li>
+</ul>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Downloads - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Downloads - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/downloads.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    
+
+<div class="container body border-top pt-4">
+    <main class="main">
+        <div class="header">
+            
+<h3 id="download-erlangotp">Download Erlang/OTP</h3>
+
+<p>The latest version of Erlang/OTP is 24.0.3 and it can be found <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/otp_src_24.0.3.tar.gz">here</a>.</p>
+
+<p>Take a look at the <a href="/erlang-org/downloads/24">release description</a> to see what changes Erlang/OTP 24 brings.</p>
+
+<p>For a description of the changes that</p>
+
+<p>You can also clone the latest v</p>
+
+
+        </div>
+        <div class="content">
+            
+<h3 id="compiling-erlang-from-source">Compiling Erlang from source</h3>
+
+<p>You can build Erlang from source on your own, following the <a href="https://github.com/erlang/otp/blob/OTP-24.0.3/HOWTO/INSTALL.md">building and installation instructions</a>. In a nutshell to install a pre-built archive you need only do:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./configure <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>If you clone the release from git, there may be some additional steps needed depending
+on which version of Erlang/OTP you are compiling. So always make sure to read the
+build and install instruction of the release you are compiling.</p>
+
+<p>You can also use third-party tools such as <a href="https://github.com/kerl/kerl">Kerl</a> or <a href="https://github.com/asdf-vm/asdf-erlang">asdf</a> to compile Erlang. They help to remove the differences between Erlang/OTP releases and the OS you are compiling on.</p>
+
+<h3 id="source-versions-and-windows-binaries-for-patches">Source Versions and Windows Binaries for Patches</h3>
+
+<p>Detailed information about all released OTP versions since OTP 17.0 can be found at the <a href="https://erlang.org/download/otp_versions_tree.html">OTP Versions Tree</a> page. This information includes a link to the GitHub source tag, and a link to the README. As of OTP 23, Windows binaries can also be downloaded from here for all patches.</p>
+
+<h3 id="pre-built-binary-packages">Pre-built Binary Packages</h3>
+
+<p>Most OS package managers provide pre-built binary packages.</p>
+
+<ul>
+  <li>For Homebrew on OS X: <code class="language-plaintext highlighter-rouge">brew install erlang</code></li>
+  <li>For MacPorts on OS X: <code class="language-plaintext highlighter-rouge">port install erlang</code></li>
+  <li>For Ubuntu and Debian: <code class="language-plaintext highlighter-rouge">apt-get install erlang</code></li>
+  <li>For Fedora: <code class="language-plaintext highlighter-rouge">yum install erlang</code></li>
+  <li>For FreeBSD: <code class="language-plaintext highlighter-rouge">pkg install erlang</code></li>
+</ul>
+
+<p>The OS provided packages tend to not contain the latest version of Erlang/OTP.
+So <a href="https://www.erlang-solutions.com/downloads/">Erlang Solutions</a> provides up to date
+pre-built packages for the latest stable releases. Erlang Solutions provides pre-built binary packages for Ubuntu, Debian, Fedora, CentOS and other operating systems.</p>
+
+<h3 id="license">License</h3>
+
+<p>Since Erlang/OTP 18.0, Erlang/OTP is released under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>. The older releases prior to Erlang/OTP 18.0 were released under <a href="/EPLICENSE">Erlang Public License (EPL)</a>, a derivative work of the Mozilla Public License (MPL).</p>
+
+
+        </div>
+        <div class="links">
+            
+            <!--
+    See the comment in _default.scss for how the responsive collapse work
+-->
+<div class="card collapse-expand-md">
+    <div class="card-header navbar-light">
+        <button class="float-start navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#downloadCardBody" aria-controls="downloadCardBody" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="row text-center">
+            <div class="col-xl">
+                <strong>Latest version is 24.0.3</strong>
+            </div>
+            <div class="col-xl-2">
+                <a href="">
+                    <img src="/erlang-org/assets/img/GitHub-Mark-32px.png" alt="View on github.com"></a>
+            </div>
+        </div>
+    </div>
+    <div id="downloadCardBody" class="collapse navbar-collapse">
+        <div class="card-body d-grid gap-2">
+            <!-- Download source button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/otp_src_24.0.3.tar.gz" class="btn btn-primary w-75">
+        Download source
+    </a>
+</div>
+            <!-- Download windows button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/otp_win32_24.0.3.exe" class="btn btn-primary w-75">
+        Download Windows installer
+    </a>
+</div>
+            <!-- Download Release notes button group -->
+            <div class="btn-group">
+    
+    
+    <a href="https://github.com/erlang/otp/releases/download/OTP-24.0.3/OTP-24.0.3.README" class="btn btn-primary w-75">
+        Download Release notes
+    </a>
+</div>
+            <!-- View/Download docs button group -->
+            <div class="btn-group">
+    
+    
+    <a href="/erlang-org/docs/24" class="btn btn-primary w-75">
+        View documentation
+    </a>
+</div>
+        </div>
+    </div>
+</div>
+        </div>
+        <aside class="sidebar text-muted collapse-expand-lg">
+    <div class="border-bottom navbar-light d-flex py-3">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarToggle"
+            aria-controls="sidebarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <strong class="text-nowrap h6 ps-3">All releases</strong>
+    </div>
+    <div id="sidebarToggle" class="collapse navbar-collapse">
+        <nav>
+            <ul class="nav flex-column text-nowrap">
+                
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/24" class="nav-link" role="button">
+                        Erlang/OTP 24</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/23" class="nav-link" role="button">
+                        Erlang/OTP 23</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/22" class="nav-link" role="button">
+                        Erlang/OTP 22</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/21" class="nav-link" role="button">
+                        Erlang/OTP 21</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/20" class="nav-link" role="button">
+                        Erlang/OTP 20</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/19" class="nav-link" role="button">
+                        Erlang/OTP 19</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/18" class="nav-link" role="button">
+                        Erlang/OTP 18</a>
+                    
+                </li>
+                
+                <li class="nav-item">
+                    
+                    
+                    <a href="/erlang-org/downloads/17" class="nav-link" role="button">
+                        Erlang/OTP 17</a>
+                    
+                </li>
+                
+            </ul>
+            <small>There is a file containing MD5 checksums for all files in the
+                <a href="http://erlang.org/download">download directory</a>,
+                also reachable through
+                <code>rsync rsync.erlang.org::erlang-download</code></small>
+        </nav>
+    </div>
+</aside>
+    </main>
+</div>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

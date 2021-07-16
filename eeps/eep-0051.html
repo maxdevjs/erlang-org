@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0051 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0051 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Sergey Prokhorov &lt;seriy(dot)pr(at)gmail(dot)com&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Accepted/23.0 Proposal is to be implemented in OTP release 23.0</dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>07-Oct-2019</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>23.0</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-51-underscore-digit-separator-in-numeric-literals">EEP 51: Underscore digit separator in numeric literals</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>This EEP extends numeric literal syntax, allowing underscore <code class="language-plaintext highlighter-rouge">_</code> as digits
+separator. It extends syntax of integer, float and based integer literals.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Current syntax for numeric literals can be described by following scheme:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">DIGIT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span>
+<span class="nv">BASE_DIGIT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="n">a</span><span class="o">-</span><span class="n">zA</span><span class="o">-</span><span class="nv">Z</span><span class="p">]</span>
+<span class="nv">SIGN</span> <span class="o">=</span> <span class="p">[</span><span class="o">+-</span><span class="p">]</span>
+
+<span class="nv">INTEGER</span> <span class="o">=</span> <span class="nv">SIGN</span><span class="o">?</span> <span class="nv">DIGIT</span><span class="o">+</span>
+
+<span class="nv">FLOAT</span> <span class="o">=</span> <span class="nv">SIGN</span><span class="o">?</span> <span class="nv">DIGIT</span><span class="o">+</span> <span class="n">'.'</span> <span class="nv">DIGIT</span><span class="o">+</span> <span class="p">(</span><span class="n">'e'</span> <span class="nv">SIGN</span><span class="o">?</span> <span class="nv">DIGIT</span><span class="o">+</span><span class="p">)</span><span class="o">?</span>
+
+<span class="nv">BASED_INTEGER</span> <span class="o">=</span> <span class="nv">SIGN</span><span class="o">?</span> <span class="nv">DIGIT</span><span class="o">+</span> <span class="n">'#'</span> <span class="nv">BASE_DIGIT</span><span class="o">+</span>
+</code></pre></div></div>
+
+<p>EEP extends this syntax by allowing single underscore <code class="language-plaintext highlighter-rouge">_</code> character as a
+separator between two <code class="language-plaintext highlighter-rouge">DIGIT</code> or <code class="language-plaintext highlighter-rouge">BASE_DIGIT</code> characters. I.e., characters from
+both left and right sides of <code class="language-plaintext highlighter-rouge">_</code> should be digits. Leading, trailing or repeated
+underscores should not be allowed as well as underscores next to <code class="language-plaintext highlighter-rouge">-</code> <code class="language-plaintext highlighter-rouge">.</code> <code class="language-plaintext highlighter-rouge">#</code> <code class="language-plaintext highlighter-rouge">e</code>.
+Separator is only used to visually separate groups of characters. It doesn’t
+change semantics of literal and is removed by lexer.</p>
+
+<p>Following are examples of valid numeric literals:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">123</span><span class="p">_</span><span class="mi">456</span>
+<span class="mi">1</span><span class="p">_</span><span class="mi">2</span><span class="p">_</span><span class="mi">3</span><span class="p">_</span><span class="mi">4</span><span class="p">_</span><span class="mi">5</span>
+<span class="mi">123</span><span class="p">_</span><span class="mi">456</span><span class="p">.</span><span class="mi">789</span><span class="p">_</span><span class="mi">123</span>
+<span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">e1_23</span>
+<span class="mi">16#DEAD</span><span class="p">_</span><span class="nv">BEEF</span>
+<span class="mi">2#1100</span><span class="p">_</span><span class="mi">1010</span><span class="p">_</span><span class="mi">0011</span>
+</code></pre></div></div>
+
+<p>And following are examples of literals that are not allowed:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">_</span><span class="mi">123</span>  <span class="c">% will be interpreted as variable name
+</span><span class="mi">123</span><span class="p">_</span>
+<span class="mi">123</span><span class="p">__</span><span class="mi">456</span>  <span class="c">% only single underscore allowed
+</span><span class="mi">123</span><span class="p">_.</span><span class="mi">456</span>  <span class="c">% underscore can only separate digits, not other symbols
+</span><span class="mi">123</span><span class="p">._</span><span class="mi">456</span>
+<span class="mi">16</span><span class="err">#</span><span class="p">_</span><span class="mi">1234</span>
+<span class="mi">16#1234</span><span class="p">_</span>
+</code></pre></div></div>
+
+<p>The underscores are to be lost when representing abstract forms or terms as
+strings (<code class="language-plaintext highlighter-rouge">erl_pp</code>, <code class="language-plaintext highlighter-rouge">io_lib</code>).</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Digit separator becomes especially handy for relatively long literals like
+thousands separator for decimals <code class="language-plaintext highlighter-rouge">Million = 1_000_000</code>, <code class="language-plaintext highlighter-rouge">SecondsInDay = 86_400</code>
+byte separator for hexadecimal <code class="language-plaintext highlighter-rouge">16#DEAD_BEEF_CAFE</code>. Group separator makes
+such literals more readable (when used wisely) and makes it easier to visualy
+spot typos like <code class="language-plaintext highlighter-rouge">MicroSecond = Second * 100000</code>.
+The digit separator feature was adopted by multiple programming languages
+starting from at least Ada83.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>Underscore character was choosen as separator because it is used by multiple
+other languages such as “Ada 83”, “C#”, “Java 7”, “Perl 2.0”, “Python 3.6”,
+“Ruby”, “Rust”, “Swift” and “Go”. Also it doesn’t conflict with current Erlang
+syntax (unlike, for example, <code class="language-plaintext highlighter-rouge">,</code>).
+The only ambiguous decision was about where exactly digit separators should be
+allowed. It was decided that underscore should be allowed only between digits
+as meant by being a “digit separator”.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>All existing Erlang code remains acceptable. The implementation is done
+entirely in the Erlang lexer, so, no changes are needed in parser and
+even tools that examine ASTs will be unaffected.
+External tools like code editors and syntax highlighters might need to be
+updated to be able to recognize new syntax for numeric literals.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>The reference implementation is provided in a form of pull-request on GitHub</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">erlang</span><span class="o">/</span><span class="n">otp</span><span class="o">/</span><span class="n">pull</span><span class="o">/</span><span class="mi">2324</span>
+</code></pre></div></div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

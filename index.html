@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Index - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Index - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/index.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="bg-erlang-grey">
+    <div class="container banner">
+        <div class="slogan text-center">
+            <h4 class="px-4 pt-4 text-light">
+                Practical functional programming<br /> for a parallel world
+            </h4>
+            <!-- <h4 class="px-4 pt-4 text-light">
+                        Build massively scalable soft real-time systems
+                    </h4> -->
+        </div>
+        <div class="download text-center">
+            <!-- We hide the download button on small screens as most likely it is a module
+                 and no one want to workload Erlang on a mobile -->
+            <div class="btn-group">
+                
+                <a href="/erlang-org/downloads" class="btn btn-success">Get
+                    Erlang/OTP 24</a>
+            </div>
+        </div>
+        <!-- We have two different examples that are shown
+             depending on the size of the viewport -->
+        <div class="example">
+            <!-- TODO:
+             * Add an expand button to add comments in the code.
+             * Rename `Number` to something else so that it does
+               not become as repetitive.
+             * Add more examples? 7? and rotate them daily?
+            -->
+            <pre class="large">
+<code class="language-erlang">%% Parallel map-reduce to find even numbers
+-spec even(list(integer())) -> list({integer(), boolean()}).
+even(Numbers) ->
+  mapreduce(Numbers, fun(Number) -> Number rem 2 == 0 end).
+mapreduce(Numbers, Function) ->
+  Parent = self(),
+  [spawn(fun() -> Parent ! {Number, Function(Number)} end) || Number <- Numbers],
+  [receive {Number, Even} -> Even || Number <- Numbers].</code></pre>
+            <!-- <pre>
+<code class="language-erlang">%% Parallel map-reduce to find even numbers
+%% Calling even([1,2,3,4]) will return [{1,false},{2,true},{3,false},{4,true}]
+-spec even(list(integer())) -> list({integer(), boolean()}).
+even(Numbers) ->
+  %% Create a function that returns true if number is even
+  Function = fun(Number) -> Number rem 2 == 0 end,
+  %% Call map reduce function
+  mapreduce(Numbers, Function).
+mapreduce(Numbers, Function) ->
+  %% Get a reference to ourselves
+  Parent = self(),
+  %% Run a list-comprehension that creates one process per element in list
+  [spawn(fun() ->
+       %% In the created process, run the even Function and send the reply back
+       Parent ! {Number, Function(Number)}
+     end)
+   || Number <- Numbers],
+  %% Run a list-comprehension that receives each reply
+  [receive {Number, Even} -> Even || Number <- Numbers].</code></pre> -->
+            <pre class="small">
+<code class="language-erlang">%% Find even numbers
+-spec even(list(integer())) ->
+  list({integer(), boolean()}).
+even(Numbers) ->
+  [{Number, Number rem 2 == 0}
+    || Number <- Numbers].</code></pre>
+        </div>
+    </div>
+</div>
+<main class="content container">
+    <div class="what-is-erlang">
+        <h4>What is Erlang?</h4>
+        <p class="ps-4">Erlang is a programming language used to build massively scalable soft real-time
+            systems with requirements on high availability. Some of its uses are in telecoms, banking,
+            e-commerce, computer telephony and instant messaging. Erlang's runtime system has built-in
+            support for concurrency, distribution and fault tolerance.</p>
+        <a href="/erlang-org/doc/getting_started/users_guide.html" role="button"
+            class="btn btn-primary float-end">Erlang Quickstart</a>
+    </div>
+    <div class="what-is-otp">
+        <h4>What is OTP?</h4>
+        <p class="ps-4">OTP is set of Erlang libraries and design principles providing middle-ware to
+            develop these systems. It includes its own distributed database, applications to interface
+            towards other languages, debugging and release handling tools.</p>
+        <a href="/erlang-org/doc/design_principles/users_guide.html" role="button"
+            class="btn btn-primary float-end">Getting Started with OTP</a>
+    </div>
+    <div class="news">
+        <h4>News</h4>
+        <dl class="ps-4">
+            
+            
+            <dt><a href="/erlang-org/blog/My-OTP-24-Highlights/">Erlang/OTP 24 Highlights</a> · May 12, 2021
+            </dt>
+            <dd class="px-4 py-1">
+                <p>Finally Erlang/OTP 24 is here! A release that for me has been <a href="https://vimeo.com/44231138">about 10 years</a>
+in the making. <a href="https://blog.erlang.org/My-OTP-21-Highlights/">As</a> is <a href="https://blog.erlang.org/OTP-22-Highlights/">tradition</a> by <a href="https://blog.erlang.org/OTP-23-Highlights/">now</a>, this blog post will go through the
+additions to Erlang/OTP that I am most excited about!</p>
+
+
+            </dd>
+            
+            <dt><a href="/erlang-org/blog/message-passing/">A few notes on message passing</a> · March 19, 2021
+            </dt>
+            <dd class="px-4 py-1">
+                <p>Message passing has always been central to Erlang, and while reasonably
+well-documented we’ve avoided going into too much detail to give us more
+freedom when implementing it. There’s nothing preventing us from describing it
+in a blog post though, so let’s have a closer look!</p>
+
+            </dd>
+            
+            <dt><a href="/erlang-org/blog/the-road-to-the-jit/">The Road to the JIT</a> · December 01, 2020
+            </dt>
+            <dd class="px-4 py-1">
+                <p>As long as Erlang has existed, there has always been the need and the
+ambition to make it faster. This blog post is a history lesson that
+outlines the major Erlang implementations and attempts to improve
+the performance of Erlang.</p>
+
+            </dd>
+            
+        </dl>
+    </div>
+    <div class="participate">
+        <h4>Participate</h4>
+        <p class="ps-4">
+            <a href="https://erlef.org"><img alt="Join the Erlang Ecosystem Foundation"
+                    src="/erlang-org/assets/img/eef.png" class="img-fluid" width="174"></a>
+        </p>
+    </div>
+</main>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

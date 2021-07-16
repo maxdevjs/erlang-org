@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0016 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0016 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>23-Jul-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-4</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-16-is_between3">EEP 16: is_between/3</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>There should be a new built in function for guards,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">is_between</span><span class="p">(</span><span class="nv">Term</span><span class="p">,</span> <span class="nv">Lower_Bound</span><span class="p">,</span> <span class="nv">Upper_Bound</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>which succeeds when <code class="language-plaintext highlighter-rouge">Term</code>, <code class="language-plaintext highlighter-rouge">Lower_Bound</code>, and <code class="language-plaintext highlighter-rouge">Upper_Bound</code>
+are all integers, and <code class="language-plaintext highlighter-rouge">Lower_Bound =&lt; Term =&lt; Upper_Bound</code>.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>A new guard BIF is added.</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">is_between</span><span class="p">(</span><span class="nv">Term</span><span class="p">,</span> <span class="nv">LB</span><span class="p">,</span> <span class="nv">UB</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>In expression use, if LB or UB is not an integer,
+a badarith exception is thrown, just like an attempt to
+do remainder or bitwise operations on non-integer arguments.
+In guard use, that exception becomes failure.</p>
+
+<p>This is a type test which succeeds (or returns true) if
+Term is an integer and lies between LB and UB inclusive,
+and fails (or returns false) for other values of Term.</p>
+
+<p>As an expression, it has the same effect as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span> <span class="nv">X</span> <span class="o">=</span> <span class="nv">Term</span><span class="p">,</span> <span class="nv">Y</span> <span class="o">=</span> <span class="nv">LB</span><span class="p">,</span> <span class="nv">Z</span> <span class="o">=</span> <span class="nv">UB</span><span class="p">,</span>
+  <span class="nv">Y</span> <span class="ow">bor</span> <span class="nv">Z</span><span class="p">,</span>
+  <span class="p">(</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="nv">Z</span> <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>where X, Y, and Z are new variables that are not exported.</p>
+
+<p>In particular,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">is_integer</span><span class="p">(</span><span class="n">tom</span><span class="p">,</span> <span class="n">dick</span><span class="p">,</span> <span class="n">harry</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>should raise an exception, not return false, as <code class="language-plaintext highlighter-rouge">is_integer(Term)</code>
+is only tested after LB and UB have been found to be integers.</p>
+
+<p>As a guard test, it has the same effect as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span> <span class="nv">X</span> <span class="o">=</span> <span class="nv">Term</span><span class="p">,</span> <span class="nv">Y</span> <span class="o">=</span> <span class="nv">LB</span><span class="p">,</span> <span class="nv">Z</span> <span class="o">=</span> <span class="nv">UB</span><span class="p">,</span>
+  <span class="nb">is_integer</span><span class="p">(</span><span class="nv">Y</span><span class="p">),</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">Z</span><span class="p">),</span> <span class="nb">is_integer</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span>
+  <span class="nv">X</span> <span class="o">&gt;=</span> <span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="nv">Z</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>would have, were that allowed.  However, it admits a much
+more efficient implementation.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Currently some people test whether a variable is a byte thus:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_byte</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="p">(</span><span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">andalso</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="mi">255</span><span class="p">)).</span>
+</code></pre></div></div>
+
+<p>This is actual current practice.  However, it fails to check
+that <code class="language-plaintext highlighter-rouge">X</code> is an integer, so <code class="language-plaintext highlighter-rouge">?is_byte(1.5)</code> succeeds, it may
+evaluate <code class="language-plaintext highlighter-rouge">X</code> twice, so <code class="language-plaintext highlighter-rouge">?is_byte((Pid ! 0))</code> will send two messages,
+not the expected one, and the current Erlang compiler generates
+noticeably worse code in guards for ‘andalso’ and ‘orelse’ than
+it does for ‘,’ and ‘;’.</p>
+
+<p>It is also useful to test whether a subscript is in range,</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">in_range</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">T</span><span class="p">),</span> <span class="p">(</span><span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">andalso</span> <span class="nv">X</span> <span class="o">=&lt;</span> <span class="nb">size</span><span class="p">(</span><span class="nv">T</span><span class="p">))).</span>
+</code></pre></div></div>
+
+<p>which has similar problems.</p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">is_between</code>, we can replace these definitions with</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">is_byte</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span>     <span class="nf">is_between</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)).</span>
+<span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">in_range</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">T</span><span class="p">),</span> <span class="nf">is_between</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">size</span><span class="p">(</span><span class="nv">T</span><span class="p">))).</span>
+</code></pre></div></div>
+
+<p>which are free of those problems</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>One alternative to this design would be to follow the example
+of Common Lisp (and the even earlier example of the systems
+programming language on HP 3000s) and allow</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">E1</span> <span class="o">=&lt;</span> <span class="nv">E2</span> <span class="o">=&lt;</span> <span class="nv">E3</span>      <span class="c">% (&lt;= E1 E2 E3) in Lisp
+</span></code></pre></div></div>
+
+<p>(and possibly also</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">E1</span> <span class="o">=&lt;</span> <span class="nv">E2</span> <span class="o">&lt;</span>  <span class="nv">E3</span>
+<span class="nv">E1</span> <span class="o">&lt;</span>  <span class="nv">E2</span> <span class="o">=&lt;</span> <span class="nv">E3</span>
+<span class="nv">E1</span> <span class="o">&lt;</span>  <span class="nv">E2</span> <span class="o">&lt;</span>  <span class="nv">E3</span><span class="p">)</span>     <span class="c">% (&lt;  E1 E2 E3) in Lisp
+</span></code></pre></div></div>
+
+<p>as guards and expressions, evaluating each expression exactl
+once.  I am very fond of this syntax and would be pleased to
+see it.  This would resolve the double evaluation of <code class="language-plaintext highlighter-rouge">E2</code>, the
+possible non-evaluation of <code class="language-plaintext highlighter-rouge">E3</code>, and the inefficiency of ‘andalso’.
+However, it would not address the problem that a byte or an
+index is not just a NUMBER in a certain range, but an INTEGER.
+If Erlang had multiple comparison syntax, there would still be
+a use for <code class="language-plaintext highlighter-rouge">is_between/3</code>.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>Code that defines a function named <code class="language-plaintext highlighter-rouge">is_between/3</code> will be
+affected.  Since the Erlang compiler parses an entire
+module before semantic analysis, it’s easy to</p>
+<ul>
+  <li>check for a definition of <code class="language-plaintext highlighter-rouge">is_between/3</code></li>
+  <li>warn if one is present</li>
+  <li>disable the new built-in in such a case.</li>
+</ul>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>There is none.  However, we can sketch one.
+Two new BEAM instructions are required:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">test</span><span class="p">,</span><span class="n">is_between</span><span class="p">,</span><span class="nv">Lbl</span><span class="p">,[</span><span class="nv">Src1</span><span class="p">,</span><span class="nv">Src2</span><span class="p">,</span><span class="nv">Src3</span><span class="p">]}</span>
+<span class="p">{</span><span class="n">bif</span><span class="p">,</span><span class="n">is_between</span><span class="p">,</span><span class="o">?</span><span class="p">,[</span><span class="nv">Src1</span><span class="p">,</span><span class="nv">Src2</span><span class="p">,</span><span class="nv">Src3</span><span class="p">],</span><span class="nv">Dst</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>The test does</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="nv">Src2</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span><span class="p">,</span> <span class="n">goto</span> <span class="nv">Lbl</span><span class="p">.</span>
+<span class="k">if</span> <span class="nv">Src3</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span><span class="p">,</span> <span class="n">goto</span> <span class="nv">Lbl</span><span class="p">.</span>
+<span class="k">if</span> <span class="nv">Src1</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span><span class="p">,</span> <span class="n">goto</span> <span class="nv">Lbl</span><span class="p">.</span>
+<span class="k">if</span> <span class="nv">Src1</span> <span class="o">&lt;</span> <span class="nv">Src2</span><span class="p">,</span> <span class="n">goto</span> <span class="nv">Lbl</span><span class="p">.</span>
+<span class="k">if</span> <span class="nv">Src3</span> <span class="o">&lt;</span> <span class="nv">Src1</span><span class="p">,</span> <span class="n">goto</span> <span class="nv">Lbl</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The bif does</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="nv">Src2</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span><span class="p">,</span> <span class="n">except</span><span class="o">!</span>
+<span class="k">if</span> <span class="nv">Src3</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span><span class="p">,</span> <span class="n">except</span><span class="o">!</span>
+<span class="k">if</span> <span class="nv">Src1</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">integer</span>
+<span class="ow">or</span> <span class="nv">Src1</span> <span class="o">&lt;</span> <span class="nv">Src2</span>
+<span class="ow">or</span> <span class="nv">Src3</span> <span class="o">&lt;</span> <span class="nv">Src1</span>
+<span class="n">then</span> <span class="n">move</span> <span class="n">'false'</span> <span class="n">to</span> <span class="nv">Dst</span>
+<span class="n">else</span> <span class="n">move</span> <span class="n">'true'</span>  <span class="n">to</span> <span class="nv">Dst</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Nothing here is fundamentally new, and only my unfamiliarity with
+how to add instructions to the emulator prevents me doing it.  And
+my total ignorance of how to tell HiPE about them!</p>
+
+<p>There might be some point in having variants of these instructions
+for use when Src2 and Src3 are integer literals; I would certainly
+expect HiPE to elide redundant tests here.</p>
+
+<p>The compiler would simply recognise <code class="language-plaintext highlighter-rouge">is_between/3</code> and emit the
+appropriate BEAM rather like it recognises <code class="language-plaintext highlighter-rouge">is_atom/1</code>.
+My ignorance of how to extend the emulator is exceeded by my
+ignorance of how to extend the compiler.  Certainly we’d need</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="nf">is_bif</span><span class="p">(</span><span class="n">erlang</span><span class="p">,</span> <span class="n">is_between</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="nf">is_guard_bif</span><span class="p">(</span><span class="n">erlang</span><span class="p">,</span> <span class="n">is_between</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="nf">is_pure</span><span class="p">(</span><span class="n">erlang</span><span class="p">,</span> <span class="n">is_between</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">true</span><span class="p">;</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>(but NOT an <code class="language-plaintext highlighter-rouge">is_safe</code> rule) in <code class="language-plaintext highlighter-rouge">erl_bifs.erl</code>.  Or would we?  I’ve
+not been able to figure out where <code class="language-plaintext highlighter-rouge">is_guard_bif/3</code> is called.
+There will need to be a new entry in genop.tab as well.
+Ohhh, <code class="language-plaintext highlighter-rouge">erl_internal.erl</code> is in <code class="language-plaintext highlighter-rouge">.../stdlib</code>, not <code class="language-plaintext highlighter-rouge">.../compiler</code>.
+OK, so a couple of functions in <code class="language-plaintext highlighter-rouge">erl_internal.erl</code> need to be patched
+to recognise <code class="language-plaintext highlighter-rouge">is_between/3</code>; what needs changing to generate BEAM?
+The annoying thing is that if I knew my way around the compiler,
+it would be easier to add this than to write it up.</p>
+
+<p>Here’s some text to go in the documentation:</p>
+<blockquote>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>is_integer(Term, LB, UB) -&gt; bool()
+
+Types:
+    Term = term()
+    LB = integer()
+    UB = integer()
+</code></pre></div>  </div>
+
+  <p>Returns true if Term is an integer lying between LB
+and UB inclusive (LB =&lt; Term, Term =&lt; UB); otherwise
+returns false.  In an expression, raises an exception
+if LB or UB is not an integer.  Having UB &lt; LB is not
+an error.</p>
+
+  <p>Allowed in guard tests.</p>
+</blockquote>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

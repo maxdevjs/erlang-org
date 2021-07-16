@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0035 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0035 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Patrik Nyblom &lt;pan(at)erlang(dot)org&gt;
+                            
+                            , 
+                            
+                            
+                            Fredrik Svahn &lt;Fredrik(dot)Svahn(at)gmail&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>29-Sep-2010</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R14B</dd>
+                        
+                        
+                        
+                        <dt>Replaces:</dt>
+                        <dd>9</dd>
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-35-binary-string-modules">EEP 35: Binary string module(s)</h2>
+
+<h1 id="abstract">Abstract</h1>
+<p>This EEP contains developed suggestions regarding the module <code class="language-plaintext highlighter-rouge">binary_string</code>
+first suggested in <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a>. The module name is now however changed to <code class="language-plaintext highlighter-rouge">bstring</code>.</p>
+
+<p><a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a> suggests several modules and is partially superseded by later
+EEP’s (i.e. <a href="eep-0011.md" title="EEP 11, intresting extensions to EEP 9">EEP 11</a> and <a href="eep-0031.md" title="EEP 31, rewrite of EEP 9, module binary">EEP 31</a>), while still containing valuable suggestions not
+yet implemented. This last remaining module suggested in <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a> will therefore
+appear in this separate EEP. This is made in agreement with
+the original author of <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a>.</p>
+
+<p>The module <code class="language-plaintext highlighter-rouge">bstring</code> is suggested to contain functions for
+convenient manipulation of textual data stored in binaries,
+i.e. binary strings. It somewhat resembles the <code class="language-plaintext highlighter-rouge">string</code> module
+(which is list oriented), but is not to be viewed simply as a
+<code class="language-plaintext highlighter-rouge">string</code> module for binaries.</p>
+
+<p>The module suggested handles binary character encoding in both the
+standard character encodings of Erlang, namely ISO-Latin-1 and UTF-8.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Text strings are traditionally represented as lists of integers in
+Erlang. While this is convenient and more or less built into the
+syntax of the language (i.e. “ABC” is syntactic sugar for [$A,$B,$C]),
+a more compact representation is often desired. Also, in some
+circumstances binaries can be more efficient to manipulate in terms of
+algorithm complexity than lists are (especially in the fixed character
+width case of ISO-Latin-1).</p>
+
+<p>More modules have been added to the standard libraries lately to aid
+the usage of binaries for text strings, both as representing
+ISO-Latin-1 characters and Unicode strings encoded in UTF-8. Most
+notably the <code class="language-plaintext highlighter-rouge">re</code> library, but also the <code class="language-plaintext highlighter-rouge">unicode</code> module are fairly
+new additions to <code class="language-plaintext highlighter-rouge">stdlib</code> which will make life easier for the
+programmer when it comes to manipulating binary encoded strings. Also
+a module for fast searching and replacing in byte oriented binaries is
+present (the module <code class="language-plaintext highlighter-rouge">binary</code>), but no traditional string manipulation module is
+yet in the libraries. To ease use of binary encoded strings, such a module is
+needed.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>The module <code class="language-plaintext highlighter-rouge">string</code> for text oriented operations on lists has been
+present in the standard libraries for so long that most programmers
+don’t remember a time when it wasn’t there. It is said to originally
+be a merge of two different string modules, written and designed by
+two different programmers with possibly slightly different goals and
+definitely slightly different views on function naming. While
+sometimes criticized for duplicated functionality and inconsistent
+function naming, among other things, the module has remained useful
+throughout the entire lifespan of Erlang/OTP. The string
+representation used has also withstood the evolution of Unicode.</p>
+
+<p>It is worth to note that the only functions in the <code class="language-plaintext highlighter-rouge">string</code> module
+that actually are language or region dependent are later additions to
+the module. Those functions (like <code class="language-plaintext highlighter-rouge">to_upper</code>, <code class="language-plaintext highlighter-rouge">to_lower</code>, <code class="language-plaintext highlighter-rouge">to_integer</code> and
+<code class="language-plaintext highlighter-rouge">to_float</code>), or their binary equivalence, are not part of the module
+interface I suggest for <code class="language-plaintext highlighter-rouge">bstring</code> for the simple reason that they
+need language support not yet present in Erlang. A future EEP might
+suggest such language support (i.e. some kind of “locale” support), but
+that is future work not covered by this EEP.</p>
+
+<p>So, however criticized, the string module is very useful for
+manipulating lists, and the same functionality for binary strings is
+desirable. While a lot of the functionality will be similar, there are
+some major issues to consider when implementing a module for
+manipulating strings encoded in binaries:</p>
+
+<ul>
+  <li>
+    <p>Unicode - Binaries can have different encodings. A Character encoded
+as UTF-8 might take more than one (up to four) byte positions, and
+even the same character can have different encodings in ISO-Latin-1
+and UTF-8 (all codepoints from 128 to 255). The functions need to be
+informed of the character encoding explicitly, The encoding
+information is not present in the binaries.</p>
+  </li>
+  <li>
+    <p>Mixed character encodings - As characters can be encoded in
+different ways, two strings in the same program could have different
+encodings. Supplying the functions with non-homogeneous string
+encoding data should be consistently solved throughout the module,
+as should the selection of returned encoding where applicable.</p>
+  </li>
+  <li>
+    <p>Default character encoding - As functions will take extra arguments
+to specify encoding, a consistent default might be useful. Choosing
+the default is not entirely simple, as the tradition states
+ISO-Latin-1, while the future suggests UTF-8.</p>
+  </li>
+  <li>
+    <p>Languages - Erlang has no notion of “Locale” or preferred number
+format. A general string module can not assume neither a specific
+notion of uppercase or lowercase letters, nor a specific number
+encoding format (especially true for floating point numbers).</p>
+  </li>
+  <li>
+    <p>Word separators - The space character is certainly not the only word
+separator for textual data (in any language). The notion of words
+separated by spaces imposes a restriction of the relevant languages.</p>
+  </li>
+  <li>
+    <p>Left to right or right to left - Notions like left or right to
+denote the beginning or end of a string are certainly not language
+independent. While strings in a language have a beginning and an end,
+that beginning and end may be placed both to the left, the right or
+even at the top, bottom or center of the graphical representation. A
+string manipulation module should not use naming implying a
+left-to-right script, or any other type of script.</p>
+  </li>
+  <li>
+    <p>Naming and duplicated functionality - The original <code class="language-plaintext highlighter-rouge">string</code> module
+has been accused of having somewhat inconsistent naming and
+functionality duplicated. In fact the only duplicated functions are
+<code class="language-plaintext highlighter-rouge">substr</code> and <code class="language-plaintext highlighter-rouge">sub_string</code>. Some cleanup of the interface might
+be needed.</p>
+  </li>
+  <li>
+    <p>Byte oriented versus character oriented return values - When dealing
+with Unicode data, a character may take more than one byte, why
+i.e. counting the number of characters in a string tells you very
+little about the actual size of the string in bytes. Furthermore,
+later processing of a binary might require byte-oriented
+manipulation of a string rather than character oriented (i.e. you
+want to manipulate the string using the <code class="language-plaintext highlighter-rouge">binary</code> module or with
+bit-syntax), while characters are actually what constitutes a
+string, not bytes. You would want both.</p>
+  </li>
+  <li>
+    <p>New or replaced functionality - New functionality have been suggested from several sources,
+most notably <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a>. For example the function <code class="language-plaintext highlighter-rouge">split</code> suggested in <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a> is very similar to</p>
+    <c>string:tokens/2</c>
+    <p>. Should we keep <code class="language-plaintext highlighter-rouge">tokens</code> anyway, for example?</p>
+  </li>
+</ul>
+
+<p>I’ll address the different issues below.</p>
+
+<h2 id="unicode">Unicode</h2>
+
+<p>The interface has to support both ISO-Latin-1 and UTF-8. The <code class="language-plaintext highlighter-rouge">unicode</code> module supports even more encodings, but Erlang/OTP uses UTF-8 for all “internal” interfaces and UTF-8 is the expected encoding of a binary Unicode string. Even though UTF-8 is compatible with ISO-Latin-1 in the 7bit ASCII range, characters with codepoints between 128 and 255 are encoded differently in the “plain” ISO-Latin-1 encoding and in UTF-8. This means that all functions in the <code class="language-plaintext highlighter-rouge">bstring</code> module need to have the actual encoding as one or more extra parameters.</p>
+
+<p>One could invent a more abstract binary string format where the data is for example represented as a tuple with the string and the encoding packed together. However no other module supports such a string construct and I don’t think that would really add something, neither functionality nor readability. Consider code like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nv">Bin</span><span class="p">,</span><span class="n">latin1</span><span class="p">,[</span><span class="sc">$ </span><span class="p">,</span><span class="sc">$\n</span><span class="p">])</span>
+</code></pre></div></div>
+<p>compared to:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">({</span><span class="nv">Bin</span><span class="p">,</span><span class="n">latin1</span><span class="p">},</span> <span class="p">[</span><span class="sc">$ </span><span class="p">,</span><span class="sc">$\n</span><span class="p">]).</span>
+</code></pre></div></div>
+<p>or even:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nl">#bstring</span><span class="p">{</span><span class="n">data</span> <span class="o">=</span> <span class="nv">Bin</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">latin1</span><span class="p">},</span> <span class="p">[</span><span class="sc">$ </span><span class="p">,</span><span class="sc">$\n</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<p>In many cases the extra information needs to be added in connection to the call, making the code no more readable or simple to write than with the separate extra argument. Consider if we had a default value for encoding. The code:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(</span><span class="nv">Data</span><span class="p">)</span> <span class="o">-&gt;</span>
+       <span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nv">Data</span><span class="p">,[</span><span class="sc">$ </span><span class="p">,</span><span class="sc">$\n</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<p>would not in any way indicate if <code class="language-plaintext highlighter-rouge">Data</code> was supposed to be a binary with the default encoding or some kind of complex data structure indicating both the actual string and it’s encoding.</p>
+
+<p>I think the extra argument for the encoding is straight forward and simple, and it makes programming easier when using the binary string in other modules as well (i.e. <code class="language-plaintext highlighter-rouge">re</code>, <code class="language-plaintext highlighter-rouge">binary</code>, <code class="language-plaintext highlighter-rouge">file</code> etc). I think we should simply not have a special string datatype for this module, character encoding should be supplied as a separate argument.</p>
+
+<h2 id="mixed-character-encodings">Mixed character encodings</h2>
+
+<p>To ease transition between character encodings, I think the interface should accept different encodings for both different parameters and the return value. This makes it possible to convert on the fly and for the functions to decide on the most efficient character conversion path for the supplied arguments and the return value.</p>
+
+<p>The downside of this approach is that some functions will take a lot of parameters telling different character encodings, for example a string concatenation routine could look like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nf">concat</span><span class="p">(</span><span class="nv">BString1</span><span class="p">,</span> <span class="nv">Encoding1</span><span class="p">,</span> <span class="nv">BString2</span><span class="p">,</span> <span class="nv">Encoding2</span><span class="p">,</span> <span class="nv">Encoding3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">BString3</span>
+</code></pre></div></div>
+
+<p>being called like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nv">US</span> <span class="o">=</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">concat</span><span class="p">(</span><span class="nv">SA</span><span class="p">,</span><span class="n">latin1</span><span class="p">,</span> <span class="nv">SB</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="n">unicode</span><span class="p">),</span>
+</code></pre></div></div>
+
+<p>which might look a little awkward to write. On the other hand, conversion is made on the fly and you will not need to explicitly call the <code class="language-plaintext highlighter-rouge">unicode</code> module to convert the result.</p>
+
+<p>I think implicit conversion is so useful that it is worth the extra arguments. For example a <code class="language-plaintext highlighter-rouge">concat</code> function would be more or less useless without it, the bit syntax would be much easier to use if no conversion should be allowed.</p>
+
+<h2 id="default-character-encoding">Default character encoding</h2>
+
+<p>Choosing a default character encoding is not obvious. While ISO-Latin-1 is the default in Erlang (i.e. «“korvsmörgås”» gives a ISO-Latin-1 encoded binary string), UTF-8 usage is expected to grow in the future.</p>
+
+<p>Although its tempting to select UTF-8 as the default encoding, I think we should stick to ISO-Latin-1 as the default even for this module. There are several reasons:</p>
+
+<ul>
+  <li>
+    <p>We need not, as a rule, impose new standards in every module we add
+to the standard library. Consistence certainly adds value, and both
+the bit-syntax, the source code encoding and things like the
+io:format routine has ISO-Latin-1 as default. Lets not make this
+module inconsistent with the others.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">string</code> module is often used to manipulate arbitrary lists
+of integers, not always actually representing textual data. In the
+same way can <code class="language-plaintext highlighter-rouge">bstring</code> probably be used to manipulate arbitrary
+blobs of bytes if ISO-latin-1 versions are used. ISO-Latin-1 is
+actually the raw bytes uninterpreted, why any binary data can be
+worked on in a ISO-Latin-1 oriented routine. Using UTF-8 encoding as
+default would narrow the use for the default functions to only work
+on real text data.</p>
+  </li>
+  <li>
+    <p>The pure ISO-Latin-1 implementations of the functions will be the
+most efficient ones as no data checking at all is needed. Any byte
+value is acceptable in any version. Some functions are usable on
+UTF-8 strings even though they expect ISO-Latin-1 data. The
+difference between the ISO-Latin-1 version and the UTF-8 version
+being only indata control. If the data given to, for example
+<code class="language-plaintext highlighter-rouge">bstring:concat</code> is already checked for correct UTF-8, the simpler
+ISO-Latin-1 version of the function is both more efficient and
+guaranteed to give as correct output as the input:</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    	<span class="nv">CorrectUtf8_1</span> <span class="o">=</span> <span class="nf">give_me_good_string</span><span class="p">(),</span>
+    	<span class="nv">CorrectUtf8_2</span> <span class="o">=</span> <span class="nf">give_me_another_good_string</span><span class="p">(),</span>
+    	<span class="nv">CorrectUtf8_3</span> <span class="o">=</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">concat</span><span class="p">(</span><span class="nv">CorrectUtf8_1</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="nv">CorrectUtf8_2</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="n">latin1</span><span class="p">),</span>
+    	<span class="p">...</span>
+</code></pre></div></div>
+
+<p>Simply put, ISO-Latin-1 versions of the functions are more generally
+  useful than pure UTF-8 versions and are also more efficient.</p>
+
+<ul>
+  <li>
+    <p>A wrapper module providing pure UTF-8 interfaces can easily be
+written. The overhead of going via a wrapper would be relatively
+lower for an UTF-8 wrapper than for an ISO-Latin-1 ditto, as the
+overhead of character decoding/encoding of UTF-8 strings in the
+module would be quite high. Simply put, a wrapper would cost very
+little compared to the cost of checking the data for UTF-8
+correctness.</p>
+
+    <p>I actually suggest a module <code class="language-plaintext highlighter-rouge">ubstring</code> that has the part of the
+<code class="language-plaintext highlighter-rouge">bstring</code> interface where a default encoding is implied, but with
+the difference that UTF-8 is expected. For example, a function
+<code class="language-plaintext highlighter-rouge">ubstring:tokens/2</code> would look like this:</p>
+  </li>
+</ul>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="nf">tokens</span><span class="p">(</span><span class="nv">S</span><span class="p">,</span><span class="nv">L</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="nv">S</span><span class="p">,</span><span class="n">unicode</span><span class="p">,</span><span class="nv">L</span><span class="p">).</span>
+</code></pre></div></div>
+<p>Quite simple.</p>
+
+<p>To conclude, I think all functions should exist in a version where no
+encoding is supplied and ISO-Latin-1 encoded data is expected.</p>
+
+<h2 id="languages">Languages</h2>
+
+<p>Even though Unicode characters can be used to express text in most
+known, living and dead scripts, language and region knowledge is a
+completely different thing. String interfaces often impose language
+specific properties of the string, like left-to-right writing
+direction, the notion of words built up by space separated groups of
+characters, ways of representing numbers and decimal points etc. As
+Erlang does not (yet) have a way of specifying such language-, or
+region-specific properties of a string, the interface should not
+contain language-dependent functionality. The <code class="language-plaintext highlighter-rouge">string</code> module did not
+originally contain such functions (except that character alignment
+functions were named <code class="language-plaintext highlighter-rouge">left</code> and <code class="language-plaintext highlighter-rouge">right</code>), but unfortunately
+functions like <code class="language-plaintext highlighter-rouge">to_float</code> and <code class="language-plaintext highlighter-rouge">to_upper</code> have been added.</p>
+
+<p>I think that having language-dependent functions in the <code class="language-plaintext highlighter-rouge">string</code>
+module was a mistake and I do not want to make that mistake
+again. Hence I have not included such functions or names in
+<code class="language-plaintext highlighter-rouge">bstring</code>.</p>
+
+<p>I rather suggest “Locale” functionality as a subject of a future
+EEP. For those who consider that simple, try to write a correct
+<code class="language-plaintext highlighter-rouge">to_upper</code> function for just all European languages, make sure it
+works on all platforms that can run Erlang… Maybe not rocket science, but a
+<em>lot</em> of metadata is required. Data that is not always available in
+the underlying OS, but probably needs to be distributed with Erlang/OTP for
+consistent functionality. Definitely worth it’s own EEP.</p>
+
+<h2 id="word-separators">Word separators</h2>
+
+<p>In connection with language independence, I think we should drop the
+notion of <em>words</em> as a group of characters separated by space. The word
+“token” is more general and does not in the same way indicate language
+constructs. The <code class="language-plaintext highlighter-rouge">string</code> module has the ASCII space character as a
+default for word separation, which I think should be dropped in
+<code class="language-plaintext highlighter-rouge">bstring</code>. Whatever should separate tokens should be supplied,
+possibly as alternatives. I therefore suggest the functions
+<code class="language-plaintext highlighter-rouge">bstring:num_tokens</code> and <code class="language-plaintext highlighter-rouge">bstring:nth_token</code> to fulfill the
+functionality of <code class="language-plaintext highlighter-rouge">string:words</code> and <code class="language-plaintext highlighter-rouge">string:sub_word</code>.</p>
+
+<p>As in <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a>, I suggest a new function <code class="language-plaintext highlighter-rouge">split</code> to handle the case
+of multi-character separators for tokens. A compilation of <code class="language-plaintext highlighter-rouge">split</code>
+and <code class="language-plaintext highlighter-rouge">join</code> makes a convenient <code class="language-plaintext highlighter-rouge">replace</code> function too.</p>
+
+<h2 id="left-to-right-or-right-to-left">Left-to-right or Right-to-left</h2>
+
+<p>As mentioned earlier, I don’t think direction of the graphical
+representation should be implied in the interface, why I suggest using
+notions like leading and trailing (meaning leading and trailing
+characters in the binary) rather than any directional notions. I also
+think aligning strings (like in <code class="language-plaintext highlighter-rouge">strings:right</code> etc.) could be solved
+in one function <code class="language-plaintext highlighter-rouge">align</code>, taking one of the atoms <code class="language-plaintext highlighter-rouge">leading</code>,
+<code class="language-plaintext highlighter-rouge">trailing</code> or <code class="language-plaintext highlighter-rouge">center</code> as a parameter, if it should at all be
+implemented.</p>
+
+<h2 id="naming-and-duplicated-functionality">Naming and duplicated functionality</h2>
+
+<p>I definitely do not think we should have all interfaces from
+<code class="language-plaintext highlighter-rouge">string</code> duplicated to <code class="language-plaintext highlighter-rouge">bstring</code>. Especially interfaces that are
+aliases should not be carried along to the <code class="language-plaintext highlighter-rouge">bstring</code> module. Most
+functions in the <code class="language-plaintext highlighter-rouge">string</code> module however have short and fairly
+describing names, often similar to names found in other languages. I
+think using a <code class="language-plaintext highlighter-rouge">r</code> prefix for functionality working from the end of
+the string towards the beginning is a good choice, as is <code class="language-plaintext highlighter-rouge">c</code> for
+complement.</p>
+
+<h2 id="byte-oriented-versus-character-oriented-return-values">Byte oriented versus character oriented return values</h2>
+
+<p>Some functions in <code class="language-plaintext highlighter-rouge">string</code>, that are certainly useful, return numbers
+denoting character positions. The same functions should definitely be
+present in the <code class="language-plaintext highlighter-rouge">bstring</code> module and the return values should
+definitely be character oriented. However byte offsets are definitely
+useful, for example if we use a function like <code class="language-plaintext highlighter-rouge">span</code> to find the
+first character not in a set of characters, we might want the byte
+offset of that first character too.</p>
+
+<p>I suggest adding some interfaces returning byte offsets, or <em>part()’s</em>
+like the ones used in the <code class="language-plaintext highlighter-rouge">binary</code> module and by <code class="language-plaintext highlighter-rouge">re</code>, to cope
+with the need for byte offsets and lengths in some circumstances. A
+<code class="language-plaintext highlighter-rouge">b</code> suffix to the function name could denote such functionality, so
+that <code class="language-plaintext highlighter-rouge">bstring:span</code> returns a character position while
+<code class="language-plaintext highlighter-rouge">bstring:spanb</code> returns a byte position and <code class="language-plaintext highlighter-rouge">btring:str</code> returns a
+character position and <code class="language-plaintext highlighter-rouge">bstring:strb</code> returns a <em>part()</em>. Although
+this will in the end give rise to more functions in the interface,
+having return-type-changing options in an option list is not the way
+to go (I know, I have them in <code class="language-plaintext highlighter-rouge">re</code>, but it’s still not generally a
+good idea…).</p>
+
+<h2 id="new-or-replaced-functionality">New or replaced functionality</h2>
+
+<p>When writing a general string module, there is no end to the new, more
+or less esoteric, functionality one could add. I think we, at least
+in an initial implementation, should stick to the functionality
+outlined in <a href="eep-0009.md" title="EEP 9, the original work from which this EEP is derived">EEP 9</a>, namely extending <code class="language-plaintext highlighter-rouge">str</code> and friends to
+optionally take a list of alternative strings to search for, add a
+function <code class="language-plaintext highlighter-rouge">split</code> to take care of multi-character separators (as
+opposed to single character separators in the function <code class="language-plaintext highlighter-rouge">tokens</code>) and
+a substitution function, which I think should be named <code class="language-plaintext highlighter-rouge">replace</code> as
+in other modules.</p>
+
+<p>The use of pre-compiled matches from the <code class="language-plaintext highlighter-rouge">binary</code> module is however
+not a good idea, as the <code class="language-plaintext highlighter-rouge">binary</code> module has no notion of character
+encoding. Search strings need to be given in defined character
+encodings and both the “haystacks” and the “needles” encoding need to
+be known when doing an efficient search. So - no pre-compiled search
+expressions.</p>
+
+<h2 id="excerpt-of-a-suggested-manual-page">Excerpt of a suggested manual page</h2>
+
+<p>As made obvious above, I prefer the name <code class="language-plaintext highlighter-rouge">bstring</code> for a binary
+string module in favor of the more verbose name <code class="language-plaintext highlighter-rouge">binary_string</code>
+originally suggested. In that module <code class="language-plaintext highlighter-rouge">bstring</code>, I suggest the
+following interfaces, expressed as in a manual page of OTP.</p>
+
+<h2 id="data-types">DATA TYPES</h2>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">encoding</span><span class="p">()</span> <span class="o">=</span> <span class="n">latin1</span> <span class="p">|</span> <span class="n">unicode</span> <span class="p">|</span> <span class="n">utf8</span>
+      <span class="o">-</span> <span class="nv">The</span> <span class="n">encoding</span> <span class="k">of</span> <span class="n">characters</span> <span class="n">in</span> <span class="n">the</span> <span class="n">binary</span> <span class="n">data</span><span class="p">,</span> <span class="n">both</span> <span class="n">input</span> <span class="ow">and</span> <span class="n">output</span>
+    <span class="nf">bstring</span><span class="p">()</span> 
+      <span class="o">-</span> <span class="nv">Binary</span> <span class="n">with</span> <span class="n">characters</span> <span class="n">encoded</span> <span class="n">either</span> <span class="n">in</span> <span class="nv">ISO</span><span class="o">-</span><span class="nv">Latin</span><span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="nv">UTF</span><span class="o">-</span><span class="mi">8</span>
+    <span class="nf">unicode_char</span><span class="p">()</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span> 
+      <span class="o">-</span> <span class="nv">An</span> <span class="n">integer</span> <span class="n">representing</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">unicode</span> <span class="n">codepoint</span>
+    <span class="nf">non_negative_integer</span><span class="p">()</span>
+      <span class="o">-</span> <span class="nv">An</span> <span class="n">integer</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+      
+</code></pre></div></div>
+
+<h2 id="exports">EXPORTS</h2>
+
+<h3 id="alignbstring-alignment-number-char---result"><code class="language-plaintext highlighter-rouge">align(BString, Alignment, Number, Char) -&gt; Result</code></h3>
+
+<h3 id="alignbstring-encoding-alignment-number-char---result"><code class="language-plaintext highlighter-rouge">align(BString, Encoding, Alignment, Number, Char) -&gt; Result</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nv">Result</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Alignment</span> <span class="o">=</span> <span class="n">leading</span> <span class="p">|</span> <span class="n">trailing</span> <span class="p">|</span> <span class="n">center</span>
+<span class="nv">Number</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+<span class="nv">Char</span> <span class="o">=</span> <span class="nf">unicode_char</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Aligns the characters in <code class="language-plaintext highlighter-rouge">BString</code> in a <code class="language-plaintext highlighter-rouge">Result</code> of <code class="language-plaintext highlighter-rouge">Number</code> characters according to the <code class="language-plaintext highlighter-rouge">Alignment</code> parameter. Alignment is done by inserting the character <code class="language-plaintext highlighter-rouge">Char</code> in the beginning or end (or both) of the binary string.</p>
+
+<p>The resulting binary string will contain exactly <code class="language-plaintext highlighter-rouge">Number</code> characters, the string is truncated if it contains more characters than <code class="language-plaintext highlighter-rouge">Number</code> - either at the end if <code class="language-plaintext highlighter-rouge">Alignment</code> is <code class="language-plaintext highlighter-rouge">leading</code>, or at the beginning if <code class="language-plaintext highlighter-rouge">Alignment</code> is <code class="language-plaintext highlighter-rouge">trailing</code>, or at both ends if <code class="language-plaintext highlighter-rouge">Alignment</code> is <code class="language-plaintext highlighter-rouge">center</code> . If <code class="language-plaintext highlighter-rouge">Encoding</code> is <code class="language-plaintext highlighter-rouge">unicode</code>, the <code class="language-plaintext highlighter-rouge">Result</code> may well contain more bytes than <code class="language-plaintext highlighter-rouge">Number</code>, as one character may require several bytes.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">align</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"Hello"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="sc">$.</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"..Hello..."</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, <code class="language-plaintext highlighter-rouge">Encoding</code> or <code class="language-plaintext highlighter-rouge">Alignment</code> has an invalid value, the character <code class="language-plaintext highlighter-rouge">Char</code> cannot be encoded in the character encoding given as <code class="language-plaintext highlighter-rouge">Encoding</code> or any of the parameters are of the wrong type.</p>
+
+<h3 id="chrbstring-character---position"><code class="language-plaintext highlighter-rouge">chr(BString, Character) -&gt; Position</code></h3>
+
+<h3 id="chrbstring-encoding-character---position"><code class="language-plaintext highlighter-rouge">chr(BString, Encoding, Character) -&gt; Position</code></h3>
+
+<h3 id="rchrbstring-character---position"><code class="language-plaintext highlighter-rouge">rchr(BString, Character) -&gt; Position</code></h3>
+
+<h3 id="rchrbstring-encoding-character---position"><code class="language-plaintext highlighter-rouge">rchr(BString, Encoding, Character) -&gt; Position</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Character</span> <span class="o">=</span> <span class="nf">unicode_char</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the (zero-based) character position of the first/last occurrence of <code class="language-plaintext highlighter-rouge">Character</code> in <code class="language-plaintext highlighter-rouge">BString</code> . <code class="language-plaintext highlighter-rouge">-1</code> is returned if <code class="language-plaintext highlighter-rouge">Character</code> does not occur.</p>
+
+<p>Note that the character position is not the same as the byte position. Use the <code class="language-plaintext highlighter-rouge">chrb</code> and <code class="language-plaintext highlighter-rouge">rchrb</code> functions to get the byte positions.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">Character</code> cannot be represented in the encoding, it is not an error, you are just certain to get <code class="language-plaintext highlighter-rouge">-1</code> as a return value.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if the searched part of <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="chrbbstring-character---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">chrb(BString, Character) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="chrbbstring-encoding-character---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">chrb(BString, Encoding, Character) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="rchrbbstring-character---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">rchrb(BString, Character) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="rchrbbstring-encoding-character---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">rchrb(BString, Encoding, Character) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Character</span> <span class="o">=</span> <span class="nf">unicode_char</span><span class="p">()</span>
+<span class="nv">BytePosition</span> <span class="o">=</span> <span class="nf">integer</span><span class="p">()</span>
+<span class="nv">ByteLength</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Works as <code class="language-plaintext highlighter-rouge">chr</code> and <code class="language-plaintext highlighter-rouge">rchr</code> respectively, but returns the byte position and byte length of the character.</p>
+
+<p>If the character is not found, <code class="language-plaintext highlighter-rouge">{-1,0}</code> is returned.</p>
+
+<h3 id="concatbstring1-bstring2---bstring3"><code class="language-plaintext highlighter-rouge">concat(BString1, BString2) -&gt; BString3</code></h3>
+
+<h3 id="concatbstring1-encoding1-bstring2-encoding2-encoding3---bstring3"><code class="language-plaintext highlighter-rouge">concat(BString1, Encoding1, BString2, Encoding2, Encoding3) -&gt; BString3</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString1</span> <span class="o">=</span> <span class="nv">BString2</span> <span class="o">=</span> <span class="nv">BString3</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding1</span> <span class="o">=</span> <span class="nv">Encoding2</span> <span class="o">=</span> <span class="nv">Encoding3</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Concatenates two binary strings to form a new string. Returns the new binary string in the encoding given by Encoding3.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString1</code> or <code class="language-plaintext highlighter-rouge">Bstring2</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding1</code> and <code class="language-plaintext highlighter-rouge">Encoding2</code> parameters, the encoding parameters has an invalid value, the codepoints in the in-parameters cannot be represented in the output encoding or any of the parameters are of the wrong type.</p>
+
+<h3 id="equalbstring1-bstring2---bool"><code class="language-plaintext highlighter-rouge">equal(BString1, BString2) -&gt; bool()</code></h3>
+
+<h3 id="equalbstring1-encoding1-bstring2-encoding2---bool"><code class="language-plaintext highlighter-rouge">equal(BString1, Encoding1, BString2, Encoding2) -&gt; bool()</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString1</span> <span class="o">=</span> <span class="nv">BString2</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding1</span> <span class="o">=</span> <span class="nv">Encoding2</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Tests whether two binary strings are equal. Returns <code class="language-plaintext highlighter-rouge">true</code> if they are, otherwise <code class="language-plaintext highlighter-rouge">false</code> .</p>
+
+<p><code class="language-plaintext highlighter-rouge">Encoding1</code> is the encoding of <code class="language-plaintext highlighter-rouge">BString1</code> and <code class="language-plaintext highlighter-rouge">Encoding2</code> is the encoding of <code class="language-plaintext highlighter-rouge">BString2</code> .</p>
+
+<p>Note that the strings can have different encoding and that it is the character values encoded in the strings that are compared. The binary strings are scanned as long as they are equal, meaning that if the function returns <code class="language-plaintext highlighter-rouge">true</code>, both strings are correctly encoded, while a return value of <code class="language-plaintext highlighter-rouge">false</code> does not guarantee correct encoding in both binary strings. An exception is raised if faulty encoding is determined while comparing the strings, not if parts of the string not inspected contain encoding errors.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if wrongly encoded characters, according to the encoding parameters, are encountered during comparison, the encoding parameters has an invalid value or any of the parameters are of the wrong type.</p>
+
+<h3 id="joinbstringlist-separator---result"><code class="language-plaintext highlighter-rouge">join(BStringList, Separator) -&gt; Result</code></h3>
+
+<h3 id="joinbstringlist-bstringlistencoding-separator-separatorencoding-resultencoding---result"><code class="language-plaintext highlighter-rouge">join(BStringList, BStringListEncoding, Separator, SeparatorEncoding, ResultEncoding) -&gt; Result</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BStringList</span> <span class="o">=</span> <span class="p">[</span><span class="nf">bstring</span><span class="p">()]</span>
+<span class="nv">BStringListEncoding</span> <span class="o">=</span> <span class="nv">SeparatorEncoding</span> <span class="o">=</span> <span class="nv">ResultEncoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Separator</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Result</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns a binary string with the elements of <code class="language-plaintext highlighter-rouge">BStringList</code> separated by the binary string in <code class="language-plaintext highlighter-rouge">Seperator</code> .</p>
+
+<p>All the binary strings in <code class="language-plaintext highlighter-rouge">BStringList</code> should have the same encoding (given as <code class="language-plaintext highlighter-rouge">BStringListEncoding</code> . The <code class="language-plaintext highlighter-rouge">Separator</code> can however have a different encoding (given as <code class="language-plaintext highlighter-rouge">SeparatorEncoding</code> ), as can the <code class="language-plaintext highlighter-rouge">Result</code> (given as <code class="language-plaintext highlighter-rouge">ResultEncoding</code> ).</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">join</span><span class="p">([</span><span class="o">&lt;&lt;</span><span class="s">"one"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"two"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"three"</span><span class="o">&gt;&gt;</span><span class="p">],</span> <span class="n">latin1</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">", "</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="n">latin1</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"one, two, three"</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if binary strings in <code class="language-plaintext highlighter-rouge">BStringList</code> or the <code class="language-plaintext highlighter-rouge">Separator</code> do not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">BStringListEncoding</code> and <code class="language-plaintext highlighter-rouge">SeparatorEncoding</code> parameters respectively, the encoding parameters has an invalid value, the codepoints in the in-parameters cannot be represented in the output encoding <code class="language-plaintext highlighter-rouge">ResultEncoding</code> or any of the parameters are of the wrong type.</p>
+
+<h3 id="lenbstring---length"><code class="language-plaintext highlighter-rouge">len(BString) -&gt; Length</code></h3>
+
+<h3 id="lenbstring-encoding---length"><code class="language-plaintext highlighter-rouge">len(BString, Encoding) -&gt; Length</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Length</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the number of characters in the binary string.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value or any of the parameters are of the wrong type.</p>
+
+<h3 id="nth_tokenbstring-n-charlist---result"><code class="language-plaintext highlighter-rouge">nth_token(BString, N, CharList) -&gt; Result</code></h3>
+
+<h3 id="nth_tokenbstring-encoding-n-charlist---result"><code class="language-plaintext highlighter-rouge">nth_token(BString, Encoding, N, CharList) -&gt; Result</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nv">Result</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">CharList</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">unicode_char</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">N</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the token number <code class="language-plaintext highlighter-rouge">N</code> of <code class="language-plaintext highlighter-rouge">BString</code> (zero-based). Tokens are separated by the characters in <code class="language-plaintext highlighter-rouge">CharList</code> .</p>
+
+<p>The returned token will have the same encoding as <code class="language-plaintext highlighter-rouge">BString</code> .</p>
+
+<p>For example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">nth_token</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">" Hello old boy !"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="n">latin1</span><span class="p">,</span><span class="mi">3</span><span class="p">,[</span><span class="sc">$o</span><span class="p">,</span> <span class="sc">$ </span><span class="p">]).</span>
+<span class="o">&lt;&lt;</span><span class="s">"ld b"</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">CharList</code> is to be viewed as a <em>set</em> of characters, order is not significant. Codepoints given in <code class="language-plaintext highlighter-rouge">CharList</code> that cannot be represented by the <code class="language-plaintext highlighter-rouge">Encoding</code>, is not an error.</p>
+
+<p>Values of <code class="language-plaintext highlighter-rouge">N</code> &gt;= number of tokens in <code class="language-plaintext highlighter-rouge">BString</code> will result in the empty binary string <code class="language-plaintext highlighter-rouge">&lt;&lt;&gt;&gt;</code> being returned.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="num_tokensbstring-charlist---count"><code class="language-plaintext highlighter-rouge">num_tokens(BString, CharList) -&gt; Count</code></h3>
+
+<h3 id="num_tokensbstring-encoding-charlist---count"><code class="language-plaintext highlighter-rouge">num_tokens(BString, Encoding, CharList) -&gt; Count</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">CharList</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">unicode_char</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Count</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the number of tokens in <code class="language-plaintext highlighter-rouge">String</code>, separated by the characters in <code class="language-plaintext highlighter-rouge">CharList</code> .</p>
+
+<p>The result is the same as for length(bstring:tokens(BString,Encoding,CharList)), but avoids building the result.</p>
+
+<p>For example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nf">num_tokens</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">" Hello old boy!"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="p">[</span><span class="sc">$o</span><span class="p">,</span> <span class="sc">$ </span><span class="p">]).</span>
+<span class="mi">4</span>        
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">CharList</code> is to be viewed as a <em>set</em> of characters, order is not significant. Codepoints given in <code class="language-plaintext highlighter-rouge">CharList</code> that cannot be represented by the <code class="language-plaintext highlighter-rouge">Encoding</code>, is not an error.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="spanbstring-chars---length"><code class="language-plaintext highlighter-rouge">span(BString, Chars) -&gt; Length</code></h3>
+
+<h3 id="spanbstring-encoding-chars---length"><code class="language-plaintext highlighter-rouge">span(BString, Encoding, Chars) -&gt; Length</code></h3>
+
+<h3 id="rspanbstring-chars---length"><code class="language-plaintext highlighter-rouge">rspan(BString, Chars) -&gt; Length</code></h3>
+
+<h3 id="rspanbstring-encoding-chars---length"><code class="language-plaintext highlighter-rouge">rspan(BString, Encoding, Chars) -&gt; Length</code></h3>
+
+<h3 id="cspanbstring-chars---length"><code class="language-plaintext highlighter-rouge">cspan(BString, Chars) -&gt; Length</code></h3>
+
+<h3 id="cspanbstring-encoding-chars---length"><code class="language-plaintext highlighter-rouge">cspan(BString, Encoding, Chars) -&gt; Length</code></h3>
+
+<h3 id="rcspanbstring-chars---length"><code class="language-plaintext highlighter-rouge">rcspan(BString, Chars) -&gt; Length</code></h3>
+
+<h3 id="rcspanbstring-encoding-chars---length"><code class="language-plaintext highlighter-rouge">rcspan(BString, Encoding, Chars) -&gt; Length</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Chars</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Length</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the length (in characters) of the maximum initial (span and cspan) or trailing (rspan and rcspan) segment of BString, which consists entirely of characters from (span and rspan), or not from (cspan and rcspan) Chars.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Chars</code> is to be viewed as a <em>set</em> of characters, order is not significant. Codepoints given in <code class="language-plaintext highlighter-rouge">Char</code> that cannot be represented by the <code class="language-plaintext highlighter-rouge">Encoding</code>, is not an error.</p>
+
+<p>For example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">span</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"</span><span class="se">\t</span><span class="s">    abcdef"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="n">latin1</span><span class="p">,</span><span class="s">" </span><span class="se">\t</span><span class="s">"</span><span class="p">).</span>
+<span class="mi">5</span>
+<span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">cspan</span><span class="p">((</span><span class="o">&lt;&lt;</span><span class="s">"</span><span class="se">\t</span><span class="s">    abcdef"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="n">latin1</span><span class="p">,</span> <span class="s">" </span><span class="se">\t</span><span class="s">"</span><span class="p">).</span>
+<span class="mi">0</span>        
+</code></pre></div></div>
+
+<p>Codepoints in <code class="language-plaintext highlighter-rouge">Chars</code> that can not be represented by <code class="language-plaintext highlighter-rouge">Encoding</code> is not considered an error.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if the searched part of <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="spanbbstring-chars---bytelength"><code class="language-plaintext highlighter-rouge">spanb(BString, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="spanbbstring-encoding-chars---bytelength"><code class="language-plaintext highlighter-rouge">spanb(BString, Encoding, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="rspanbbstring-chars---bytelength"><code class="language-plaintext highlighter-rouge">rspanb(BString, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="rspanbbstring-encoding-chars---bytelength"><code class="language-plaintext highlighter-rouge">rspanb(BString, Encoding, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="cspanbbstring-chars---bytelength"><code class="language-plaintext highlighter-rouge">cspanb(BString, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="cspanbbstring-encoding-chars---bytelength"><code class="language-plaintext highlighter-rouge">cspanb(BString, Encoding, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="rcspanbbstring-chars---bytelength"><code class="language-plaintext highlighter-rouge">rcspanb(BString, Chars) -&gt; ByteLength</code></h3>
+
+<h3 id="rcspanbbstring-encoding-chars---bytelength"><code class="language-plaintext highlighter-rouge">rcspanb(BString, Encoding, Chars) -&gt; ByteLength</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Chars</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">integer</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">ByteLength</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Work exactly as the functions <code class="language-plaintext highlighter-rouge">span</code>, <code class="language-plaintext highlighter-rouge">rspan</code>, <code class="language-plaintext highlighter-rouge">cspan</code> and <code class="language-plaintext highlighter-rouge">rcspan</code> respectively, but returns the number of bytes rather than the number of characters.</p>
+
+<h3 id="splitbstring-separators-where---tokens"><code class="language-plaintext highlighter-rouge">split(BString, Separators, Where) -&gt; Tokens</code></h3>
+
+<h3 id="splitbstring-encoding-separators-sepencoding-where-returnencoding---tokens"><code class="language-plaintext highlighter-rouge">split(BString, Encoding, Separators, SepEncoding, Where, ReturnEncoding) -&gt; Tokens</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">String</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nv">SepEncoding</span> <span class="o">=</span> <span class="nv">ReturnEncoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Separators</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Where</span> <span class="o">=</span> <span class="n">first</span> <span class="p">|</span> <span class="n">last</span> <span class="p">|</span> <span class="n">all</span>
+<span class="nv">Tokens</span> <span class="o">=</span> <span class="p">[</span><span class="nf">bstring</span><span class="p">()]</span>
+</code></pre></div></div>
+
+<p>Returns a list of tokens in <code class="language-plaintext highlighter-rouge">BString</code>, separated by the binary strings in <code class="language-plaintext highlighter-rouge">Separators</code> .</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Tokens</code> returned are encoded according to <code class="language-plaintext highlighter-rouge">ReturnEncoding</code> .</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"abc defxxghix jkl"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">"x"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">" "</span><span class="o">&gt;&gt;</span><span class="p">],</span><span class="n">all</span><span class="p">,</span><span class="n">latin1</span><span class="p">).</span>
+<span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">"abc"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"def"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"ghi"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"jkl"</span><span class="o">&gt;&gt;</span><span class="p">]</span>        
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Separators</code> is to be viewed as a <em>set</em> of binary strings, order is not significant. Codepoints given in <code class="language-plaintext highlighter-rouge">Separators</code> that cannot be represented by the <code class="language-plaintext highlighter-rouge">Encoding</code>, is not an error.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Where</code> parameter specifies at which occurrence of any of the <code class="language-plaintext highlighter-rouge">Separators</code> the binary string is to be split, either at the <code class="language-plaintext highlighter-rouge">first</code> occurrence, the <code class="language-plaintext highlighter-rouge">last</code> occurrence or at <code class="language-plaintext highlighter-rouge">all</code> occurrences, in which case the <code class="language-plaintext highlighter-rouge">Tokens</code> may be an arbitrary long list.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if <code class="language-plaintext highlighter-rouge">BString</code> or <code class="language-plaintext highlighter-rouge">Separators</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> and <code class="language-plaintext highlighter-rouge">SepEncoding</code> parameters respectively, the resulting tokens cannot be encoded in the <code class="language-plaintext highlighter-rouge">ReturnEncoding</code>, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="strbstring-subbstrings---position"><code class="language-plaintext highlighter-rouge">str(BString, SubBStrings) -&gt; Position</code></h3>
+
+<h3 id="strbstring-encoding-subbstrings-subenc---position"><code class="language-plaintext highlighter-rouge">str(BString, Encoding, SubBStrings, SubEnc) -&gt; Position</code></h3>
+
+<h3 id="rstrbstring-subbstrings---position"><code class="language-plaintext highlighter-rouge">rstr(BString, SubBStrings) -&gt; Position</code></h3>
+
+<h3 id="rstrbstring-encoding-subbstrings-subenc---position"><code class="language-plaintext highlighter-rouge">rstr(BString, Encoding, SubBStrings, SubEnc) -&gt; Position</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">SubBString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">|</span> <span class="p">[</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nv">SubEnc</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Position</span> <span class="o">=</span> <span class="nf">integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Returns the (zero-based) character position where the first/last occurrence of any of the <code class="language-plaintext highlighter-rouge">SubBStrings</code> begins in <code class="language-plaintext highlighter-rouge">BString</code> . <code class="language-plaintext highlighter-rouge">-1</code> is returned if <code class="language-plaintext highlighter-rouge">SubBString</code> does not exist in <code class="language-plaintext highlighter-rouge">BString</code> .</p>
+
+<p>Note that the <code class="language-plaintext highlighter-rouge">Character</code> position is not the same as the byte position. Use the <code class="language-plaintext highlighter-rouge">strb</code> and <code class="language-plaintext highlighter-rouge">rstrb</code> functions to get the byte positions.</p>
+
+<p>The encoding need not be the same for <code class="language-plaintext highlighter-rouge">BString</code> and <code class="language-plaintext highlighter-rouge">SubBStrings</code>, however all strings in SubBStrings need to have the same encoding.</p>
+
+<p>If the codepoints in SubBString can not be represented in the encoding of BString, that is not an error, but will always result in the return value -1.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">str</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">" Hello Hello World World "</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="n">latin1</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">"Hello World"</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="n">latin1</span><span class="p">).</span>
+<span class="mi">7</span>        
+</code></pre></div></div>
+
+<p>Note that if both encodings are the same and repeated searches with the same <code class="language-plaintext highlighter-rouge">SubBStrings</code> are to be performed, it is more efficient to use the <code class="language-plaintext highlighter-rouge">binary:match/{2,3}</code> functions with a precompiled pattern on the raw binary data.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if the searched part of <code class="language-plaintext highlighter-rouge">BString</code> or <code class="language-plaintext highlighter-rouge">SubBString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> and <code class="language-plaintext highlighter-rouge">SubEnc</code> parameters, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="strbbstring-subbstrings---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">strb(BString, SubBStrings) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="strbbstring-encoding-subbstrings-subenc---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">strb(BString, Encoding, SubBStrings, SubEnc) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="rstrbbstring-subbstrings---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">rstrb(BString, SubBStrings) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<h3 id="rstrbbstring-encoding-subbstrings-subenc---byteposition-bytelength"><code class="language-plaintext highlighter-rouge">rstrb(BString, Encoding, SubBStrings, SubEnc) -&gt; {BytePosition, ByteLength}</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">SubBString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">|</span> <span class="p">[</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nv">SubEnc</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">BytePosition</span> <span class="o">=</span> <span class="nf">integer</span><span class="p">()</span>
+<span class="nv">ByteLength</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Works as <code class="language-plaintext highlighter-rouge">str</code> and <code class="language-plaintext highlighter-rouge">rstr</code> respectively, but returns the byte position and byte length of the found substring.</p>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">ByteLength</code> is the length the found substring has in <code class="language-plaintext highlighter-rouge">BString</code>, regardless of the encoding in <code class="language-plaintext highlighter-rouge">SubBStrings</code>, so that <code class="language-plaintext highlighter-rouge">ByteLength</code> may be both larger and smaller than <code class="language-plaintext highlighter-rouge">byte_size(SubBString)</code> depending on the binary string’s encoding.</p>
+
+<p>If the substring is not found, <code class="language-plaintext highlighter-rouge">{-1,0}</code> is returned.</p>
+
+<h3 id="stripbstring-which-charlist---result"><code class="language-plaintext highlighter-rouge">strip(BString, Which, CharList) -&gt; Result</code></h3>
+
+<h3 id="stripbstring-encoding-which-charlist---result"><code class="language-plaintext highlighter-rouge">strip(BString, Encoding, Which, CharList) -&gt; Result</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nv">Result</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Which</span> <span class="o">=</span> <span class="n">leading</span> <span class="p">|</span> <span class="n">trailing</span> <span class="p">|</span> <span class="n">both</span>
+<span class="nv">CharList</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">unicode_char</span><span class="p">()</span> <span class="p">]</span>
+</code></pre></div></div>
+
+<p>Removes leading (<code class="language-plaintext highlighter-rouge">Which</code> = <code class="language-plaintext highlighter-rouge">leading</code>), trailing (<code class="language-plaintext highlighter-rouge">Which</code> = <code class="language-plaintext highlighter-rouge">trailing</code>) or both leading and trailing (<code class="language-plaintext highlighter-rouge">Which</code> = <code class="language-plaintext highlighter-rouge">both</code>) characters belonging to the set indicated by <code class="language-plaintext highlighter-rouge">CharList</code> from the binary string <code class="language-plaintext highlighter-rouge">BString</code> .</p>
+
+<p>This is essentially the same as using <code class="language-plaintext highlighter-rouge">spanb</code> and/or <code class="language-plaintext highlighter-rouge">rspanb</code> in combination with bit syntax to remove the characters.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">strip</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"...He.llo....."</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="n">both</span><span class="p">,</span> <span class="p">[</span><span class="sc">$.</span><span class="p">]).</span>
+<span class="o">&lt;&lt;</span><span class="s">"He.llo"</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if scanned part of <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, <code class="language-plaintext highlighter-rouge">Encoding</code> or <code class="language-plaintext highlighter-rouge">Which</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="replacebstring-separators-replacement-where---result"><code class="language-plaintext highlighter-rouge">replace(BString, Separators, Replacement, Where) -&gt; Result</code></h3>
+
+<h3 id="replacebstring-encoding-separators-separatorsencoding-replacement-replacementencoding-where-resultencoding---result"><code class="language-plaintext highlighter-rouge">replace(BString, Encoding, Separators, SeparatorsEncoding, Replacement, ReplacementEncoding, Where, ResultEncoding) -&gt; Result</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nv">SeparatorsEncoding</span> <span class="o">=</span> <span class="nv">ReplacementEncoding</span><span class="p">,</span> <span class="nv">ResultEncoding</span> <span class="o">=</span> <span class="nf">encoding</span><span class="p">()</span>
+<span class="nv">Separators</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">bstring</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Replacement</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Where</span> <span class="o">=</span> <span class="n">first</span> <span class="p">|</span> <span class="n">last</span> <span class="p">|</span> <span class="n">all</span>
+<span class="nv">Result</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Produces the same result as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">bstring</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nn">bstring</span><span class="p">:</span><span class="nf">split</span><span class="p">(</span><span class="nv">BString</span><span class="p">,</span><span class="nv">Encoding</span><span class="p">,</span><span class="nv">Separators</span><span class="p">,</span><span class="nv">SeparatorsEncoding</span><span class="p">,</span><span class="nv">Where</span><span class="p">,</span>
+                           <span class="n">unicode</span><span class="p">),</span>
+             <span class="n">unicode</span><span class="p">,</span><span class="nv">Replacement</span><span class="p">,</span><span class="nv">ReplacementEncoding</span><span class="p">,</span><span class="nv">ResultEncoding</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>but with less overhead.</p>
+
+<h3 id="substrbstring-start-length---subbstring"><code class="language-plaintext highlighter-rouge">substr(BString, Start, Length) -&gt; SubBString</code></h3>
+
+<h3 id="substrbstring-encoding-start-length---subbstring"><code class="language-plaintext highlighter-rouge">substr(BString, Encoding, Start, Length) -&gt; SubBString</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">BString</span> <span class="o">=</span> <span class="nv">SubBString</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Start</span> <span class="o">=</span> <span class="nf">integer</span><span class="p">()</span>
+<span class="nv">Length</span> <span class="o">=</span> <span class="nf">non_negative_integer</span><span class="p">()</span> <span class="p">|</span> <span class="n">infinity</span>
+</code></pre></div></div>
+
+<p>Returns a substring of <code class="language-plaintext highlighter-rouge">String</code>, starting at the zero-based character position <code class="language-plaintext highlighter-rouge">Start</code>, and ending at the end of the binary string (if <code class="language-plaintext highlighter-rouge">Length</code> is <code class="language-plaintext highlighter-rouge">infinity</code> or up to, but not including, the character position <code class="language-plaintext highlighter-rouge">Start+Length</code> (if <code class="language-plaintext highlighter-rouge">Length</code> is a non negative integer).</p>
+
+<p>The returned <code class="language-plaintext highlighter-rouge">SubBString</code> will have the same encoding as <code class="language-plaintext highlighter-rouge">BString</code> .</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"Hello World"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"lo Wo"</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p>A negative value of <code class="language-plaintext highlighter-rouge">Start</code> denotes <code class="language-plaintext highlighter-rouge">abs(Start)</code> characters from the <em>end</em> of <code class="language-plaintext highlighter-rouge">BString</code>, so that <code class="language-plaintext highlighter-rouge">-1</code> is the last character position in the binary string.</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"Hello World"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"rld"</span><span class="o">&gt;&gt;</span>        
+</code></pre></div></div>
+
+<p>As the true length of an UTF-8 encoded binary string is quite costly to determine ( <code class="language-plaintext highlighter-rouge">O(N)</code>, where <code class="language-plaintext highlighter-rouge">N</code> is the number of bytes in the binary), the function is very forgiving about positions given outside of the string, both <code class="language-plaintext highlighter-rouge">Start</code> s and <code class="language-plaintext highlighter-rouge">Length</code> s. Character positions outside of the string in either direction are collapsed to the empty binary string.</p>
+
+<p>Examples:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
+<span class="o">&lt;&lt;&gt;&gt;</span>
+<span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"4"</span><span class="o">&gt;&gt;</span>
+<span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span>
+<span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
+<span class="o">&lt;&lt;&gt;&gt;</span>    
+<span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">substr</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"01234"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
+<span class="o">&lt;&lt;</span><span class="s">"0"</span><span class="o">&gt;&gt;</span>    
+</code></pre></div></div>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if the searched part of <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h3 id="tokensbstring-separatorlist---tokens"><code class="language-plaintext highlighter-rouge">tokens(BString, SeparatorList) -&gt; Tokens</code></h3>
+
+<h3 id="tokensbstring-encoding-separatorlist---tokens"><code class="language-plaintext highlighter-rouge">tokens(BString, Encoding, SeparatorList) -&gt; Tokens</code></h3>
+
+<p>Types:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">String</span> <span class="o">=</span> <span class="nf">bstring</span><span class="p">()</span>
+<span class="nv">Encoding</span> <span class="o">=</span> <span class="n">encoding</span>
+<span class="nv">SeparatorList</span> <span class="o">=</span> <span class="p">[</span> <span class="nf">non_negative_integer</span><span class="p">()</span> <span class="p">]</span>
+<span class="nv">Tokens</span> <span class="o">=</span> <span class="p">[</span><span class="nf">bstring</span><span class="p">()]</span>
+</code></pre></div></div>
+
+<p>Returns a list of tokens in <code class="language-plaintext highlighter-rouge">BString</code>, separated by the characters in <code class="language-plaintext highlighter-rouge">SeparatorList</code> .</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">Tokens</code> returned are encoded in the same character encoding as the <code class="language-plaintext highlighter-rouge">BString</code> .</p>
+
+<p>Example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nn">bstring</span><span class="p">:</span><span class="nf">tokens</span><span class="p">(</span><span class="o">&lt;&lt;</span><span class="s">"abc defxxghix jkl"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">latin1</span><span class="p">,</span> <span class="p">[</span><span class="sc">$x</span><span class="p">,</span><span class="sc">$ </span><span class="p">]).</span>
+<span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">"abc"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"def"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"ghi"</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="s">"jkl"</span><span class="o">&gt;&gt;</span><span class="p">]</span>        
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">SeparatorList</code> is to be viewed as a <em>set</em> of characters, order is not significant. Codepoints given in <code class="language-plaintext highlighter-rouge">SeparatorList</code> that cannot be represented by the <code class="language-plaintext highlighter-rouge">Encoding</code>, is not an error.</p>
+
+<p>If the encoding is not given, it is assumed to be <code class="language-plaintext highlighter-rouge">latin1</code>, implying that no interpretation is given to the bytes in the binary string.</p>
+
+<p>Raises a <code class="language-plaintext highlighter-rouge">badarg</code> exception if the searched part of <code class="language-plaintext highlighter-rouge">BString</code> does not contain characters encoded according to the <code class="language-plaintext highlighter-rouge">Encoding</code> parameter, the <code class="language-plaintext highlighter-rouge">Encoding</code> has an invalid value, or any of the parameters are of the wrong type.</p>
+
+<h1 id="performance">Performance</h1>
+
+<p>This module can, and probably should, be implemented entirely in
+Erlang, no BIF’s or NIF’s are needed.  Both the <code class="language-plaintext highlighter-rouge">binary</code> and
+<code class="language-plaintext highlighter-rouge">unicode</code> modules can be utilized to speed up conversion and indata
+checking. The Unicode versions will definitely be slower than the
+ISO-Latin-1 versions, as character encoding, decoding and checking is
+bound to produce overhead.</p>
+
+<p>The suggested wrapper <code class="language-plaintext highlighter-rouge">ubstring</code> should not impose any significant
+cost compared to calling <code class="language-plaintext highlighter-rouge">bstring</code> with all encoding arguments set
+to <code class="language-plaintext highlighter-rouge">unicode</code>.</p>
+
+<p>The idea is to make string manipulation using binaries convenient as
+it has a great positive impact on systems memory-wise. Increased speed
+compared to list-oriented strings is not the goal, although it may
+well be a side-effect.</p>
+
+<h1 id="reference-implementation">Reference implementation</h1>
+
+<p>No specific reference implementation is made, the code will however be made available 
+on GitHub during any development.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document is licensed under the <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons Attribution 3.0 License">Creative Commons license</a>.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

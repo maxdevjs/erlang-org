@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://erlang.github.io/erlang-org/news.xml" rel="self" type="application/atom+xml" /><link href="https://erlang.github.io/erlang-org/" rel="alternate" type="text/html" /><updated>2021-07-16T14:59:57+00:00</updated><id>https://erlang.github.io/erlang-org/news.xml</id><title type="html">Erlang/OTP | News</title><subtitle>The official home of the Erlang Programming Language</subtitle><entry><title type="html">OTP 23 Release</title><link href="https://erlang.github.io/erlang-org/news/140" rel="alternate" type="text/html" title="OTP 23 Release" /><published>2020-05-13T00:00:00+00:00</published><updated>2020-05-13T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/140</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/140">&lt;p&gt;Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities.&lt;/p&gt;
+
+&lt;h3 id=&quot;potential-incompatibilities&quot;&gt;Potential Incompatibilities&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;SSL&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;Support for SSL 3.0 is completely removed.&lt;/li&gt;
+      &lt;li&gt;TLS 1.3 is added to the list of default supported versions.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;: Removed the deprecated parts of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface.h&lt;/code&gt; and essentially all C functions with prefix &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;The deprecated &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; BIF now returns an empty list instead of a stacktrace. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; is scheduled for removal in OTP 24.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;improvements-and-new-features&quot;&gt;Improvements and new features&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;ssh&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;OpenSSH 6.5 introduced a new file representation of keys called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssh-key-v1&lt;/code&gt;. This is now supported with the exception of handling encrypted keys.&lt;/li&gt;
+      &lt;li&gt;Algorithm configuration could now be done in a .config file. This is useful for example to enable an algorithm that is disabled by default without need to change the code.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;SSL&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;Support for the middlebox compatibility mode makes the TLS 1.3 handshake look more like a TLS 1.2 handshake and increases the chance of successfully establishing TLS 1.3 connections through legacy middleboxes.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Add support for key exchange with Edward curves and PSS-RSA padding in signature verification&lt;/li&gt;
+  &lt;li&gt;The possibility to run Erlang distribution without relying on EPMD has been extended. To achieve this a couple of new options to the inet distribution has been added.
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-dist_listen false&lt;/code&gt; Setup the distribution channel, but do not listen for incoming connection.&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-erl_epmd_port Port&lt;/code&gt; Configure a default port that the built-in EPMD client should return.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;A first EXPERIMENTAL &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;socket&lt;/code&gt; backend to
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_tcp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt; has been implemented. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_udp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_sctp&lt;/code&gt; will follow.
+ Putting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{inet_backend, socket}&lt;/code&gt; as first option to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;listen()&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connect()&lt;/code&gt; makes it easy to try this for existing code&lt;/li&gt;
+  &lt;li&gt;A new module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; in kernel which implements an enhanced subset of the operations provided by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module. Enhanced in the sense that it makes it possible to distinguish between returned value, raised exceptions and other errors. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; also has better performance and scalability than the original &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; implementation. This by utilizing the newly introduced &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spawn_request()&lt;/code&gt; BIF. Also the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module benefits from these improvements by utilizing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; when possible.&lt;/li&gt;
+  &lt;li&gt;Scalability and performance Improvements plus new functionality regarding distributed spawn operations.&lt;/li&gt;
+  &lt;li&gt;In binary matching, the size of the segment to be matched is now allowed to be a guard expression (EEP-52)&lt;/li&gt;
+  &lt;li&gt;When matching with maps the keys can now be guard expressions (EEP-52).&lt;/li&gt;
+  &lt;li&gt;ssh: support for TCP/IP port forwarding, a.k.a tunnelling a.k.a as tcp-forward/direct-tcp is implemented. In the OpenSSH client, this corresponds to the options -L and -R.&lt;/li&gt;
+  &lt;li&gt;Allow underscores in numeric literals to improve readability. Examples: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;123_456_789&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;16#1234_ABCD&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;New functions in the shell for displaying documentation for Erlang modules, functions and types. The functions are:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h/1,2,3&lt;/code&gt; – Print the documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Function/Arity&lt;/code&gt;.&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ht/1,2,3&lt;/code&gt; – Print the type documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Type/Arity&lt;/code&gt;.
+ The embedded documentation is created as docchunks (EEP 48) when building the Erlang/OTP documentation.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;kernel&lt;/strong&gt;: The module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt; with a new implementation of distributed named process groups is introduced. The old module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg2&lt;/code&gt; is deprecated and scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;Our tool chain for building the Windows packages is upgraded with new C++ compiler, Java compiler, OpenSSL libraries and wxWidgets versions. We are now using WSL (the Linux Subsystem for Windows when building) which makes it easier to handle the build environment.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details see&lt;br /&gt;
+&lt;a href=&quot;http://erlang.org/download/otp_src_23.0.readme&quot;&gt;http://erlang.org/download/otp_src_23.0.readme&lt;/a&gt;&lt;br /&gt;
+Pre built versions for Windows can be fetched here:&lt;br /&gt;
+&lt;a href=&quot;http://erlang.org/download/otp_win32_23.0.exe&quot;&gt;http://erlang.org/download/otp_win32_23.0.exe&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;http://erlang.org/download/otp_win64_23.0.exe&quot;&gt;http://erlang.org/download/otp_win64_23.0.exe&lt;/a&gt;&lt;br /&gt;
+Online documentation can be browsed here:&lt;br /&gt;
+&lt;a href=&quot;http://erlang.org/documentation/doc-11.0/doc&quot;&gt;http://erlang.org/documentation/doc-11.0/doc&lt;/a&gt;&lt;br /&gt;
+The Erlang/OTP source can also be found at GitHub on the official Erlang repository,
+&lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;</content><author><name>Henrik Nord</name></author><category term="release," /><category term="OTP" /><category term="23" /><summary type="html">Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities.</summary></entry><entry><title type="html">OTP 23 Release Candidate 3</title><link href="https://erlang.github.io/erlang-org/news/139" rel="alternate" type="text/html" title="OTP 23 Release Candidate 3" /><published>2020-04-22T00:00:00+00:00</published><updated>2020-04-22T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/139</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/139">&lt;p&gt;This is the third and last of three planned release candidates before the OTP 23 release. The intention with this release is to get feedback from our users. &lt;strong&gt;All feedback is welcome&lt;/strong&gt;, even if it is only to say that it works for you.&lt;/p&gt;
+
+&lt;p&gt;Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities.
+ ### Highlights (rc3)&lt;/p&gt;
+
+&lt;p&gt;Apart from the changes below, this third pre-release contains only minor fixes.
+ ### Potential Incompatibilities&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;SSL: * Support for SSL 3.0 is completely removed.&lt;/li&gt;
+  &lt;li&gt;TLS 1.3 is added to the list of default supported versions.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;: Removed the deprecated parts of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;
+ (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface.h&lt;/code&gt; and essentially all C functions with prefix &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;The deprecated &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; BIF now returns an empty list instead of a stacktrace.
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; is scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;…
+ ### Highlights (rc2)&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ssh&lt;/strong&gt;: * OpenSSH 6.5 introduced a new file representation of
+ keys called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssh-key-v1&lt;/code&gt;. This is now supported with the exception of
+ handling encrypted keys.&lt;/li&gt;
+  &lt;li&gt;Algorithm configuration could now be done in a .config file.
+ This is useful for example to enable an algorithm that
+ is disabled by default without need to change the code.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;ssl&lt;/strong&gt;: * Support for the middlebox compatibility mode makes the TLS 1.3 handshake
+ look more like a TLS 1.2 handshake and increases the chance of successfully
+ establishing TLS 1.3 connections through legacy middleboxes.&lt;/li&gt;
+  &lt;li&gt;Add support for key exchange with Edward curves and PSS-RSA padding in
+ signature verification&lt;/li&gt;
+  &lt;li&gt;The possibility to run Erlang distribution without
+ relying on EPMD has been extended. To achieve this a
+ couple of new options to the inet distribution has been
+ added. * &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-dist_listen false&lt;/code&gt; Setup the distribution
+ channel, but do not listen for incoming connection.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-erl_epmd_port Port&lt;/code&gt; Configure a default port that
+ the built-in EPMD client should return.&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+  &lt;li&gt;A first EXPERIMENTAL &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;socket&lt;/code&gt; backend to
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_tcp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt; has been implemented. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_udp&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_sctp&lt;/code&gt; will follow.
+ Putting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{inet_backend, socket}&lt;/code&gt; as first option to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;listen()&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connect()&lt;/code&gt; makes it easy to try this for
+ existing code
+ ### Highlights (rc1)&lt;/li&gt;
+  &lt;li&gt;A new module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; in kernel which implements an enhanced subset of the operations provided by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module. Enhanced in the sense that it makes it possible to distinguish between returned value, raised exceptions and other errors. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; also has better performance and scalability than the original &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; implementation. This by utilizing the newly introduced &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spawn_request()&lt;/code&gt; BIF. Also the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module benefits from these improvements by utilizing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; when possible.&lt;/li&gt;
+  &lt;li&gt;Scalability and performance Improvements plus new functionality regarding distributed spawn operations.&lt;/li&gt;
+  &lt;li&gt;In binary matching, the size of the segment to be matched is now allowed to be a guard expression (EEP-52)&lt;/li&gt;
+  &lt;li&gt;When matching with maps the keys can now be guard expressions (EEP-52).&lt;/li&gt;
+  &lt;li&gt;ssh: support for TCP/IP port forwarding, a.k.a tunneling a.k.a as tcp-forward/direct-tcp is implemented. In the OpenSSH client, this corresponds to the options -L and -R.&lt;/li&gt;
+  &lt;li&gt;Allow underscores in numeric literals to improve readability. Examples: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;123_456_789&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;16#1234_ABCD&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;New functions in the shell for displaying documentation for Erlang modules, functions and types. The
+ functions are: * &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h/1,2,3&lt;/code&gt; – Print the documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Function/Arity&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ht/1,2,3&lt;/code&gt; – Print the type documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Type/Arity&lt;/code&gt;.
+ The embedded documentation is created as docchunks (EEP 48) when building the Erlang/OTP documentation.&lt;/li&gt;
+  &lt;li&gt;kernel: The module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt; with a new implementation of distributed named process groups is introduced. The old module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg2&lt;/code&gt; is deprecated and scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;Our tool chain for building the Windows packages is upgraded with new C++ compiler, Java compiler, OpenSSL libraries and wxWidgets versions. We are now using WSL (the Linux Subsystem for Windows when building) which makes it easier to handle the build environment.&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;http://erlang.org/download/otp_src_23.0-rc3.readme&quot;&gt;http://erlang.org/download/otp_src_23.0-rc3.readme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pre built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_23.0-rc3.exe&quot;&gt;http://erlang.org/download/otp_win32_23.0-rc3.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_23.0-rc3.exe&quot;&gt;http://erlang.org/download/otp_win64_23.0-rc3.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/documentation/doc-11.0-rc3/doc&quot;&gt;http://erlang.org/documentation/doc-11.0-rc3/doc&lt;/a&gt;
+ The Erlang/OTP source can also be found at GitHub on the official Erlang repository,
+ &lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="releasecandidate" /><summary type="html">This is the third and last of three planned release candidates before the OTP 23 release. The intention with this release is to get feedback from our users. All feedback is welcome, even if it is only to say that it works for you.</summary></entry><entry><title type="html">Erlang OTP 23.0 Release Candidate 2</title><link href="https://erlang.github.io/erlang-org/news/138" rel="alternate" type="text/html" title="Erlang OTP 23.0 Release Candidate 2" /><published>2020-03-26T00:00:00+00:00</published><updated>2020-03-26T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/138</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/138">&lt;p&gt;This is the second of three planned release candidates before the OTP 23 release. The intention with this release is to get feedback from our users. All feedback is welcome, even if it is only to say that it works for you.&lt;/p&gt;
+
+&lt;p&gt;Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities.&lt;/p&gt;
+&lt;h3 id=&quot;potential-incompatibilities&quot;&gt;Potential Incompatibilities&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;SSL: * Support for SSL 3.0 is completely removed.&lt;/li&gt;
+  &lt;li&gt;TLS 1.3 is added to the list of default supported versions.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;: Removed the deprecated parts ofÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;
+ (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface.h&lt;/code&gt;Â and essentially all C functions with prefixÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;The deprecatedÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt;Â BIF now returns an empty list instead of a stacktrace.
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt;Â is scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;…
+    &lt;h3 id=&quot;highlights-rc2&quot;&gt;Highlights (rc2)&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ssh: * OpenSSH 6.5 introduced a new file representation of
+ keys called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssh-key-v1&lt;/code&gt;. This is now supported with the exception of
+ handling encrypted keys.&lt;/li&gt;
+  &lt;li&gt;Algorithm configuration could now be done in a .config file.
+ This is useful for example to enable an algorithm that
+ is disabled by default without need to change the code.&lt;/li&gt;
+  &lt;li&gt;ssl: * Support for the middlebox compatibility mode makes the TLS 1.3 handshake
+ look more like a TLS 1.2 handshake and increases the chance of successfully
+ establishing TLS 1.3 connections through legacy middleboxes.&lt;/li&gt;
+  &lt;li&gt;Add support for key exchange with Edward curves and PSS-RSA padding in
+ signature verification&lt;/li&gt;
+  &lt;li&gt;The possibility to run Erlang distribution without
+ relying on EPMD has been extended. To achieve this a
+ couple of new options to the inet distribution has been
+ added. * &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-dist_listen false&lt;/code&gt;Â Setup the distribution
+ channel, but do not listen for incoming connection.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-erl_epmd_port Port&lt;/code&gt;Â Configure a default port that
+ the built-in EPMD client should return.&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+  &lt;li&gt;A first EXPERIMENTALÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;socket&lt;/code&gt;Â backend to
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_tcp&lt;/code&gt;Â andÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inet&lt;/code&gt;Â has been implemented.Â &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_udp&lt;/code&gt;Â andÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gen_sctp&lt;/code&gt;Â will follow.
+ PuttingÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{inet_backend, socket}&lt;/code&gt;Â as first option toÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;listen()&lt;/code&gt;Â orÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connect()&lt;/code&gt;Â makes it easy to try this for
+ existing code
+    &lt;h3 id=&quot;highlights-rc1&quot;&gt;Highlights (rc1)&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;A new moduleÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt;Â in kernel which implements an enhanced subset of the operations provided by theÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt;Â module. Enhanced in the sense that it makes it possible to distinguish between returned value, raised exceptions and other errors.Â &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt;Â also has better performance and scalability than the originalÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt;Â implementation. This by utilizing the newly introducedÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spawn_request()&lt;/code&gt;Â BIF. Also theÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt;Â module benefits from these improvements by utilizingÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt;Â when possible.&lt;/li&gt;
+  &lt;li&gt;Scalability and performance Improvements plus new functionality regarding distributed spawn operations.&lt;/li&gt;
+  &lt;li&gt;In binary matching, the size of the segment to be matched is now allowed to be a guard expression (EEP-52)&lt;/li&gt;
+  &lt;li&gt;When matching with maps the keys can now be guard expressions (EEP-52).&lt;/li&gt;
+  &lt;li&gt;ssh: support for TCP/IP port forwarding, a.k.a tunneling a.k.a as tcp-forward/direct-tcp is implemented. In the OpenSSH client, this corresponds to the options -L and -R.&lt;/li&gt;
+  &lt;li&gt;Allow underscores in numeric literals to improve readability. Examples:Â &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;123_456_789&lt;/code&gt;,Â &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;16#1234_ABCD&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;New functions in the shell for displaying documentation for Erlang modules, functions and types. The
+ functions are: * &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h/1,2,3&lt;/code&gt;Â – Print the documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Function/Arity&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ht/1,2,3&lt;/code&gt;Â – Print the type documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Type/Arity&lt;/code&gt;.
+ The embedded documentation is created as docchunks (EEP 48) when building the Erlang/OTP documentation.&lt;/li&gt;
+  &lt;li&gt;kernel: The moduleÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt;Â with a new implementation of distributed named process groups is introduced. The old moduleÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg2&lt;/code&gt;Â is deprecated and scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;Our tool chain for building the Windows packages is upgraded with new C++ compiler, Java compiler, OpenSSL libraries and wxWidgets versions. We are now using WSL (the Linux Subsystem for Windows when building) which makes it easier to handle the build environment.&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;http://erlang.org/download/otp_src_23.0-rc2.readme&quot;&gt;http://erlang.org/download/otp_src_23.0-rc2.readme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pre built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_23.0-rc2.exe&quot;&gt;http://erlang.org/download/otp_win32_23.0-rc2.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_23.0-rc2.exe&quot;&gt;http://erlang.org/download/otp_win64_23.0-rc2.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/documentation/doc-11.0-rc2/doc&quot;&gt;http://erlang.org/documentation/doc-11.0-rc2/doc&lt;/a&gt;
+ The Erlang/OTP source can also be found at GitHub on the official Erlang repository,
+ &lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="release," /><category term="candidate," /><category term="testing" /><summary type="html">This is the second of three planned release candidates before the OTP 23 release. The intention with this release is to get feedback from our users. All feedback is welcome, even if it is only to say that it works for you.</summary></entry><entry><title type="html">Erlang OTP 22.3 is released</title><link href="https://erlang.github.io/erlang-org/news/137" rel="alternate" type="text/html" title="Erlang OTP 22.3 is released" /><published>2020-03-16T00:00:00+00:00</published><updated>2020-03-16T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/137</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/137">&lt;p&gt;Erlang/OTP 22.3 is the last planned patch package for the 22 major release with new features, improvements and bugfixes. Below follows some highlights.&lt;/p&gt;
+
+&lt;h3 id=&quot;highlights&quot;&gt;Highlights&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;ssl/public_key: * Implementation of the key and initialization vector
+ update feature, and general hardening of TLS 1.3.
+ There are cryptographic limits on the amount of
+ plaintext which can be safely encrypted under a given set of keys.
+ This change enforces those limits by triggering
+ automatic key updates on TLS 1.3 connections.&lt;/li&gt;
+  &lt;li&gt;Add support for TLS 1.3 Session Tickets (stateful and
+ stateless). This allows session resumption using keying
+ material from a previous successful handshake.&lt;/li&gt;
+  &lt;li&gt;Add support for key exchange with Edward curves and
+ PSS-RSA padding in signature verification.&lt;/li&gt;
+  &lt;li&gt;erts: * A socket “registry” has been added making it possible to list current open sockets.&lt;/li&gt;
+  &lt;li&gt;Add a “full featured” version of getifaddrs in the net module.&lt;/li&gt;
+  &lt;li&gt;ssh: * The new functions ssh:set_sock_opts/2 and ssh:get_sock_opts/2 sets and reads option values for
+ the underlying TCP stream.&lt;/li&gt;
+  &lt;li&gt;Changes to the internal api of the experimentalÂ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh_dbg&lt;/code&gt;Â tool.&lt;/li&gt;
+  &lt;li&gt;common_test: The ct_property_test has now a report function for
+ results of stateful testing.&lt;/li&gt;
+  &lt;li&gt;stdlib: * Implement uri_string:resolve/{2,3} that can be used to
+ resolve a URI reference against a base URI.&lt;/li&gt;
+  &lt;li&gt;In gen_statem it is now possible to change the callback
+ module for a running server. See gen_statem’s
+ documentation for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;change_callback_module&lt;/code&gt;,
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;push_callback_module&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pop_callback_module&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;http://erlang.org/download/otp_src_22.3.readme&quot;&gt;http://erlang.org/download/otp_src_22.3.readme&lt;/a&gt;
+ Pre built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_22.3.exe&quot;&gt;http://erlang.org/download/otp_win32_22.3.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_22.3.exe&quot;&gt;http://erlang.org/download/otp_win64_22.3.exe&lt;/a&gt;
+ Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/doc/search/&quot;&gt;http://erlang.org/doc/search/&lt;/a&gt;
+ The source tarball can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_src_22.3.tar.gz&quot;&gt;http://erlang.org/download/otp_src_22.3.tar.gz&lt;/a&gt;
+ The documentation can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_html_22.3.tar.gz&quot;&gt;http://erlang.org/download/otp_doc_html_22.3.tar.gz&lt;/a&gt;
+ The man pages can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_man_22.3.tar.gz&quot;&gt;http://erlang.org/download/otp_doc_man_22.3.tar.gz&lt;/a&gt;
+ The Erlang/OTP source can also be found at GitHub on the official Erlang repository:
+ &lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;
+ OTP-22.3&lt;/p&gt;
+
+&lt;p&gt;Thank you for all your contributions!&lt;/p&gt;</content><author><name></name></author><category term="release" /><summary type="html">Erlang/OTP 22.3 is the last planned patch package for the 22 major release with new features, improvements and bugfixes. Below follows some highlights.</summary></entry><entry><title type="html">Erlang OTP 23.0 Release Candidate 1</title><link href="https://erlang.github.io/erlang-org/news/136" rel="alternate" type="text/html" title="Erlang OTP 23.0 Release Candidate 1" /><published>2020-02-27T00:00:00+00:00</published><updated>2020-02-27T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/136</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/136">&lt;p&gt;## OTP 23 Release Candidate 1&lt;/p&gt;
+
+&lt;p&gt;This is the first of three planned release candidates before the OTP 23 release.
+ The intention with this release is to get feedback from our users. &lt;strong&gt;All feedback is welcome&lt;/strong&gt;, even if it is only to say that it works for you.&lt;/p&gt;
+
+&lt;p&gt;Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities.
+ ### Potential Incompatibilities&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;SSL: * Support for SSL 3.0 is completely removed.&lt;/li&gt;
+  &lt;li&gt;TLS 1.3 is added to the list of default supported versions.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;: Removed the deprecated parts of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface&lt;/code&gt;
+ (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_interface.h&lt;/code&gt; and essentially all C functions with prefix &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erl_&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;The deprecated &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; BIF now returns an empty list instead of a stacktrace.
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erlang:get_stacktrace/0&lt;/code&gt; is scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;…
+ ### Highlights&lt;/li&gt;
+  &lt;li&gt;A new module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; in kernel which implements an enhanced subset of the operations provided by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module. Enhanced in the sense that it makes it possible to distinguish between returned value, raised exceptions and other errors. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; also has better performance and scalability than the original &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; implementation. This by utilizing the newly introduced &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spawn_request()&lt;/code&gt; BIF. Also the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rpc&lt;/code&gt; module benefits from these improvements by utilizing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;erpc&lt;/code&gt; when possible.&lt;/li&gt;
+  &lt;li&gt;Scalability and performance Improvements plus new functionality regarding distributed spawn operations.&lt;/li&gt;
+  &lt;li&gt;In binary matching, the size of the segment to be matched is now allowed to be a guard expression (EEP-52)&lt;/li&gt;
+  &lt;li&gt;When matching with maps the keys can now be guard expressions (EEP-52).&lt;/li&gt;
+  &lt;li&gt;ssh: support for TCP/IP port forwarding, a.k.a tunneling a.k.a as tcp-forward/direct-tcp is implemented. In the OpenSSH client, this corresponds to the options -L and -R.&lt;/li&gt;
+  &lt;li&gt;Allow underscores in numeric literals to improve readability. Examples: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;123_456_789&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;16#1234_ABCD&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;New functions in the shell for displaying documentation for Erlang modules, functions and types. The
+ functions are: * &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;h/1,2,3&lt;/code&gt; – Print the documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Function/Arity&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ht/1,2,3&lt;/code&gt; – Print the type documentation for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Module:Type/Arity&lt;/code&gt;.
+ The embedded documentation is created as docchunks (EEP 48) when building the Erlang/OTP documentation.&lt;/li&gt;
+  &lt;li&gt;kernel: The module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt; with a new implementation of distributed named process groups is introduced. The old module &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg2&lt;/code&gt; is deprecated and scheduled for removal in OTP 24.&lt;/li&gt;
+  &lt;li&gt;Our tool chain for building the Windows packages is upgraded with new C++ compiler, Java compiler, OpenSSL libraries and wxWidgets versions. We are now using WSL (the Linux Subsystem for Windows when building) which makes it easier to handle the build environment.&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;http://erlang.org/download/otp_src_23.0-rc1.readme&quot;&gt;http://erlang.org/download/otp_src_23.0-rc1.readme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pre built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_23.0-rc1.exe&quot;&gt;http://erlang.org/download/otp_win32_23.0-rc1.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_23.0-rc1.exe&quot;&gt;http://erlang.org/download/otp_win64_23.0-rc1.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/documentation/doc-11.0-rc1/doc&quot;&gt;http://erlang.org/documentation/doc-11.0-rc1/doc&lt;/a&gt;
+ The Erlang/OTP source can also be found at GitHub on the official Erlang repository,
+ &lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="release," /><category term="candidate," /><category term="testing" /><summary type="html">## OTP 23 Release Candidate 1 This is the first of three planned release candidates before the OTP 23 release. The intention with this release is to get feedback from our users. All feedback is welcome, even if it is only to say that it works for you. Erlang/OTP 23 is a new major release with new features, improvements as well as a few incompatibilities. ### Potential Incompatibilities SSL: * Support for SSL 3.0 is completely removed. TLS 1.3 is added to the list of default supported versions. erl_interface: Removed the deprecated parts of erl_interface (erl_interface.h and essentially all C functions with prefix erl_). The deprecated erlang:get_stacktrace/0 BIF now returns an empty list instead of a stacktrace. erlang:get_stacktrace/0 is scheduled for removal in OTP 24. … ### Highlights A new module erpc in kernel which implements an enhanced subset of the operations provided by the rpc module. Enhanced in the sense that it makes it possible to distinguish between returned value, raised exceptions and other errors. erpc also has better performance and scalability than the original rpc implementation. This by utilizing the newly introduced spawn_request() BIF. Also the rpc module benefits from these improvements by utilizing erpc when possible. Scalability and performance Improvements plus new functionality regarding distributed spawn operations. In binary matching, the size of the segment to be matched is now allowed to be a guard expression (EEP-52) When matching with maps the keys can now be guard expressions (EEP-52). ssh: support for TCP/IP port forwarding, a.k.a tunneling a.k.a as tcp-forward/direct-tcp is implemented. In the OpenSSH client, this corresponds to the options -L and -R. Allow underscores in numeric literals to improve readability. Examples: 123_456_789, 16#1234_ABCD. New functions in the shell for displaying documentation for Erlang modules, functions and types. The functions are: * h/1,2,3 – Print the documentation for a Module:Function/Arity. ht/1,2,3 – Print the type documentation for a Module:Type/Arity. The embedded documentation is created as docchunks (EEP 48) when building the Erlang/OTP documentation. kernel: The module pg with a new implementation of distributed named process groups is introduced. The old module pg2 is deprecated and scheduled for removal in OTP 24. Our tool chain for building the Windows packages is upgraded with new C++ compiler, Java compiler, OpenSSL libraries and wxWidgets versions. We are now using WSL (the Linux Subsystem for Windows when building) which makes it easier to handle the build environment. … For more details see http://erlang.org/download/otp_src_23.0-rc1.readme Pre built versions for Windows can be fetched here: http://erlang.org/download/otp_win32_23.0-rc1.exe http://erlang.org/download/otp_win64_23.0-rc1.exe Online documentation can be browsed here: http://erlang.org/documentation/doc-11.0-rc1/doc The Erlang/OTP source can also be found at GitHub on the official Erlang repository, https://github.com/erlang/otp</summary></entry><entry><title type="html">Erlang OTP 22.2 is released</title><link href="https://erlang.github.io/erlang-org/news/135" rel="alternate" type="text/html" title="Erlang OTP 22.2 is released" /><published>2019-12-10T00:00:00+00:00</published><updated>2019-12-10T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/135</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/135">&lt;p&gt;Â &lt;/p&gt;
+&lt;h2 id=&quot;highlights&quot;&gt;Highlights&lt;/h2&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+&lt;h3 id=&quot;erts&quot;&gt;erts:&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;The Kernel application’s User’s Guide now contains a Logger Cookbook with common usage patterns.&lt;/li&gt;
+  &lt;li&gt;Numerous improvements in the new socket and net modules
+    &lt;h3 id=&quot;standard-libraries&quot;&gt;Standard libraries:&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;common_test: ct_property_test logging is improved&lt;/li&gt;
+  &lt;li&gt;ssl: Correct handling of unordered chains so that it works as expected
+    &lt;h3 id=&quot;tools&quot;&gt;Tools:&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Emacs erlang-mode function that lets the user open the documentation for an Erlang/OTP function in an Emacs buffer has been improved. Users will be asked if they want the man pages downloaded if they are not present in the system.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;https://erlang.org/download/otp_src_22.2.readme&quot;&gt;erlang.org/download/otp_src_22.2.readme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pre-built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_22.2.exe&quot;&gt;erlang.org/download/otp_win32_22.2.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_22.2.exe&quot;&gt;erlang.org/download/otp_win64_22.2.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/doc/search/&quot;&gt;erlang.org/doc/search/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The source tarball can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_src_22.2.tar.gz&quot;&gt;erlang.org/download/otp_src_22.2.tar.gz&lt;/a&gt;
+ The documentation can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_html_22.2.tar.gz&quot;&gt;erlang.org/download/otp_doc_html_22.2.tar.gz&lt;/a&gt;
+ The man pages can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_man_22.2.tar.gz&quot;&gt;erlang.org/download/otp_doc_man_22.2.tar.gz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The Erlang/OTP source can also be found at GitHub on the official Erlang repository:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/erlang/otp/releases/tag/OTP-22.2&quot;&gt;OTP-22.2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+
+&lt;p&gt;Thank you for all your contributions!&lt;/p&gt;</content><author><name></name></author><category term="release" /><summary type="html">Â  Highlights</summary></entry><entry><title type="html">Mailing-lists migration</title><link href="https://erlang.github.io/erlang-org/news/134" rel="alternate" type="text/html" title="Mailing-lists migration" /><published>2019-10-24T00:00:00+00:00</published><updated>2019-10-24T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/134</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/134">&lt;p&gt;We have migrated our email-list to a new server, and during the move we accidentally sent out a email to everyone saying that you have been unsubscribed from the email-list.&lt;/p&gt;
+
+&lt;p&gt;This is not true, and you are still subscribed to all the list you where subscribed to before this happened.&lt;/p&gt;
+
+&lt;p&gt;This move might be accompanied by a small delay in email traffic due to MX propagation delays.&lt;/p&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+
+&lt;p&gt;We do apologize for the inconvenience!&lt;/p&gt;
+
+&lt;p&gt;Â &lt;/p&gt;</content><author><name></name></author><summary type="html">We have migrated our email-list to a new server, and during the move we accidentally sent out a email to everyone saying that you have been unsubscribed from the email-list.</summary></entry><entry><title type="html">Erlang OTP 22.1 is released</title><link href="https://erlang.github.io/erlang-org/news/133" rel="alternate" type="text/html" title="Erlang OTP 22.1 is released" /><published>2019-09-18T00:00:00+00:00</published><updated>2019-09-18T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/133</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/133">&lt;h2 id=&quot;potential-incompatibilities&quot;&gt;Potential Incompatibilities&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Mnesia: Transactions with sticky locks could with async_asym transactions be committed in the wrong order, since asym transactions are spawned on the remote nodes. To fix this bug the communication protocol between mnesia nodes had to be updated, thus mnesia will no longer be able to connect to nodes earlier than mnesia-4.14 ,first realeased in OTP-19.0.&lt;/li&gt;
+  &lt;li&gt;Stdlib: Debugging of time-outs in gen_statem has been improved. Starting a time-out is now logged in sys:log and sys:trace. Running time-outs are visible in server crash logs, and with sys:get_status. Due to this system events {start_timer, Action, State} and {insert_timout, Event, State} have been added, which may surprise tools that rely on the format of these events. New features: The EventContent of a running time-out can be updated with {TimeoutType, update, NewEventContent}. Running time-outs can be cancelled with {TimeoutType, cancel} which is more readable than using Time = infinity.{rel, Name, Vsn, RelApps, Opts}.
+    &lt;h2 id=&quot;highlights&quot;&gt;Highlights&lt;/h2&gt;
+    &lt;h3 id=&quot;compiler&quot;&gt;Compiler:&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;erlc can now automatically use a compile server to avoid starting an Erlang system for each file to be compiled in a multi-file project. See the documentation for how to enable it.
+    &lt;h3 id=&quot;standard-libraries&quot;&gt;Standard libraries:&lt;/h3&gt;
+  &lt;/li&gt;
+  &lt;li&gt;SSL: Basic support for TLS 1.3 Client for experimental use. For more information see the Standards Compliance chapter of the User’s Guide.&lt;/li&gt;
+  &lt;li&gt;crypto: The Message Authentication Codes (MAC) CMAC, HMAC and Poly1305 are unified into common functions in the New Crypto API. See the manual for CRYPTO. cipher_info/1Â functions returns maps with information about the hash or cipher in the argument.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+
+&lt;p&gt;For more details see
+ &lt;a href=&quot;http://erlang.org/download/otp_src_22.1.readme&quot;&gt;http://erlang.org/download/otp_src_22.1.readme&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pre built versions for Windows can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_win32_22.1.exe&quot;&gt;http://erlang.org/download/otp_win32_22.1.exe&lt;/a&gt;
+ &lt;a href=&quot;http://erlang.org/download/otp_win64_22.1.exe&quot;&gt;http://erlang.org/download/otp_win64_22.1.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Online documentation can be browsed here:
+ &lt;a href=&quot;http://erlang.org/doc/search/&quot;&gt;http://erlang.org/doc/search/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The source tarball can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_src_22.1.tar.gz&quot;&gt;http://erlang.org/download/otp_src_22.1.tar.gz&lt;/a&gt;
+ The documentation can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_html_22.1.tar.gz&quot;&gt;http://erlang.org/download/otp_doc_html_22.1.tar.gz&lt;/a&gt;
+ The man pages can be fetched here:
+ &lt;a href=&quot;http://erlang.org/download/otp_doc_man_22.1.tar.gz&quot;&gt;http://erlang.org/download/otp_doc_man_22.1.tar.gz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The Erlang/OTP source can also be found at GitHub on the official Erlang repository:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/erlang/otp&quot;&gt;https://github.com/erlang/otp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/erlang/otp/releases/tag/OTP-22.1&quot;&gt;OTP-22.1&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Â &lt;/p&gt;
+
+&lt;p&gt;Thank you for all your contributions!&lt;/p&gt;</content><author><name></name></author><category term="release" /><summary type="html">Potential Incompatibilities Mnesia: Transactions with sticky locks could with async_asym transactions be committed in the wrong order, since asym transactions are spawned on the remote nodes. To fix this bug the communication protocol between mnesia nodes had to be updated, thus mnesia will no longer be able to connect to nodes earlier than mnesia-4.14 ,first realeased in OTP-19.0. Stdlib: Debugging of time-outs in gen_statem has been improved. Starting a time-out is now logged in sys:log and sys:trace. Running time-outs are visible in server crash logs, and with sys:get_status. Due to this system events {start_timer, Action, State} and {insert_timout, Event, State} have been added, which may surprise tools that rely on the format of these events. New features: The EventContent of a running time-out can be updated with {TimeoutType, update, NewEventContent}. Running time-outs can be cancelled with {TimeoutType, cancel} which is more readable than using Time = infinity.{rel, Name, Vsn, RelApps, Opts}. Highlights Compiler: erlc can now automatically use a compile server to avoid starting an Erlang system for each file to be compiled in a multi-file project. See the documentation for how to enable it. Standard libraries: SSL: Basic support for TLS 1.3 Client for experimental use. For more information see the Standards Compliance chapter of the User’s Guide. crypto: The Message Authentication Codes (MAC) CMAC, HMAC and Poly1305 are unified into common functions in the New Crypto API. See the manual for CRYPTO. cipher_info/1Â functions returns maps with information about the hash or cipher in the argument.</summary></entry><entry><title type="html">Eighteenth ACM SIGPLAN Erlang Workshop, Berlin, Germany, August 18, 2019</title><link href="https://erlang.github.io/erlang-org/news/130" rel="alternate" type="text/html" title="Eighteenth ACM SIGPLAN Erlang Workshop, Berlin, Germany, August 18, 2019" /><published>2019-08-18T00:00:00+00:00</published><updated>2019-08-18T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/130</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/130">&lt;p&gt;The Erlang Workshop aims to bring together the open source, academic, and industrial communities of Erlang, to discuss technologies and languages related to Erlang. The Erlang model of concurrent programming has been widely emulated, for example by Akka in Scala, and even new programming languages were designed atop of the Erlang VM, such as Elixir. Therefore we would like to broaden the scope of the workshop to include systems like those mentioned above. For more info see &lt;a href=&quot;http://erlang.org/workshop/2019/&quot;&gt;http://erlang.org/workshop/2019/&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><category term="workshop" /><summary type="html">The Erlang Workshop aims to bring together the open source, academic, and industrial communities of Erlang, to discuss technologies and languages related to Erlang. The Erlang model of concurrent programming has been widely emulated, for example by Akka in Scala, and even new programming languages were designed atop of the Erlang VM, such as Elixir. Therefore we would like to broaden the scope of the workshop to include systems like those mentioned above. For more info see http://erlang.org/workshop/2019/</summary></entry><entry><title type="html">Code BEAMSTO 2019, Stockholm 16-17 May</title><link href="https://erlang.github.io/erlang-org/news/131" rel="alternate" type="text/html" title="Code BEAMSTO 2019, Stockholm 16-17 May" /><published>2019-05-16T00:00:00+00:00</published><updated>2019-05-16T00:00:00+00:00</updated><id>https://erlang.github.io/erlang-org/news/131</id><content type="html" xml:base="https://erlang.github.io/erlang-org/news/131">&lt;p&gt;Code BEAM STO is the only conference in Europe to bring Erlang, Elixir, and all of the languages that run on the BEAM together.Find out more on the website: &lt;a href=&quot;https://www.codesync.global/conferences/code-beam-sto-2019/&quot;&gt;https://www.codesync.global/conferences/code-beam-sto-2019/&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Code BEAM STO is the only conference in Europe to bring Erlang, Elixir, and all of the languages that run on the BEAM together.Find out more on the website: https://www.codesync.global/conferences/code-beam-sto-2019/</summary></entry></feed>

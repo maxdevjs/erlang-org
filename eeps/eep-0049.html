@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0049 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0049 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Fred Hebert &lt;mononcqc(at)ferd(dot)ca&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>31-Aug-2018</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-49-value-based-error-handling-mechanisms">EEP 49: Value-Based Error Handling Mechanisms</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>This EEP extends the <code class="language-plaintext highlighter-rouge">begin ... end</code> expression to make it a construct
+usable for control flow and value-based error handling based on pattern
+matching.</p>
+
+<p>This introduces <code class="language-plaintext highlighter-rouge">begin ... else ... end</code> along with a new contextual use
+of the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator to replace or simplify deeply-nested <code class="language-plaintext highlighter-rouge">case ... end</code>
+expressions, and prevent using exceptions for control flow.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>The current syntax for a <code class="language-plaintext highlighter-rouge">begin ... end</code> expression is:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Exprs</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The expression does not have a restricted scope, and is mostly used to
+group multiple distinct expressions as a single block. We propose a new
+type of expressions (denoted <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code>), only valid within a
+<code class="language-plaintext highlighter-rouge">begin ... end</code> expression:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Exprs</span> <span class="p">|</span> <span class="nv">MatchOrReturnExprs</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code> are defined as having the following form:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Pattern</span> <span class="o">&lt;-</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+
+<p>This definition means that <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code> are only allowed at the
+top-level of <code class="language-plaintext highlighter-rouge">begin ... end</code> expressions.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">&lt;-</code> operator takes the value return by <code class="language-plaintext highlighter-rouge">Expr</code> and pattern matches on
+it against <code class="language-plaintext highlighter-rouge">Pattern</code>.</p>
+
+<p>If the pattern matches, all variables from <code class="language-plaintext highlighter-rouge">Pattern</code> are bound in the local
+environment, and the expression is equivalent to a successful <code class="language-plaintext highlighter-rouge">Pattern = Expr</code>
+call. If the value does not match, the <code class="language-plaintext highlighter-rouge">begin ... end</code> expression returns the
+failed expression directly.</p>
+
+<p>A special case exists in which we extend <code class="language-plaintext highlighter-rouge">begin ... end</code> into the following form:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Exprs</span> <span class="p">|</span> <span class="nv">MatchOrReturnExprs</span>
+<span class="n">else</span>
+    <span class="nv">Pattern</span> <span class="o">-&gt;</span> <span class="nv">Exprs</span><span class="p">;</span>
+    <span class="p">...</span>
+    <span class="nv">Pattern</span> <span class="o">-&gt;</span> <span class="nv">Exprs</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This form exists to capture non-matching expressions in a <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code>
+to handle failed matches rather than returning their value. In such a case, an
+unhandled failed match will raise an <code class="language-plaintext highlighter-rouge">else_clause</code> error, otherwise identical to
+a <code class="language-plaintext highlighter-rouge">case_clause</code> error.</p>
+
+<p>This extended form is useful to properly identify and handle successful and
+unsuccessful matches within the same construct without risking to confuse
+happy and unhappy paths.</p>
+
+<p>Given the structure described here, the final expression may look like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(),</span>            <span class="c">% normal exprs still allowed
+</span>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">X</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">f</span><span class="p">(</span><span class="nv">Foo</span><span class="p">),</span>
+    <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="nf">g</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]),</span>
+    <span class="p">...</span>
+<span class="n">else</span>
+    <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Y</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="s">"default"</span><span class="p">};</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">_</span><span class="nv">Term</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="s">"unexpected wrapper"</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Do note that to allow easier pattern matching and more intuitive usage,
+the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator should have associativity rules lower than <code class="language-plaintext highlighter-rouge">=</code>, such that:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">X</span> <span class="o">=</span> <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="nf">exp</span><span class="p">()</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>is a valid <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code> equivalent to the non-infix form <code class="language-plaintext highlighter-rouge">'&lt;-'('='(X,
+[H|T]), exp())</code>, since reversing the priorities would give <code class="language-plaintext highlighter-rouge">'='('&lt;-'(X, [H|T]),
+exp())</code>, which would create a <code class="language-plaintext highlighter-rouge">MatchOrReturnExp</code> out of context and be invalid.
+In a nutshell, the matching rules for the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator should align closely
+with the usage known in list comprehensions.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Erlang has some of the most flexible error handling available across a
+large number of programming languages. The language supports:</p>
+
+<ol>
+  <li>three types of exceptions (<code class="language-plaintext highlighter-rouge">throw</code>, <code class="language-plaintext highlighter-rouge">error</code>, <code class="language-plaintext highlighter-rouge">exit</code>)
+    <ul>
+      <li>handled by <code class="language-plaintext highlighter-rouge">catch Exp</code></li>
+      <li>handled by <code class="language-plaintext highlighter-rouge">try ... [of ...] catch ... [after ...] end</code></li>
+    </ul>
+  </li>
+  <li>links, <code class="language-plaintext highlighter-rouge">exit/2</code>, and <code class="language-plaintext highlighter-rouge">trap_exit</code></li>
+  <li>monitors</li>
+  <li>return values such as <code class="language-plaintext highlighter-rouge">{ok, Val} | {error, Term}</code>, <code class="language-plaintext highlighter-rouge">{ok, Val} |
+false</code>, or <code class="language-plaintext highlighter-rouge">ok | {error, Val}</code></li>
+  <li>A combination of one or more of the above</li>
+</ol>
+
+<p>So why should we look to add more? There are various reasons for this,
+including trying to reduce deeply nested conditional expressions,
+cleaning up some messy patterns found in the wild, and providing a better
+separation of concerns when implementing functions.</p>
+
+<h2 id="reducing-nesting">Reducing Nesting</h2>
+
+<p>One common pattern that can be seen in Erlang is deep nesting of <code class="language-plaintext highlighter-rouge">case
+... end</code> expressions, to check complex conditionals.</p>
+
+<p>Take the following code taken from
+<a href="https://github.com/erlang/otp/blob/a0ae44f324576104760a63fe6cf63e0ca31756fc/lib/mnesia/src/mnesia_backup.erl#L106-L126">Mnesia</a>,
+for example:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">commit_write</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">B</span> <span class="o">=</span> <span class="nv">OpaqueData</span><span class="p">,</span>
+    <span class="k">case</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">sync</span><span class="p">(</span><span class="nv">B</span><span class="nl">#backup.file_desc</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="k">case</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">B</span><span class="nl">#backup.file_desc</span><span class="p">)</span> <span class="k">of</span>
+                <span class="n">ok</span> <span class="o">-&gt;</span>
+                    <span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">rename</span><span class="p">(</span><span class="nv">B</span><span class="nl">#backup.tmp_file</span><span class="p">,</span> <span class="nv">B</span><span class="nl">#backup.file</span><span class="p">)</span> <span class="k">of</span>
+                       <span class="n">ok</span> <span class="o">-&gt;</span>
+                            <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">B</span><span class="nl">#backup.file</span><span class="p">};</span>
+                       <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+                            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+                    <span class="k">end</span><span class="p">;</span>
+                <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+                    <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+            <span class="k">end</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The code is nested to the extent that shorter aliases must be introduced
+for variables (<code class="language-plaintext highlighter-rouge">OpaqueData</code> renamed to <code class="language-plaintext highlighter-rouge">B</code>), and half of the code just
+transparently returns the exact values each function was given.</p>
+
+<p>By comparison, the same code could be written as follows with the new
+construct:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">commit_write</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">sync</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.file_desc</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.file_desc</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">file</span><span class="p">:</span><span class="nf">rename</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.tmp_file</span><span class="p">,</span> <span class="nv">OpaqueData</span><span class="nl">#backup.file</span><span class="p">),</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">OpaqueData</span><span class="nl">#backup.file</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Or, to protect against <code class="language-plaintext highlighter-rouge">disk_log</code> calls returning something else than <code class="language-plaintext highlighter-rouge">ok |
+{error, Reason}</code>, the following form could be used:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">commit_write</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">sync</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.file_desc</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">disk_log</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.file_desc</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nn">file</span><span class="p">:</span><span class="nf">rename</span><span class="p">(</span><span class="nv">OpaqueData</span><span class="nl">#backup.tmp_file</span><span class="p">,</span> <span class="nv">OpaqueData</span><span class="nl">#backup.file</span><span class="p">),</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">OpaqueData</span><span class="nl">#backup.file</span><span class="p">}</span>
+    <span class="n">else</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The semantics of these calls are identical, except that it is now
+much easier to focus on the flow of individual operations and either
+success or error paths.</p>
+
+<h2 id="obsoleting-messy-patterns">Obsoleting Messy Patterns</h2>
+
+<p>Frequent ways in which people work with sequences of failable operations
+include folds over lists of functions, and abusing list comprehensions.
+Both patterns have heavy weaknesses that makes them less than ideal.</p>
+
+<p>Folds over list of functions use patterns such as those defined in
+<a href="http://erlang.org/pipermail/erlang-questions/2017-September/093575.html">posts from the
+mailing</a>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pre_check</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">,</span> <span class="nv">ExternalThingy</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Checks</span> <span class="o">=</span>
+        <span class="p">[</span><span class="k">fun</span> <span class="n">check_request</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span>
+         <span class="k">fun</span> <span class="n">check_permission</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span>
+         <span class="k">fun</span> <span class="n">check_dispatch_target</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span>
+         <span class="k">fun</span> <span class="n">check_condition</span><span class="o">/</span><span class="mi">1</span><span class="p">],</span>
+    <span class="nv">Args</span> <span class="o">=</span> <span class="p">{</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">,</span> <span class="nv">ExternalThingy</span><span class="p">},</span>
+    <span class="nv">Harness</span> <span class="o">=</span>
+        <span class="k">fun</span>
+            <span class="p">(</span><span class="nv">Check</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span>    <span class="o">-&gt;</span> <span class="nv">Check</span><span class="p">(</span><span class="nv">Args</span><span class="p">);</span>
+            <span class="p">(_,</span>     <span class="nv">Error</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Error</span>
+        <span class="k">end</span><span class="p">,</span>
+    <span class="k">case</span> <span class="nn">lists</span><span class="p">:</span><span class="nf">foldl</span><span class="p">(</span><span class="nv">Harness</span><span class="p">,</span> <span class="n">ok</span><span class="p">,</span> <span class="nv">Checks</span><span class="p">)</span> <span class="k">of</span>
+        <span class="n">ok</span>    <span class="o">-&gt;</span> <span class="nf">dispatch</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">);</span>
+        <span class="nv">Error</span> <span class="o">-&gt;</span> <span class="nv">Error</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This code requires declaring the functions one by one, ensuring the
+entire context is carried from function to function. Since there is no
+shared scope between functions, all functions must operate on all
+arguments.</p>
+
+<p>By comparison, the same code could be implemented with the new construct
+as:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pre_check</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">,</span> <span class="nv">ExternalThingy</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_request</span><span class="p">(</span><span class="nv">Context</span><span class="p">,</span> <span class="nv">User</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_permissions</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_dispatch_target</span><span class="p">(</span><span class="nv">ExternalThingy</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_condition</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">Context</span><span class="p">),</span>
+        <span class="nf">dispatch</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>And if there was a need for derived state between any two steps, it
+would be easy to weave it in:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">pre_check</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">,</span> <span class="nv">ExternalThingy</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_request</span><span class="p">(</span><span class="nv">Context</span><span class="p">,</span> <span class="nv">User</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_permissions</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_dispatch_target</span><span class="p">(</span><span class="nv">ExternalThingy</span><span class="p">),</span>
+        <span class="nv">DispatchData</span> <span class="o">&lt;-</span> <span class="nf">dispatch_target</span><span class="p">(</span><span class="nv">ExternalThingy</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">check_condition</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">Context</span><span class="p">),</span>
+        <span class="nf">dispatch</span><span class="p">(</span><span class="nv">Action</span><span class="p">,</span> <span class="nv">User</span><span class="p">,</span> <span class="nv">Context</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The list comprehension <em>hack</em>, by comparison, is a bit more rare. In
+fact, it is mostly theoretical. Some things that hint at how it could
+work can be found in <a href="https://github.com/erlang/otp/blob/869537a9bf799c8d12fc46c2b413e532d6e3b10c/lib/diameter/test/diameter_examples_SUITE.erl#L254-L266">Diameter test
+cases</a>
+or the <a href="https://github.com/ferd/rebar3_proper/blob/e7eb96498a9d31f41c919474ec6800df62e237e1/src/rebar3_proper_prv.erl#L298-L308">PropEr plugin for
+Rebar3</a>.</p>
+
+<p>Its overal form uses generators in list comprehensions to tunnel a happy
+path:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="nv">Res</span><span class="p">]</span> <span class="o">=</span>
+    <span class="p">[</span><span class="nf">f</span><span class="p">(</span><span class="nv">Z</span><span class="p">)</span> <span class="p">||</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">W</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="nf">b</span><span class="p">()],</span>
+             <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">X</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="nv">W</span><span class="p">)],</span>
+             <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Y</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="nf">d</span><span class="p">(</span><span class="nv">X</span><span class="p">)],</span>
+             <span class="nv">Z</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="nf">e</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]],</span>
+<span class="nv">Res</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>This form doesn’t see too much usage since it is fairly obtuse and I
+suspect most people have either been reasonable enough not to use it, or
+did not think about it. Obviously the new form would be cleaner:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">W</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">b</span><span class="p">(),</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">X</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="nv">W</span><span class="p">),</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Y</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">d</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span>
+    <span class="nv">Z</span> <span class="o">=</span> <span class="nf">e</span><span class="p">(</span><span class="nv">Y</span><span class="p">),</span>
+    <span class="nf">f</span><span class="p">(</span><span class="nv">Z</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>which on top of it, has the benefit of returning an error value if one
+is found.</p>
+
+<h2 id="better-separation-of-concerns">Better Separation of Concerns</h2>
+
+<p>This form is not necessarily obvious at a first glance. To better
+expose it, let’s take a look at some functions defined in the
+<a href="https://github.com/erlang/otp/blob/869537a9bf799c8d12fc46c2b413e532d6e3b10c/lib/sasl/src/release_handler.erl#L1894-L1923"><code class="language-plaintext highlighter-rouge">release_handler</code> module in
+OTP</a>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">write_releases_m</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">RelFile</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES"</span><span class="p">),</span>
+    <span class="nv">Backup</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.backup"</span><span class="p">),</span>
+    <span class="nv">Change</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">),</span>
+    <span class="nf">ensure_RELEASES_exists</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">),</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_copy_files</span><span class="p">,</span>
+                        <span class="p">[</span><span class="nv">RelFile</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">]])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_write_release</span><span class="p">,</span>
+                                <span class="p">[</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">])</span> <span class="k">of</span>
+                <span class="n">ok</span> <span class="o">-&gt;</span>
+                    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span>
+                                        <span class="p">[</span><span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">])</span> <span class="k">of</span>
+                        <span class="n">ok</span> <span class="o">-&gt;</span>
+                            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+                            <span class="n">ok</span><span class="p">;</span>
+                        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+                            <span class="nf">takewhile</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span>
+                                      <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">]),</span>
+                            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+                            <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">move_releases</span><span class="p">}})</span>
+                    <span class="k">end</span><span class="p">;</span>
+                <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+                    <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+                    <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">update_releases</span><span class="p">}})</span>
+            <span class="k">end</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">backup_releases</span><span class="p">}})</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>At a glance, it is very difficult to clean up this code: there are 3
+multi-node operations (backing up, updating, and moving release data),
+each of which relies on the previous one to succeed.</p>
+
+<p>You’ll also notice that each error requires special handling, reverting
+or removing specific operations on success or on failure. This is not a
+simple question of tunnelling values in and out of a narrow scope.</p>
+
+<p>Another thing to note is that this module, as a whole (and not just the
+snippet presented here) uses <code class="language-plaintext highlighter-rouge">throw</code> expressions to operate non-local
+return. The actual point of return handling these is spread through
+various locations in the file:
+<a href="https://github.com/erlang/otp/blob/869537a9bf799c8d12fc46c2b413e532d6e3b10c/lib/sasl/src/release_handler.erl#L381-L388"><code class="language-plaintext highlighter-rouge">create_RELEASES/4</code></a>,
+and
+<a href="https://github.com/erlang/otp/blob/869537a9bf799c8d12fc46c2b413e532d6e3b10c/lib/sasl/src/release_handler.erl#L1864-L1881"><code class="language-plaintext highlighter-rouge">write_releases_1/3</code></a>
+for example.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">case catch Exp of</code> form is used throughout the file because
+value-based error flow is painful in nested structures.</p>
+
+<p>So let’s take a look at how we could refactor this with the new
+construct:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">write_releases_m</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">RelFile</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES"</span><span class="p">),</span>
+    <span class="nv">Backup</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.backup"</span><span class="p">),</span>
+    <span class="nv">Change</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">),</span>
+    <span class="k">begin</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">backup_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span>
+                              <span class="nv">RelFile</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">update_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">&lt;-</span> <span class="nf">move_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">backup_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_copy_files</span><span class="p">,</span>
+                        <span class="p">[</span><span class="nv">RelFile</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">]])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">)</span>
+            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">backup_releases</span><span class="p">}}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">update_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_write_release</span><span class="p">,</span>
+                        <span class="p">[</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">update_releases</span><span class="p">}}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">move_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span> <span class="p">[</span><span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">takewhile</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">]),</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">move_releases</span><span class="p">}}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The only reasonable way to rewrite the code was to extract all three
+major multi-node operations into distinct functions.</p>
+
+<p>The improvements are:</p>
+
+<ul>
+  <li>The consequence of failing an operation is located near where the
+operation takes place</li>
+  <li>The functions have return values that Dialyzer can more easily
+typecheck</li>
+  <li>The functions are inherently more testable independently</li>
+  <li>Context can still be added and carried on the generalized workflow at
+the parent level</li>
+  <li>The chain of successful operations is very obvious and readable</li>
+  <li>Exceptions are no longer required to make the code work, but if we
+needed it, only one <code class="language-plaintext highlighter-rouge">throw()</code> would be needed in <code class="language-plaintext highlighter-rouge">write_release_m</code>,
+therefore separating the flow control details from specific function
+implementations.</li>
+</ul>
+
+<p>As a control experiment, let’s try reusing our shorter functions with
+the previous flow:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">%% Here is the same done through exceptions:
+</span><span class="nf">write_releases_m</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">RelFile</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES"</span><span class="p">),</span>
+    <span class="nv">Backup</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.backup"</span><span class="p">),</span>
+    <span class="nv">Change</span> <span class="o">=</span> <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">),</span>
+    <span class="k">try</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="nf">backup_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span>
+                             <span class="nv">RelFile</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="nf">update_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">),</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="nf">move_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span>
+    <span class="k">catch</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">backup_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_copy_files</span><span class="p">,</span>
+                        <span class="p">[</span><span class="nv">RelFile</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">]])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">)</span>
+            <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">backup_releases</span><span class="p">}})</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">update_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">do_write_release</span><span class="p">,</span>
+                        <span class="p">[</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"RELEASES.change"</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">update_releases</span><span class="p">}})</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">move_releases</span><span class="p">(</span><span class="nv">Dir</span><span class="p">,</span> <span class="nv">NewReleases</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nf">at_all_masters</span><span class="p">(</span><span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span> <span class="p">[</span><span class="nv">Change</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">])</span> <span class="k">of</span>
+        <span class="n">ok</span> <span class="o">-&gt;</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="n">ok</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">}}</span> <span class="o">-&gt;</span>
+            <span class="nf">takewhile</span><span class="p">(</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">Masters</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">rename</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">RelFile</span><span class="p">]),</span>
+            <span class="nf">remove_files</span><span class="p">(</span><span class="n">all</span><span class="p">,</span> <span class="p">[</span><span class="nv">Backup</span><span class="p">,</span> <span class="nv">Change</span><span class="p">],</span> <span class="nv">Masters</span><span class="p">),</span>
+            <span class="nf">throw</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Master</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="n">move_releases</span><span class="p">}})</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Very little changes in the three distributed functions. However, the weakness
+of this approach is that we have intimately tied implementation details of the
+small functions to their parent’s context.  This makes it hard to reason about
+these functions in isolation or to reuse them in a different context.
+Furthermore, the parent function may capture <code class="language-plaintext highlighter-rouge">throws</code> not intended for it.</p>
+
+<p>It is my opinion that using value-based flow control, through similar
+refactorings, yields safer and cleaner code, which also happens to have
+far more reduced levels of nesting. It should therefore be possible to
+express more complex sequences of operations without making them any
+harder to read, nor reason about in isolation.</p>
+
+<p>That is in part due to the nesting, but also because we take a more
+compositional approach, where there is no need to tie local functions’
+implementation details to the complexity of their overall pipeline and
+execution context.</p>
+
+<p>It is also the best way to structure code in order to handle all
+exceptions and to provide the context they need as close as possible to
+their source, and as far as possible from the integrated flow.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>This section will detail the decision-making behind this EEP, including:</p>
+
+<ul>
+  <li>Prior Art in Other Languages</li>
+  <li>Whether to Normalize on Wrappers</li>
+  <li>Adding the <code class="language-plaintext highlighter-rouge">else</code> Block</li>
+  <li>The choice of <code class="language-plaintext highlighter-rouge">begin ... end</code> as a construct and its scope</li>
+  <li>Why reuse the arrow operator</li>
+  <li>Other disregarded approaches</li>
+  <li>The choice of supported values</li>
+  <li>The choice of <code class="language-plaintext highlighter-rouge">{badunwrap, Val}</code> as a default exception</li>
+</ul>
+
+<p>There’s a lot of content to cover here.</p>
+
+<h2 id="prior-art-in-other-languages">Prior Art in Other Languages</h2>
+
+<p>Multiple languages have value-based exception handling, many of which
+have a strong functional slant.</p>
+
+<h3 id="haskell">Haskell</h3>
+
+<p>The most famous case is possibly Haskell with the <code class="language-plaintext highlighter-rouge">Maybe</code> monad, which
+uses either <code class="language-plaintext highlighter-rouge">Nothing</code> (meaning the computation returned nothing) or
+<code class="language-plaintext highlighter-rouge">Just x</code> (their type-based equivalent of <code class="language-plaintext highlighter-rouge">{ok, X}</code>). The union of both
+types is denoted <code class="language-plaintext highlighter-rouge">Maybe x</code>. The following examples are taken from
+<a href="https://en.wikibooks.org/wiki/Haskell/Understanding_monads/Maybe">Haskell/Understanding
+monads/Maybe</a>.</p>
+
+<p>Values for such errors are tagged in functions as follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">safeLog</span> <span class="p">::</span> <span class="p">(</span><span class="nv">Floating</span> <span class="n">a</span><span class="p">,</span> <span class="nv">Ord</span> <span class="n">a</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="nv">Maybe</span> <span class="n">a</span>
+<span class="n">safeLog</span> <span class="n">x</span>
+    <span class="p">|</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span>     <span class="o">=</span> <span class="nv">Just</span> <span class="p">(</span><span class="n">log</span> <span class="n">x</span><span class="p">)</span>
+    <span class="p">|</span> <span class="n">otherwise</span> <span class="o">=</span> <span class="nv">Nothing</span>
+</code></pre></div></div>
+
+<p>Using the type annotations directly, it is possible to extract values
+(if any) through pattern matching:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">zeroAsDefault</span> <span class="p">::</span> <span class="nv">Maybe</span> <span class="nv">Int</span> <span class="o">-&gt;</span> <span class="nv">Int</span>
+<span class="n">zeroAsDefault</span> <span class="n">mx</span> <span class="o">=</span> <span class="k">case</span> <span class="n">mx</span> <span class="k">of</span>
+    <span class="nv">Nothing</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+    <span class="nv">Just</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span>
+</code></pre></div></div>
+
+<p>One thing to note here is that as long as you are not able to find a
+value to substitute for <code class="language-plaintext highlighter-rouge">Nothing</code> or that you cannot take a different
+branch, you are forced to carry that uncertainty with you through all
+the types in the system.</p>
+
+<p>This is usually where Erlang stops. You have the same possibilities
+(albeit dynamically checked), along with the possibility of transforming
+invalid values into exceptions.</p>
+
+<p>Haskell, by comparison, offers monadic operations and its <em>do notation</em>
+to abstract over things:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">getTaxOwed</span> <span class="n">name</span> <span class="o">=</span> <span class="n">do</span>
+  <span class="n">number</span>       <span class="o">&lt;-</span> <span class="n">lookup</span> <span class="n">name</span> <span class="n">phonebook</span>
+  <span class="n">registration</span> <span class="o">&lt;-</span> <span class="n">lookup</span> <span class="n">number</span> <span class="n">governmentDatabase</span>
+  <span class="n">lookup</span> <span class="n">registration</span> <span class="n">taxDatabase</span>
+</code></pre></div></div>
+
+<p>In this snippet, even though the <code class="language-plaintext highlighter-rouge">lookup</code> function returns a <code class="language-plaintext highlighter-rouge">Maybe x</code>
+type, the do notation abstracts away the <code class="language-plaintext highlighter-rouge">Nothing</code> values, letting the
+programmer focus on the <code class="language-plaintext highlighter-rouge">x</code> part of <code class="language-plaintext highlighter-rouge">Just x</code>. Even though the code is
+written as if we can operate on discrete value, the function
+automatically re-wraps its result into <code class="language-plaintext highlighter-rouge">Just x</code> and any <code class="language-plaintext highlighter-rouge">Nothing</code> value
+just bypasses operations.</p>
+
+<p>As such, the developer is forced to acknowledge that the whole
+function’s flow is conditional to values being in place, but they can
+nevertheless write it mostly as if everything were discrete.</p>
+
+<h3 id="ocaml">OCaml</h3>
+
+<p>OCaml supports exceptions, with constructs such as <code class="language-plaintext highlighter-rouge">raise (Type
+"value")</code> to raise an exception, and <code class="language-plaintext highlighter-rouge">try ... with ...</code> to handle them.
+However, since exceptions wouldn’t be tracked by the type system,
+maintainers introduced a <code class="language-plaintext highlighter-rouge">Result</code> type.</p>
+
+<p>The type is defined as</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">type</span> <span class="p">(</span><span class="n">'a, 'b</span><span class="p">)</span> <span class="n">result</span> <span class="o">=</span>
+  <span class="p">|</span> <span class="nv">Ok</span> <span class="k">of</span> <span class="err">'</span><span class="n">a</span>
+  <span class="p">|</span> <span class="nv">Error</span> <span class="k">of</span> <span class="err">'</span><span class="n">b</span>
+</code></pre></div></div>
+
+<p>which is reminiscent of Erlang’s <code class="language-plaintext highlighter-rouge">{ok, A}</code> and <code class="language-plaintext highlighter-rouge">{error, B}</code>. OCaml users
+appear to mostly use pattern matching, combinator libraries, and monadic
+binding to deal with value-based error handling, something similar to
+Haskell’s usage.</p>
+
+<h3 id="rust">Rust</h3>
+
+<p>Rust defines two types of errors: unrecoverable ones (using <code class="language-plaintext highlighter-rouge">panic!</code>)
+and recoverable ones, using the <code class="language-plaintext highlighter-rouge">Result&lt;T, E&gt;</code> values. The latter is of
+interest to us, and defined as:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">enum</span> <span class="nv">Result</span><span class="o">&lt;</span><span class="nv">T</span><span class="p">,</span> <span class="nv">E</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nv">Ok</span><span class="p">(</span><span class="nv">T</span><span class="p">),</span>
+    <span class="nv">Err</span><span class="p">(</span><span class="nv">E</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Which would intuitively translate to Erlang terms <code class="language-plaintext highlighter-rouge">{ok, T}</code> and <code class="language-plaintext highlighter-rouge">{error,
+E}</code>. The simple way to handle these in Rust is through pattern matching:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">f</span> <span class="o">=</span> <span class="nv">File</span><span class="p">::</span><span class="nf">open</span><span class="p">(</span><span class="s">"eep.txt"</span><span class="p">);</span>
+<span class="n">match</span> <span class="n">f</span> <span class="p">{</span>
+    <span class="nv">Ok</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nf">do_something</span><span class="p">(</span><span class="n">file</span><span class="p">),</span>
+    <span class="nv">Err</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="n">panic</span><span class="o">!</span><span class="p">(</span><span class="s">"Error in file: {:?}"</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="p">},</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Specific error values have to be well-typed, and it seems that the Rust
+community is still debating implementation details about how to best get
+composability and annotations within a generic type.</p>
+
+<p>However, their workflow for handling these is well-defined already. This
+pattern matching form has been judged too cumbersome. To automatically
+panic on error values, the <code class="language-plaintext highlighter-rouge">.unwrap()</code> method is added:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">f</span> <span class="o">=</span> <span class="nv">File</span><span class="p">::</span><span class="nf">open</span><span class="p">(</span><span class="s">"eep.txt"</span><span class="p">).</span><span class="nf">unwrap</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>In Erlang, we could approximate this with:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">unwrap</span><span class="p">({</span><span class="n">ok</span><span class="p">,</span> <span class="nv">X</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">X</span><span class="p">;</span>
+<span class="nf">unwrap</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="nv">T</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nb">exit</span><span class="p">(</span><span class="nv">T</span><span class="p">).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">F</span> <span class="o">=</span> <span class="nf">unwrap</span><span class="p">(</span><span class="nn">file</span><span class="p">:</span><span class="nf">open</span><span class="p">(</span><span class="s">"eep.txt"</span><span class="p">,</span> <span class="nv">Opts</span><span class="p">)).</span>
+</code></pre></div></div>
+
+<p>Another construct exists to return errors to caller code more directly,
+without panics, with the <code class="language-plaintext highlighter-rouge">?</code> operator:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fn</span> <span class="nf">read_eep</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nv">Result</span><span class="o">&lt;</span><span class="nv">String</span><span class="p">,</span> <span class="nn">io</span><span class="p">::</span><span class="nv">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">mut</span> <span class="n">h</span> <span class="o">=</span> <span class="nv">File</span><span class="p">::</span><span class="nf">open</span><span class="p">(</span><span class="s">"eep.txt"</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="k">let</span> <span class="n">mut</span> <span class="n">s</span> <span class="o">=</span> <span class="nv">String</span><span class="p">::</span><span class="nf">new</span><span class="p">();</span>
+    <span class="n">h</span><span class="p">.</span><span class="nf">read_to_string</span><span class="p">(</span><span class="err">&amp;</span><span class="n">mut</span> <span class="n">s</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+    <span class="nv">Ok</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Any value <code class="language-plaintext highlighter-rouge">Ok(T)</code> encountering <code class="language-plaintext highlighter-rouge">?</code> is unwrapped. Any value <code class="language-plaintext highlighter-rouge">Err(E)</code>
+encountering <code class="language-plaintext highlighter-rouge">?</code> is returned to the caller as-is, as if a <code class="language-plaintext highlighter-rouge">match</code> with
+<code class="language-plaintext highlighter-rouge">return</code> had been used. This operator however requires that the
+function’s type signature use the <code class="language-plaintext highlighter-rouge">Result&lt;T, E&gt;</code> type as a return value.</p>
+
+<p>Prior to version 1.13, Rust used the <code class="language-plaintext highlighter-rouge">try!(Exp)</code> macro to the same
+effect, but found it too cumbersome. Compare:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="o">!</span><span class="p">(</span><span class="k">try</span><span class="o">!</span><span class="p">(</span><span class="k">try</span><span class="o">!</span><span class="p">(</span><span class="nf">foo</span><span class="p">()).</span><span class="nf">bar</span><span class="p">()).</span><span class="nf">baz</span><span class="p">())</span>
+<span class="nf">foo</span><span class="p">()</span><span class="o">?</span><span class="p">.</span><span class="nf">bar</span><span class="p">()</span><span class="o">?</span><span class="p">.</span><span class="nf">baz</span><span class="p">()</span><span class="o">?</span>
+</code></pre></div></div>
+
+<h3 id="swift">Swift</h3>
+
+<p>Swift supports exceptions, along with type annotations declaring that a
+function may raise exceptions, and <code class="language-plaintext highlighter-rouge">do ... catch</code> blocks.</p>
+
+<p>There is a special operator <code class="language-plaintext highlighter-rouge">try?</code> which catches any thrown exception
+and turns it into <code class="language-plaintext highlighter-rouge">nil</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">func</span> <span class="nf">someThrowingFunction</span><span class="p">()</span> <span class="n">throws</span> <span class="o">-&gt;</span> <span class="nv">Int</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="p">...</span>
+<span class="p">}</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="k">try</span><span class="o">?</span> <span class="nf">someThrowingFunction</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Here <code class="language-plaintext highlighter-rouge">x</code> can either have a value of <code class="language-plaintext highlighter-rouge">Int</code> or <code class="language-plaintext highlighter-rouge">nil</code>. The data flow is
+often simplified by using <code class="language-plaintext highlighter-rouge">let</code> assignments in a conditional expression:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">func</span> <span class="nf">fetchEep</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nv">Eep</span><span class="o">?</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="k">try</span><span class="o">?</span> <span class="nf">fetchEepFromDisk</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">x</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="k">try</span><span class="o">?</span> <span class="nf">fetchEepFromServer</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">x</span> <span class="p">}</span>
+    <span class="n">return</span> <span class="n">nil</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="go">Go</h3>
+
+<p>Go has some fairly anemic error handling. It has panics, and error
+values. Error values must be assigned (or explicitly ignored) but they
+can be left unchecked and cause all kinds of issues.</p>
+
+<p>Nevertheless, Go exposed <a href="https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md">plans for new error
+handling</a>
+in future versions, which can be interesting.</p>
+
+<p>Rather than changing semantics of their error handling, Go designers are
+mostly considering syntactic changes to reduce the cumbersome nature of
+their errors.</p>
+
+<p>Go programs typically handled errors as follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">hex</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="n">ioutil</span><span class="p">.</span><span class="nv">ReadAll</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="nv">Stdin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+                <span class="n">log</span><span class="p">.</span><span class="nv">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">data</span><span class="p">,</span> <span class="n">err</span> <span class="p">:</span><span class="o">=</span> <span class="nf">parseHexdump</span><span class="p">(</span><span class="nf">string</span><span class="p">(</span><span class="n">hex</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="n">nil</span> <span class="p">{</span>
+                <span class="n">log</span><span class="p">.</span><span class="nv">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">os</span><span class="p">.</span><span class="nv">Stdout</span><span class="p">.</span><span class="nv">Write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The new proposed mechanism looks as follows:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">handle</span> <span class="n">err</span> <span class="p">{</span>
+        <span class="n">log</span><span class="p">.</span><span class="nv">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">hex</span> <span class="p">:</span><span class="o">=</span> <span class="n">check</span> <span class="n">ioutil</span><span class="p">.</span><span class="nv">ReadAll</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="nv">Stdin</span><span class="p">)</span>
+    <span class="n">data</span> <span class="p">:</span><span class="o">=</span> <span class="n">check</span> <span class="nf">parseHexdump</span><span class="p">(</span><span class="nf">string</span><span class="p">(</span><span class="n">hex</span><span class="p">))</span>
+    <span class="n">os</span><span class="p">.</span><span class="nv">Stdout</span><span class="p">.</span><span class="nv">Write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">check</code> keyword asks to implicitly check whether the second return
+value <code class="language-plaintext highlighter-rouge">err</code> is equal to <code class="language-plaintext highlighter-rouge">nil</code> or not. If it is not equal to <code class="language-plaintext highlighter-rouge">nil</code>, the
+latest defined <code class="language-plaintext highlighter-rouge">handle</code> block is called. It can return the result out to
+exit the function, repair some values, or simply panic, to name a few
+options.</p>
+
+<h3 id="elixir">Elixir</h3>
+
+<p>Elixir has a slightly different semantic approach to error handling compared
+to Erlang. Exceptions are discouraged for control flow (while Erlang
+specifically uses <code class="language-plaintext highlighter-rouge">throw</code> for it), and the <code class="language-plaintext highlighter-rouge">with</code> macro is introduced:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">with</span> <span class="p">{:</span><span class="n">ok</span><span class="p">,</span> <span class="n">var</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">some_call</span><span class="p">(),</span>
+     <span class="p">{:</span><span class="n">error</span><span class="p">,</span> <span class="p">_}</span> <span class="o">&lt;-</span> <span class="nf">fail</span><span class="p">(),</span>
+     <span class="p">{:</span><span class="n">ok</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">parse_name</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+<span class="n">do</span>
+    <span class="nf">success</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+<span class="n">else</span>
+    <span class="p">{:</span><span class="n">error</span><span class="p">,</span> <span class="n">err</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="nf">handle</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="n">nil</span> <span class="o">-&gt;</span> <span class="p">{:</span><span class="n">error</span><span class="p">,</span> <span class="n">nil</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The macro allows a sequence of pattern matches, after which the ˋdo …ˋ
+block is called. If any of the pattern matches fails, the failing value
+gets re-matched in the optional ˋelse … end` section.</p>
+
+<p>This is the most general control flow in this document, being fully
+flexible with regards to which values it can handle. This was done in
+part because there is not a strong norm regarding error or valid values
+in either the Erlang nor Elixir APIs, at least compared to other
+languages here.</p>
+
+<p>This high level of flexibility has been criticized in some instances as
+being a bit confusing: it is possible for users to make error-only
+flows, success-only flows, mixed flows, and consequently the ˋelseˋ
+clause can become convoluted.</p>
+
+<p>The <a href="https://github.com/CrowdHailer/OK">OK library</a> was released to
+explicitly narrow the workflow to well-defined errors. It supports three forms,
+the first of which is the <code class="language-plaintext highlighter-rouge">for</code> block:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">OK</span><span class="p">.</span><span class="n">for</span> <span class="n">do</span>
+  <span class="n">user</span> <span class="o">&lt;-</span> <span class="nf">fetch_user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">cart</span> <span class="o">&lt;-</span> <span class="nf">fetch_cart</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">order</span> <span class="o">=</span> <span class="nf">checkout</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+  <span class="n">saved_order</span> <span class="o">&lt;-</span> <span class="nf">save_order</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+<span class="k">after</span>
+  <span class="n">saved_order</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It works by <em>only</em> matching on <code class="language-plaintext highlighter-rouge">{:ok, val}</code> to keep moving forwards when
+using the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator: the <code class="language-plaintext highlighter-rouge">fetch_user/1</code> function above must return
+<code class="language-plaintext highlighter-rouge">{:ok, user}</code> in order for the code to proceed. The <code class="language-plaintext highlighter-rouge">=</code> operator is
+allowed for pattern matches the same way it usually does within Elixir.</p>
+
+<p>Any return value that matches <code class="language-plaintext highlighter-rouge">{:error, t}</code> ends up returning directly
+out of the expression. The <code class="language-plaintext highlighter-rouge">after ... end</code> section takes the last value
+returned, and if it isn’t already in a tuple of the form <code class="language-plaintext highlighter-rouge">{:ok val}</code>, it
+wraps it as such.</p>
+
+<p>The second variant is the <code class="language-plaintext highlighter-rouge">try</code> block:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">OK</span><span class="p">.</span><span class="k">try</span> <span class="n">do</span>
+  <span class="n">user</span> <span class="o">&lt;-</span> <span class="nf">fetch_user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">cart</span> <span class="o">&lt;-</span> <span class="nf">fetch_cart</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">order</span> <span class="o">=</span> <span class="nf">checkout</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+  <span class="n">saved_order</span> <span class="o">&lt;-</span> <span class="nf">save_order</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+<span class="k">after</span>
+  <span class="n">saved_order</span>
+<span class="n">rescue</span>
+  <span class="p">:</span><span class="n">user_not_found</span> <span class="o">-&gt;</span> <span class="p">{:</span><span class="n">error</span><span class="p">,</span> <span class="n">missing_user</span><span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This variant will capture exceptions as well (in the <code class="language-plaintext highlighter-rouge">rescue</code> block),
+and will not re-wrap the final return value in the <code class="language-plaintext highlighter-rouge">after</code> section.</p>
+
+<p>The last variant for the library is the pipe:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">def</span> <span class="nf">get_employee_data</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="n">do</span>
+  <span class="p">{:</span><span class="n">ok</span><span class="p">,</span> <span class="n">file</span><span class="p">}</span>
+  <span class="err">~</span><span class="o">&gt;&gt;</span> <span class="nv">File</span><span class="p">.</span><span class="n">read</span>
+  <span class="err">~</span><span class="o">&gt;</span> <span class="nv">String</span><span class="p">.</span><span class="n">upcase</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The goal of this variant is to simply thread together operations that
+could result in either a success or error. The <code class="language-plaintext highlighter-rouge">~&gt;&gt;</code> operator matches
+and returns an <code class="language-plaintext highlighter-rouge">{:ok, term}</code> tuple, and the <code class="language-plaintext highlighter-rouge">~&gt;</code> operator wraps a value
+into an <code class="language-plaintext highlighter-rouge">{:ok, term}</code> tuple.</p>
+
+<h2 id="whether-to-normalize-on-wrappers">Whether to Normalize on Wrappers</h2>
+
+<p>In Erlang, <code class="language-plaintext highlighter-rouge">true</code> and <code class="language-plaintext highlighter-rouge">false</code> are regular atoms that only gained special
+status through usage in boolean expressions. It would be easy to think
+that more functions would return <code class="language-plaintext highlighter-rouge">yes</code> and <code class="language-plaintext highlighter-rouge">no</code> were it not from control
+flow constructs.</p>
+
+<p>Similarly, <code class="language-plaintext highlighter-rouge">undefined</code> has over years of use become a kind of default
+“not found” value. Values such as <code class="language-plaintext highlighter-rouge">nil</code>, <code class="language-plaintext highlighter-rouge">null</code>, <code class="language-plaintext highlighter-rouge">unknown</code>, <code class="language-plaintext highlighter-rouge">undef</code>,
+<code class="language-plaintext highlighter-rouge">false</code> and so on have seen some use, but a strong consistency in format
+has ended up aligning the community on one value.</p>
+
+<p>When it comes to return values for various functions, <code class="language-plaintext highlighter-rouge">{ok, Term}</code> is
+the most common one for positive results that need to communicate a
+value, <code class="language-plaintext highlighter-rouge">ok</code> for positive results with no other value than their own
+success, and <code class="language-plaintext highlighter-rouge">{error, Term}</code> is most often uses for errors. Pattern
+matching and assertions have enforced that it is easy to know whether a
+call worked or not by its own structure.</p>
+
+<p>However, many success values are still larger tuples: <code class="language-plaintext highlighter-rouge">{ok, Val,
+Warnings}</code>, <code class="language-plaintext highlighter-rouge">{ok, Code, Status, Headers, Body}</code>, and so on. Such
+variations are not problematic on their own, but it would likely not
+hurt too much either to use <code class="language-plaintext highlighter-rouge">{ok, {Val, Warnings}}</code> or <code class="language-plaintext highlighter-rouge">{ok, {Code,
+Status, Headers, Body}}</code>.</p>
+
+<p>While using more standard forms could lead to easier generalizations
+and abstractions that can be applied to community-wide code. By choosing
+specific formats for control flow on value-based error handling, we
+would explicitly encourage this form of standardization.</p>
+
+<p>That being said, the variety of formats existing and the low amount of strict
+values being used would mean that forcing normalization calls for a potential
+loss of flexibility in future language decisions. For example,
+<a href="https://github.com/erlang/eep/blob/master/eeps/eep-0054.md">EEP-54</a>—completed
+before final revisions of this RFC—tries to add new forms of context to error
+reports, and various libraries already rely on these richer patterns.</p>
+
+<p>It is therefore the opinion of the OTP technical board that we should <strong>not</strong>
+normalize error-return values. As such, an approach closer to Elixir’s <code class="language-plaintext highlighter-rouge">with</code>
+has been proposed, although this EEP’s approach is more general in terms of
+sequences of acceptable expressions and their composition.</p>
+
+<h2 id="adding-the-else-block">Adding the else Block</h2>
+
+<p>Avoiding normalization on error and good values introduces the need for the
+<code class="language-plaintext highlighter-rouge">else ... end</code> sub-block to prevent edge cases.</p>
+
+<p>Let’s look with the following type of expression as an explanation why:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}}</span> <span class="o">&lt;-</span> <span class="nf">id</span><span class="p">({</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}})</span>
+    <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>While this mechanism is fine to handle skipping pattern, it has some
+problematic weaknesses in the context of error handling.</p>
+
+<p>One example of this could be taken from the OTP pull request that adds
+new return value to packet reading based on inet options:
+<a href="https://github.com/erlang/otp/pull/1950">#1950</a>.</p>
+
+<p>This PR adds a possible value for packet reception to the prior form:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">PeerIP</span><span class="p">,</span> <span class="nv">PeerPort</span><span class="p">,</span> <span class="nv">Data</span><span class="p">}}</span>
+</code></pre></div></div>
+
+<p>To ask make it possible to alternatively get:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">PeerIP</span><span class="p">,</span> <span class="nv">PeerPort</span><span class="p">,</span> <span class="nv">AncData</span><span class="p">,</span> <span class="nv">Data</span><span class="p">}}</span>
+</code></pre></div></div>
+
+<p>Based on socket options set earlier. So let’s put it in context for the
+current proposal:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}}</span> <span class="o">&lt;-</span> <span class="nf">id</span><span class="p">({</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}}),</span>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">PeerIP</span><span class="p">,</span> <span class="nv">PeerPort</span><span class="p">,</span> <span class="nv">Data</span><span class="p">}}</span> <span class="o">&lt;-</span> <span class="nn">gen_udp</span><span class="p">:</span><span class="nf">recv</span><span class="p">(...),</span>
+    <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Since we force a return on any non-matching value, the whole expression, if
+the socket is misconfigured to return <code class="language-plaintext highlighter-rouge">AncData</code>, would return <code class="language-plaintext highlighter-rouge">{ok, {PeerIP,
+PeerPort, AncData, Data}}</code> on a failure to match.</p>
+
+<p>Basically, an unexpected but good result could be returned from a
+function using the <code class="language-plaintext highlighter-rouge">begin ... end</code> construct, which would look like a
+success while it was actually a complete failure to match and handle the
+information given. This is made even more ambiguous when data has the
+right shape and type, but a set of bound variables ultimately define
+whether the match succeeds or fails (in the case of a UDP socket,
+returning values that comes from the wrong peer, for example).</p>
+
+<p>In worst cases, It could let raw unformatted data exit a conditional
+pipeline with no way to detect it after the fact, particularly if later
+functions in <code class="language-plaintext highlighter-rouge">begin ... end</code> apply transformations to text, such as
+anonymizing or sanitizing data. This could be pretty unsafe
+and near impossible to debug well.</p>
+
+<p>Think for example of:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">spec</span> <span class="nf">fetch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nf">iodata</span><span class="p">()}</span> <span class="p">|</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}.</span>
+<span class="nf">fetch</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">B</span> <span class="o">=</span> <span class="o">&lt;&lt;</span><span class="p">_</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">f</span><span class="p">(),</span>
+        <span class="n">true</span> <span class="o">&lt;-</span> <span class="nf">validate</span><span class="p">(</span><span class="nv">B</span><span class="p">),</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nf">sanitize</span><span class="p">(</span><span class="nv">B</span><span class="p">)}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>If the value returned from <code class="language-plaintext highlighter-rouge">f()</code> turns out to be a list (say it’s a
+misconfigured socket using <code class="language-plaintext highlighter-rouge">list</code> instead of <code class="language-plaintext highlighter-rouge">binary</code> as an option), the
+expression will return early, the <code class="language-plaintext highlighter-rouge">fetch()</code> function will still return
+<code class="language-plaintext highlighter-rouge">{ok, iodata()}</code> but you couldn’t know as a caller whether it is the
+transformed data or non-matching content. It would not be obvious to
+most developers either that this could represent a major security risk
+by allowing unexpected data to be seen as clean data.</p>
+
+<p>This specific type of error is in fact possible in Elixir, but no such
+warning appears to have been circulating within its community so far.
+The issue is to be handled with an <code class="language-plaintext highlighter-rouge">else</code> block which this proposal
+reuses to clamp down on unexpected values:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">spec</span> <span class="nf">fetch</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nf">iodata</span><span class="p">()}</span> <span class="p">|</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}.</span>
+<span class="nf">fetch</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">begin</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">B</span> <span class="o">=</span> <span class="o">&lt;&lt;</span><span class="p">_</span><span class="o">/</span><span class="n">binary</span><span class="o">&gt;&gt;</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nf">f</span><span class="p">(),</span>
+        <span class="n">true</span> <span class="o">&lt;-</span> <span class="nf">validate</span><span class="p">(</span><span class="nv">B</span><span class="p">),</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nf">sanitize</span><span class="p">(</span><span class="nv">B</span><span class="p">)}</span>
+    <span class="n">else</span>
+        <span class="n">false</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">invalid_data</span><span class="p">};</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">R</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">R</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Here misconfigured sockets won’t result in unchecked data passing trough
+your app; any invalid use case is captured, and if the value for <code class="language-plaintext highlighter-rouge">B</code> turns
+out to be a list, an <code class="language-plaintext highlighter-rouge">else_clause</code> error is raised with the bad value.</p>
+
+<p>Unless the clause is mandatory (it is not in Elixir and we do not plan it here
+either for compatibility reasons with existing <code class="language-plaintext highlighter-rouge">begin ... end</code> expressions),
+this level of additional matching is purely optional; the developer has no
+obvious incentive to go and handle these errors, and if they do, the exception
+raised will be through a missing clause in the <code class="language-plaintext highlighter-rouge">else</code> section, which will
+obscure its origin and line number.</p>
+
+<p>We will therefore have to rely on education and documentation (along with
+type analysis) to prevent such issues from arising in the future.</p>
+
+<p>These problems would <em>not</em> exist with normalized error and return values as those used in statically-typed languages, but since we do not intend to normalize values, the <code class="language-plaintext highlighter-rouge">else</code> block is a necessary workaround.</p>
+
+<h2 id="choosing-begin--end-expressions">Choosing <code class="language-plaintext highlighter-rouge">begin ... end</code> Expressions</h2>
+
+<p>Abstractions over error flow requires to define a scope limiting the
+way flow is controlled. Before choosing the <code class="language-plaintext highlighter-rouge">begin ... end</code> expression,
+the following items needed consideration:</p>
+
+<ol>
+  <li>what is the scope we need to cover</li>
+  <li>what is the format of the structure to use</li>
+  <li>why ending up with <code class="language-plaintext highlighter-rouge">begin ... end</code></li>
+  <li>Why choose the <code class="language-plaintext highlighter-rouge">else</code> keyword</li>
+</ol>
+
+<h3 id="scoping-limits">Scoping Limits</h3>
+
+<p>In the languages mentioned earlier, two big error handling categories
+seem to emerge.</p>
+
+<p>The first group of language seems to track their error handling at the
+function level. For example, Go uses <code class="language-plaintext highlighter-rouge">return</code> to return early from the
+current function.  Swift and Rust also scope their error handling
+abstractions to the current function, but they also make use of their
+type signatures to keep information about the control flow
+transformations taking place. Rust uses the <code class="language-plaintext highlighter-rouge">Result&lt;T, E&gt;</code> type
+signature to define what operations are valid, and Swift asks of
+developers that they either handle the error locally, or annotate the
+function with <code class="language-plaintext highlighter-rouge">throws</code> to make things explicit.</p>
+
+<p>On the other hand, Haskell’s do notation is restricted to specific
+expressions, and so are all of Elixir’s mechanisms.</p>
+
+<p>Erlang, Haskell, and Elixir all primarily use recursion as an iteration
+mechanism, and (outside of Haskell’s monadic constructs) do not support
+<code class="language-plaintext highlighter-rouge">return</code> control flow; it is conceptually more difficult for a <code class="language-plaintext highlighter-rouge">return</code>
+(or <code class="language-plaintext highlighter-rouge">break</code>) to be useful when iteration requires recursion:
+“returning” by exiting the current flow may not bail you out of what the
+programmer might consider a loop, for example.</p>
+
+<p>Instead, Erlang would use <code class="language-plaintext highlighter-rouge">throw()</code> exceptions as a control flow
+mechanism for non-local return, along with a <code class="language-plaintext highlighter-rouge">catch</code> or a <code class="language-plaintext highlighter-rouge">try ...
+catch</code>. Picking a value-based error handling construct that acts at the
+function level would not necessarily be very interesting since almost
+any recursive procedure would still require using exceptions.</p>
+
+<p>As such, it feels simpler to use a self-contained construct built to
+specifically focus on sequences of operations that contain value-based
+errors.</p>
+
+<h3 id="format-of-structure">Format of Structure</h3>
+
+<p>Prior attempts at abstracting value-based error handling in Erlang
+overloaded special constructs with parse transforms in order to provide
+specific workflows.</p>
+
+<p>For example, the <a href="https://github.com/ferd/fancyflow"><code class="language-plaintext highlighter-rouge">fancyflow</code></a>
+library tried to abstract the following code:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">sans_maybe</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">get_cwd</span><span class="p">()</span> <span class="k">of</span>
+        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Dir</span><span class="p">}</span> <span class="o">-&gt;</span>
+            <span class="k">case</span>
+                <span class="nn">file</span><span class="p">:</span><span class="nf">read_file</span><span class="p">(</span>
+                  <span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">([</span><span class="nv">Dir</span><span class="p">,</span> <span class="s">"demo"</span><span class="p">,</span> <span class="s">"data.txt"</span><span class="p">]))</span>
+            <span class="k">of</span>
+                <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Bin</span><span class="p">}</span> <span class="o">-&gt;</span>
+                    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nb">byte_size</span><span class="p">(</span><span class="nv">Bin</span><span class="p">),</span> <span class="nv">Bin</span><span class="p">}};</span>
+                <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+                    <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+            <span class="k">end</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span> <span class="o">-&gt;</span>
+            <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>as:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">spec</span> <span class="nf">maybe</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nf">non_neg_integer</span><span class="p">()}</span> <span class="p">|</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nf">term</span><span class="p">()}.</span>
+<span class="nf">maybe</span><span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="p">[</span><span class="n">maybe</span><span class="p">](</span><span class="n">undefined</span><span class="p">,</span>
+            <span class="nn">file</span><span class="p">:</span><span class="nf">get_cwd</span><span class="p">(),</span>
+            <span class="nn">file</span><span class="p">:</span><span class="nf">read_file</span><span class="p">(</span><span class="nn">filename</span><span class="p">:</span><span class="nf">join</span><span class="p">([_,</span> <span class="s">"demo"</span><span class="p">,</span> <span class="s">"data.txt"</span><span class="p">])),</span>
+            <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nb">byte_size</span><span class="p">(_),</span> <span class="p">_}}).</span>
+</code></pre></div></div>
+
+<p>And Erlando would replace:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">write_file</span><span class="p">(</span><span class="nv">Path</span><span class="p">,</span> <span class="nv">Data</span><span class="p">,</span> <span class="nv">Modes</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Modes1</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="n">write</span> <span class="p">|</span> <span class="p">(</span><span class="nv">Modes</span> <span class="o">--</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="n">write</span><span class="p">])],</span>
+    <span class="k">case</span> <span class="nf">make_binary</span><span class="p">(</span><span class="nv">Data</span><span class="p">)</span> <span class="k">of</span>
+        <span class="nv">Bin</span> <span class="k">when</span> <span class="nb">is_binary</span><span class="p">(</span><span class="nv">Bin</span><span class="p">)</span> <span class="o">-&gt;</span>
+            <span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">open</span><span class="p">(</span><span class="nv">Path</span><span class="p">,</span> <span class="nv">Modes1</span><span class="p">)</span> <span class="k">of</span>
+                <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Hdl</span><span class="p">}</span> <span class="o">-&gt;</span>
+                    <span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">write</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">,</span> <span class="nv">Bin</span><span class="p">)</span> <span class="k">of</span>
+                        <span class="n">ok</span> <span class="o">-&gt;</span>
+                            <span class="k">case</span> <span class="nn">file</span><span class="p">:</span><span class="nf">sync</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">)</span> <span class="k">of</span>
+                                <span class="n">ok</span> <span class="o">-&gt;</span>
+                                    <span class="nn">file</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">);</span>
+                                <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nv">E</span> <span class="o">-&gt;</span>
+                                    <span class="nn">file</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">),</span>
+                                    <span class="nv">E</span>
+                            <span class="k">end</span><span class="p">;</span>
+                        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nv">E</span> <span class="o">-&gt;</span>
+                            <span class="nn">file</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">),</span>
+                            <span class="nv">E</span>
+                    <span class="k">end</span><span class="p">;</span>
+                <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nv">E</span> <span class="o">-&gt;</span> <span class="nv">E</span>
+            <span class="k">end</span><span class="p">;</span>
+        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nv">E</span> <span class="o">-&gt;</span> <span class="nv">E</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>With monadic constructs in list comprehensions:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">write_file</span><span class="p">(</span><span class="nv">Path</span><span class="p">,</span> <span class="nv">Data</span><span class="p">,</span> <span class="nv">Modes</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Modes1</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="n">write</span> <span class="p">|</span> <span class="p">(</span><span class="nv">Modes</span> <span class="o">--</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="n">write</span><span class="p">])],</span>
+    <span class="nf">do</span><span class="p">([</span><span class="n">error_m</span> <span class="p">||</span>
+        <span class="nv">Bin</span> <span class="o">&lt;-</span> <span class="nf">make_binary</span><span class="p">(</span><span class="nv">Data</span><span class="p">),</span>
+        <span class="nv">Hdl</span> <span class="o">&lt;-</span> <span class="nn">file</span><span class="p">:</span><span class="nf">open</span><span class="p">(</span><span class="nv">Path</span><span class="p">,</span> <span class="nv">Modes1</span><span class="p">),</span>
+        <span class="nv">Result</span> <span class="o">&lt;-</span> <span class="nf">return</span><span class="p">(</span><span class="nf">do</span><span class="p">([</span><span class="n">error_m</span> <span class="p">||</span>
+                             <span class="nn">file</span><span class="p">:</span><span class="nf">write</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">,</span> <span class="nv">Bin</span><span class="p">),</span>
+                             <span class="nn">file</span><span class="p">:</span><span class="nf">sync</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">)])),</span>
+        <span class="nn">file</span><span class="p">:</span><span class="nf">close</span><span class="p">(</span><span class="nv">Hdl</span><span class="p">),</span>
+        <span class="nv">Result</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<p>Those cases specifically aimed for a way to write sequences of
+operations where pre-defined semantics are bound by a special context,
+but are limited to overloading constructs rather than introducing new
+ones.</p>
+
+<p>By comparison, most of Erlang’s control flow expressions follow similar
+structures. See the following most common ones:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="p">...</span> <span class="k">of</span>
+    <span class="nv">Pattern</span> <span class="p">[</span><span class="k">when</span> <span class="nv">Guard</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span>
+   <span class="nv">Guard</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">receive</span>
+    <span class="nv">Pattern</span> <span class="p">[</span><span class="k">when</span> <span class="nv">Guard</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">after</span>                                               <span class="c">% optional
+</span>    <span class="nv">IntegerExp</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span>
+    <span class="nv">Expressions</span>
+<span class="k">of</span>                                                  <span class="c">% optional
+</span>    <span class="nv">Pattern</span> <span class="p">[</span><span class="k">when</span> <span class="nv">Guard</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">catch</span>                                               <span class="c">% optional
+</span>    <span class="nv">ExceptionPattern</span> <span class="p">[</span><span class="k">when</span> <span class="nv">Guard</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">after</span>                                               <span class="c">% optional
+</span>    <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It therefore logically follows that if we were to add a new construct,
+it should be of the form</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">keyword</span><span class="o">&gt;</span>
+    <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The questions remaining are: which keyword to choose, and which clauses
+to support.</p>
+
+<h3 id="choosing-begin--end">Choosing <code class="language-plaintext highlighter-rouge">begin ... end</code></h3>
+
+<p>Initially, a format similar to Elixir’s <code class="language-plaintext highlighter-rouge">with</code> expression was being
+considered:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="n">keyword</span><span class="o">&gt;</span>
+    <span class="nv">Expressions</span> <span class="p">|</span> <span class="nv">UnwrapExpressions</span>
+<span class="k">of</span>                                              <span class="c">% optional
+</span>    <span class="nv">Pattern</span> <span class="p">[</span><span class="k">when</span> <span class="nv">Guard</span><span class="p">]</span> <span class="o">-&gt;</span> <span class="nv">Expressions</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With this construct, the basic <code class="language-plaintext highlighter-rouge">&lt;keyword&gt; ... end</code> form would follow the
+currently proposed semantics, but the <code class="language-plaintext highlighter-rouge">of ...</code> section would allow
+pattern matching on any return value from the expression, whether
+<code class="language-plaintext highlighter-rouge">{error, Reason}</code> or any non-exception value returned by the last
+expression in the main section.</p>
+
+<p>This form would be in line with what <code class="language-plaintext highlighter-rouge">try ... of ... catch ... end</code>
+allows: once the main section is covered, more work can be done within
+the same construct.</p>
+
+<p>However, <code class="language-plaintext highlighter-rouge">try ... of ... catch ... end</code> has a specific reason for
+introducing the patterns and guards: protected code impacting tail
+recursion.</p>
+
+<p>In a loop such as:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">map_nocrash</span><span class="p">(_,</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="p">[];</span>
+<span class="nf">map_nocrash</span><span class="p">(</span><span class="nv">F</span><span class="p">,</span> <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">])</span> <span class="o">-&gt;</span>
+    <span class="k">try</span>
+        <span class="nv">F</span><span class="p">(</span><span class="nv">H</span><span class="p">)</span>
+    <span class="k">of</span>
+        <span class="nv">Val</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nv">Val</span> <span class="p">|</span> <span class="nf">map_nocrash</span><span class="p">(</span><span class="nv">F</span><span class="p">,</span> <span class="nv">T</span><span class="p">)]</span>
+    <span class="k">catch</span>
+        <span class="p">_:_</span> <span class="o">-&gt;</span> <span class="nf">map_nocrash</span><span class="p">(</span><span class="nv">F</span><span class="p">,</span> <span class="nv">T</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">of</code> section allows to continue doing work in the case no exception
+has happened, <em>without</em> having to protect more than the current scope of
+the function, nor preventing tail-recursion by forcing a presence of
+each iteration on the stack.</p>
+
+<p>No such concerns exist for value-based error handling, and while the
+ <code class="language-plaintext highlighter-rouge">of ... end</code> section might be convenient at times, it is strictly not
+necessary for the construct to be useful.</p>
+
+<p>What was left was to choose a name. Initially, the <code class="language-plaintext highlighter-rouge">&lt;keyword&gt;</code> value
+chosen was <code class="language-plaintext highlighter-rouge">maybe</code>, based on the Maybe monad. The problem is that
+introducing any new keyword carries severe risks to backwards
+compatibility.</p>
+
+<p>For example, all of the following words were considered:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=======</span> <span class="o">=================</span> <span class="o">=========================================</span>
+<span class="nv">Keyword</span> <span class="nv">Times</span> <span class="n">used</span> <span class="n">in</span> <span class="nv">OTP</span> <span class="nv">Rationale</span>
+         <span class="n">as</span> <span class="n">a</span> <span class="n">function</span>
+<span class="o">=======</span> <span class="o">=================</span> <span class="o">=========================================</span>
+<span class="n">maybe</span>   <span class="mi">0</span>                 <span class="n">can</span> <span class="n">clash</span> <span class="n">with</span> <span class="n">existing</span> <span class="n">used</span> <span class="n">words</span><span class="p">,</span>
+                           <span class="n">otherwise</span> <span class="n">respects</span> <span class="n">the</span> <span class="n">spirit</span>
+<span class="n">option</span>  <span class="mi">88</span>                <span class="n">definitely</span> <span class="n">clashes</span> <span class="n">with</span> <span class="n">existing</span> <span class="n">code</span>
+<span class="n">opt</span>     <span class="mi">68</span>                <span class="n">definitely</span> <span class="n">clashes</span> <span class="n">with</span> <span class="n">existing</span> <span class="n">code</span>
+<span class="n">check</span>   <span class="mi">49</span>                <span class="n">definitely</span> <span class="n">clashes</span> <span class="n">with</span> <span class="n">existing</span> <span class="n">code</span>
+<span class="k">let</span>     <span class="mi">0</span>                 <span class="n">word</span> <span class="n">is</span> <span class="n">already</span> <span class="n">reserved</span> <span class="ow">and</span> <span class="n">free</span><span class="p">,</span> <span class="n">but</span>
+                           <span class="n">makes</span> <span class="n">no</span> <span class="n">sense</span> <span class="n">in</span> <span class="n">context</span>
+<span class="k">cond</span>    <span class="mi">0</span>                 <span class="n">word</span> <span class="n">is</span> <span class="n">already</span> <span class="n">reserved</span> <span class="ow">and</span> <span class="n">free</span><span class="p">,</span> <span class="n">may</span>
+                           <span class="n">make</span> <span class="n">sense</span><span class="p">,</span> <span class="n">but</span> <span class="n">would</span> <span class="n">prevent</span> <span class="n">the</span>
+                           <span class="n">addition</span> <span class="k">of</span> <span class="n">a</span> <span class="n">conditional</span> <span class="n">expression</span>
+<span class="n">given</span>   <span class="mi">0</span>                 <span class="n">could</span> <span class="n">work</span><span class="p">,</span> <span class="n">kind</span> <span class="k">of</span> <span class="n">respects</span> <span class="n">the</span> <span class="n">context</span>
+<span class="k">when</span>    <span class="mi">0</span>                 <span class="n">reserved</span> <span class="n">for</span> <span class="n">guards</span><span class="p">,</span> <span class="n">could</span> <span class="n">hijack</span> <span class="n">in</span> <span class="n">new</span>
+                          <span class="n">context</span> <span class="n">but</span> <span class="n">may</span> <span class="n">be</span> <span class="n">confusing</span>
+<span class="k">begin</span>   <span class="mi">0</span>                 <span class="n">carries</span> <span class="n">no</span> <span class="n">conditional</span> <span class="n">meaning</span><span class="p">,</span> <span class="n">mostly</span>
+                          <span class="n">free</span> <span class="n">for</span> <span class="n">overrides</span>
+</code></pre></div></div>
+
+<p>Initially, this proposal expected to use the <code class="language-plaintext highlighter-rouge">maybe</code> keyword:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">maybe</span>
+    <span class="nv">Pattern</span> <span class="o">&lt;</span><span class="n">op</span><span class="o">&gt;</span> <span class="nv">Exp</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="k">of</span>
+    <span class="nv">Pattern</span> <span class="o">-&gt;</span> <span class="nv">Exp</span>  <span class="c">% optional
+</span><span class="k">end</span>
+</code></pre></div></div>
+
+<p>but for the reasons mentioned in the previous section, the <code class="language-plaintext highlighter-rouge">of ...</code>
+section became non-essential.</p>
+
+<p>Then, with the strong requirements for backwards compatibility making it
+difficult to introduce new keywords, along with the possibility to reuse
+<code class="language-plaintext highlighter-rouge">begin</code> without changing any of its current behavior, this form became the
+most interesting one.</p>
+
+<p>The term <code class="language-plaintext highlighter-rouge">begin</code> is also reminiscent of transactions and abortive
+contexts, which means that although not an ideal fit for value-based
+error flow, it is also not entirely outlandish and could accept the new
+added optional semantics without being too out of place.</p>
+
+<h3 id="why-choose-the-else-keyword">Why Choose the <code class="language-plaintext highlighter-rouge">else</code> keyword</h3>
+
+<p>The first step here was looking at all the existing alternative reserved
+keywords: <code class="language-plaintext highlighter-rouge">of</code>, <code class="language-plaintext highlighter-rouge">when</code>, <code class="language-plaintext highlighter-rouge">cond</code>, <code class="language-plaintext highlighter-rouge">catch</code>, <code class="language-plaintext highlighter-rouge">after</code>.</p>
+
+<p>None of these actually conveys the sense of requiring an alternative clause to
+the construct, and so we require adding a new one. The <code class="language-plaintext highlighter-rouge">else</code> keyword is
+tempting if only because it opens the door to introducing it as a reserved word
+in <code class="language-plaintext highlighter-rouge">if</code> expressions at a later date.</p>
+
+<p>A quick look at the OTP code base to be sure seems to return no <code class="language-plaintext highlighter-rouge">else()</code>
+function and should therefore be relatively safe to use in general.</p>
+
+<h2 id="reusing-an-infix-operator">Reusing An Infix Operator</h2>
+
+<p>In order to form <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code>, there is a need for a mechanism to
+introduce pattern matching with distinct semantics from regular pattern
+matching.</p>
+
+<p>A naive parse transform approach with fake function calls would be the
+most basic way to go:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nf">match_or_return</span><span class="p">(</span><span class="nv">Pattern</span><span class="p">,</span> <span class="nv">Exp</span><span class="p">),</span>
+    <span class="c">% variables bound in Pattern are available in scope
+</span>    <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>However, this would introduce pattern matches in non-left-hand-side
+positions and make nesting really weird to deal with without exposing
+parse transform details and knowing how the code is translated.</p>
+
+<p>A prefix keyword such <code class="language-plaintext highlighter-rouge">let &lt;Pattern&gt; = &lt;Exp&gt;</code> could also be used.
+Such keywords unfortunately suffer the same issues as <code class="language-plaintext highlighter-rouge">maybe</code> would
+have, and <code class="language-plaintext highlighter-rouge">let</code> typically has different implications.</p>
+
+<p>An infix operator seems like a good fit since pattern matching already
+uses them in multiple forms:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">=</code> is used for pattern matches. Overloading it in error flow would
+prevent regular matching from being used</li>
+  <li><code class="language-plaintext highlighter-rouge">:=</code> is used for maps; using it could work, but would certainly be
+confusing when handling nested maps in a pattern</li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;-</code> could make sense. It is already restricted in scope to list and
+binary comprehensions and would therefore not clash nor be confused.
+The existing semantics of the operator imply a literal
+pattern match working like a filter, which is what we are looking for.</li>
+  <li><code class="language-plaintext highlighter-rouge">&lt;=</code> same as <code class="language-plaintext highlighter-rouge">&lt;-</code> but for binary generators</li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">&lt;-</code> operator makes the most sense and shouldn’t be confusing for
+anyone.</p>
+
+<p>For completeness’s sake, I also checked for alternative operators
+in a prior version of this EEP that introduced prescriptive values
+for <code class="language-plaintext highlighter-rouge">{ok, T} | {error, R}</code>, which had distinct semantics:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=======</span>  <span class="o">===========================================================</span>
+<span class="nv">Operator</span> <span class="nv">Description</span>
+<span class="o">=======</span>  <span class="o">===========================================================</span>
+<span class="err">#</span><span class="o">=</span>       <span class="n">no</span> <span class="n">clash</span> <span class="n">with</span> <span class="n">other</span> <span class="nf">syntax</span> <span class="p">(</span><span class="n">maps</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">integers</span><span class="p">),</span> <span class="n">no</span>
+         <span class="n">clash</span> <span class="n">with</span> <span class="n">abstract</span> <span class="n">patterns</span> <span class="nv">EEP</span> <span class="n">either</span><span class="p">.</span>
+<span class="o">!=</span>       <span class="nv">No</span> <span class="n">clash</span> <span class="n">with</span> <span class="n">message</span> <span class="n">passing</span><span class="p">,</span> <span class="n">but</span> <span class="n">is</span> <span class="n">sure</span> <span class="n">to</span> <span class="n">annone</span> <span class="n">used</span>
+         <span class="n">to</span> <span class="nv">C</span><span class="o">-</span><span class="n">style</span> <span class="n">inequality</span> <span class="n">checks</span>
+<span class="o">&lt;</span><span class="err">~</span>       <span class="nv">Works</span> <span class="n">with</span> <span class="n">no</span> <span class="n">known</span> <span class="n">conflict</span><span class="p">;</span> <span class="n">shouldn't clash with ROK's</span>
+         <span class="n">frame</span> <span class="nf">proposals</span> <span class="p">(</span><span class="n">uses</span> <span class="n">infix</span> <span class="err">~</span> <span class="ow">and</span> <span class="o">&lt;</span> <span class="o">&gt;</span> <span class="n">as</span> <span class="n">delimiters</span><span class="p">).</span>
+<span class="o">&lt;</span><span class="p">|</span>       <span class="n">reverse</span> <span class="n">pipe</span> <span class="n">operator</span><span class="p">.</span> <span class="nv">No</span> <span class="n">obvious</span> <span class="n">clash</span> <span class="n">either</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">&lt;-</code> operator from list comprehensions is the most adequate
+option, both in terms of simplicity and cognitive costs.</p>
+
+<h3 id="operator-priority">Operator Priority</h3>
+
+<p>Within the expected usage of the unwrap expressions, the <code class="language-plaintext highlighter-rouge">&lt;~</code> operator
+needs to have a precedence rule such that:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">X</span> <span class="o">=</span> <span class="p">{</span><span class="nv">Y</span><span class="p">,</span><span class="nv">X</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="o">&lt;</span><span class="nv">Exp</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>Is considered a valid pattern match operation with <code class="language-plaintext highlighter-rouge">X = {Y,X}</code> being the
+whole left-hand-side pattern, such that operation priorities are:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lhs</span> <span class="o">&lt;-</span> <span class="n">rhs</span>
+</code></pre></div></div>
+
+<p>Instead of</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lhs</span> <span class="o">=</span> <span class="n">rhs</span> <span class="o">&lt;-</span> <span class="o">&lt;</span><span class="p">...</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>In all other regards, the precedence rules should be the same as <code class="language-plaintext highlighter-rouge">=</code> in
+order to provide the most unsurprising experience possible.</p>
+
+<h2 id="other-disregarded-approaches-and-variations">Other Disregarded Approaches and Variations</h2>
+
+<p>Other approaches were considered in making this proposal, and ultimately
+disregarded.</p>
+
+<h3 id="begin--end-with-prescriptive-error-values">Begin … end with prescriptive error values</h3>
+
+<p>An earlier version of this document simply used:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">begin</span>
+    <span class="nv">Foo</span> <span class="o">=</span> <span class="nf">bar</span><span class="p">(),</span>
+    <span class="nv">X</span> <span class="o">&lt;</span><span class="err">~</span> <span class="nf">id</span><span class="p">({</span><span class="n">ok</span><span class="p">,</span> <span class="mi">5</span><span class="p">}),</span>
+    <span class="p">[</span><span class="nv">H</span><span class="p">|</span><span class="nv">T</span><span class="p">]</span> <span class="o">&lt;</span><span class="err">~</span> <span class="nf">id</span><span class="p">({</span><span class="n">ok</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]}),</span>
+    <span class="p">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Which implicitly unpacked <code class="language-plaintext highlighter-rouge">{ok, T} = f()</code> by calling <code class="language-plaintext highlighter-rouge">T &lt;~ f()</code>, and forced
+all acceptable non-matching values to be of the form <code class="language-plaintext highlighter-rouge">{error, T}.</code></p>
+
+<p>To make the form useful to most existing code, it also required some magic
+everyone (myself included) didn’t very much like, for which <code class="language-plaintext highlighter-rouge">_ &lt;~ f()</code> would
+implicitly succeed if the return value for <code class="language-plaintext highlighter-rouge">f()</code> was <code class="language-plaintext highlighter-rouge">ok</code>.</p>
+
+<p>This was judged to be too magical, and not necessarily a ton of existing
+Erlang code would have benefited from the form since <code class="language-plaintext highlighter-rouge">ok</code> is often returned
+for successful functions without an extra value. A stronger prescriptiveness
+of the form <code class="language-plaintext highlighter-rouge">{ok, undefined}</code> (to replicate Rust’s <code class="language-plaintext highlighter-rouge">Ok(())</code>) would have
+been required to avoid the magic, and would have felt very unidiomatic.</p>
+
+<h3 id="elixir-like-patterns-in-with">Elixir-Like Patterns in <code class="language-plaintext highlighter-rouge">with</code></h3>
+
+<p>The Elixir approach is fairly comprehensive, and rather powerful. Rather
+than handling success or errors, it generalizes over pattern matching as
+a whole, as we do here.</p>
+
+<p>The one difference is that Elixir’s <code class="language-plaintext highlighter-rouge">with</code> expression forces all
+conditionals to happen first, with a <code class="language-plaintext highlighter-rouge">do</code> block for the free-form
+expressions that follow:</p>
+
+<p>with dob &lt;- parse_dob(params[“dob”]),</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">name</span> <span class="o">&lt;-</span> <span class="nf">parse_name</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">"name"</span><span class="p">])</span>
+<span class="n">do</span>
+  <span class="c">%User{dob: dob, name: name}
+</span><span class="n">else</span>
+  <span class="n">err</span> <span class="o">-&gt;</span> <span class="n">err</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The Erlang form introduced in this document is more general since it
+allows mixing <code class="language-plaintext highlighter-rouge">MatchOrReturnExprs</code> and regular expressions throughout,
+without the need for a general <code class="language-plaintext highlighter-rouge">do</code> block.</p>
+
+<p>The Erlang form does imply a likely more complex set of rewriting rules when
+translating from the AST form to Core Erlang. <a href="https://gist.github.com/ferd/2f1134fd88615354fbf89c068216b259">It should be possible to purely
+rewrite in existing Core Erlang terms although the end result may not look like
+the original code at
+all</a></p>
+
+<h3 id="cond-and-cond-let"><code class="language-plaintext highlighter-rouge">cond</code> and <code class="language-plaintext highlighter-rouge">cond let</code></h3>
+
+<p>Anthony Ramine recommended looking into reusing the already reserved
+<code class="language-plaintext highlighter-rouge">cond</code> and <code class="language-plaintext highlighter-rouge">let</code> keywords. He mentioned Rust planning something based on
+these and how it could be ported to Erlang based on his prior work on
+supporting the <code class="language-plaintext highlighter-rouge">cond</code> construct within the language.</p>
+
+<p>The proposed mechanism would look like:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">cond</span>
+    <span class="nv">X</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="o">-&gt;</span> <span class="c">% regular guard
+</span>        <span class="nv">Exp</span><span class="p">;</span>
+    <span class="nf">f</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">18</span> <span class="o">-&gt;</span> <span class="c">% function used in guard, as originally planned
+</span>        <span class="nv">Exp</span><span class="p">;</span>
+    <span class="k">let</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Y</span><span class="p">}</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(),</span> <span class="nv">Y</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="o">-&gt;</span>
+        <span class="nv">Exp</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The last clause would allow <code class="language-plaintext highlighter-rouge">Y</code> to be used in its own branch only if it
+matches and all guards succeed; if the binding fails, a switch is
+automatically made to the next branch.</p>
+
+<p>As such, more complex sequences of operations could be covered as:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">cond</span>
+    <span class="k">let</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nf">call1</span><span class="p">(),</span>
+    <span class="k">let</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nf">call2</span><span class="p">(),</span>
+    <span class="k">let</span> <span class="nv">Res</span> <span class="o">=</span> <span class="nf">call3</span><span class="p">()</span> <span class="o">-&gt;</span>
+        <span class="nv">Res</span><span class="p">;</span>
+    <span class="n">true</span> <span class="o">-&gt;</span>
+        <span class="nv">AlternativeBranch</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This mechanism is, in my opinion, worth exploring and maybe adding to
+the language, but on its own does not adequately solve error handling
+flow issues since errors cannot be extracted easily from failing
+operations.</p>
+
+<h3 id="auto-wrapping-return-values">Auto-Wrapping Return Values</h3>
+
+<p>Auto-wrapping return values is something the Elixir’s <code class="language-plaintext highlighter-rouge">OK</code> library does,
+as well as Haskell’s do notation, but that neither Rust nor Swift does.</p>
+
+<p>It seems that there is no very clear consensus on what could be done.
+Thus, for the simplicity of the implementation and backwards
+compatibility of the <code class="language-plaintext highlighter-rouge">begin ... end</code> expression, just returning the
+value as-is without auto-wrapping seems sensible, particularly
+since we do not prescribe tuple formats for handled values.</p>
+
+<p>It would therefore be up to the developer to just return whatever value
+best matches their function’s type signature, making easier to still
+integrate return values with the system they have.</p>
+
+<p>It also lets sequences of operations potentially return <code class="language-plaintext highlighter-rouge">ok</code> on success,
+even if their individual functions returned values such as <code class="language-plaintext highlighter-rouge">true</code>, for
+example, rather than <code class="language-plaintext highlighter-rouge">{ok, true}</code>.</p>
+
+<h2 id="choosing-exceptions-raised">Choosing Exceptions Raised</h2>
+
+<p>The exception format proposed here is <code class="language-plaintext highlighter-rouge">{else_clause, Value}</code>. This format
+is chosen following Erlang/OTP standards:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">if_clause</code></li>
+  <li><code class="language-plaintext highlighter-rouge">{case_clause, Val}</code></li>
+  <li><code class="language-plaintext highlighter-rouge">function_clause</code> (the value is provided in the stacktrace)</li>
+  <li><code class="language-plaintext highlighter-rouge">{badmatch, Val}</code></li>
+  <li>Unmatching values in a <code class="language-plaintext highlighter-rouge">catch</code> block and <code class="language-plaintext highlighter-rouge">receive</code> expressions do not raise
+anything explicitly</li>
+</ul>
+
+<p>Since <code class="language-plaintext highlighter-rouge">case_clause</code> is functionally the closest exceptions and that it carries
+a value, we choose to replicate the same form here.</p>
+
+<p>The reason <code class="language-plaintext highlighter-rouge">else_clause</code> is chosen over <code class="language-plaintext highlighter-rouge">begin_clause</code> because the <code class="language-plaintext highlighter-rouge">else</code> block
+could arguably be used in other constructs in the future, and constraining the
+exception to the block’s name itself is likely more future-proof.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>The possibility of an early exit from a <code class="language-plaintext highlighter-rouge">begin ... end</code> expression
+means that variables declared within its scope are now potentially
+unsafe to use outside of it.</p>
+
+<p>This is a change of behaviour that brings <code class="language-plaintext highlighter-rouge">begin</code> in line with the
+variables bound within a <code class="language-plaintext highlighter-rouge">case ... end</code> branch, a <code class="language-plaintext highlighter-rouge">try/catch</code> clause, or
+a <code class="language-plaintext highlighter-rouge">receive ... end</code> branch. The same is true of the <code class="language-plaintext highlighter-rouge">else</code> block.</p>
+
+<p>This lack of safety only needs to be started at the first <code class="language-plaintext highlighter-rouge">MatchOrReturnExpr</code>
+encountered, since all variables bound before respect the same semantics as the
+existing <code class="language-plaintext highlighter-rouge">begin ... end</code> expression. If this analysis is done rather than just
+declaring all variables as unsafe wholesale, then there is no backwards
+compatibility concern to be had.</p>
+
+<p>The need for the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator to be used in a new context means code built
+with support for the new expressions won’t be portable to older Erlang
+releases. However, if all the code is rewritten <em>after</em> the AST and reuses
+existing core Erlang components, built BEAM artifacts should work on older
+versions fine. This is, however, not a supported use case by the OTP team.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>No reference implementation is usually required at this step.
+One is to be developed at a later point in time.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

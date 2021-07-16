@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0038 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0038 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>27-May-2011</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R14B04</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-38--discontiguous-directive">EEP 38: -discontiguous directive</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>A <code class="language-plaintext highlighter-rouge">-discontiguous</code> directive is to be added so that specified
+functions may be presented as more than one group of clauses,
+possibly separated by other directives and function clause
+groups.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>A new directive</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">discontiguous</span><span class="p">(</span> <span class="nv">Name_And_Arity_List</span> <span class="p">).</span>
+</code></pre></div></div>
+
+<p>is added.  Each function named in such a list must have at
+least one clause group in that module, and may have more.
+It remains an error for any function not named in such a
+list to have more than one clause group.</p>
+
+<p>A function named in a <code class="language-plaintext highlighter-rouge">-discontiguous</code> directive need not
+have more than one clause group.  If it does, it is if
+the clause groups were moved together without reordering
+and the full stop of each group but the last changed to
+a semicolon.  The compiler should make no comment about
+the existence of multiple clause groups or their fusion
+into single clause groups.</p>
+
+<p>The parser stage would do the regrouping and would not
+include any representation of the <code class="language-plaintext highlighter-rouge">-discontiguous</code> directive
+in its output, so that downstream tools would never know
+that <code class="language-plaintext highlighter-rouge">-discontiguous</code> had been there.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>There are three problems which a single mechanism can solve.</p>
+
+<p>The first is that Erlang has conditional compilation, but
+there is no really satisfactory to use it to select some
+but not all of the clauses of a function.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">-discontiguous</code> directive allows you to write</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">discontiguous</span><span class="p">([</span><span class="n">f</span><span class="o">/</span><span class="mi">3</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">....</span> <span class="p">.</span>
+<span class="p">-</span><span class="ni">if</span><span class="p">(</span><span class="nv">Cond</span><span class="p">).</span>
+<span class="nf">f</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">....</span> <span class="p">.</span>
+<span class="p">-</span><span class="ni">endif</span><span class="p">.</span>
+<span class="nf">f</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">....</span> <span class="p">.</span>
+</code></pre></div></div>
+
+<p>The second may be called “topic-oriented programming”.
+It relates to human structuring of code around the
+data values computed on rather than the code they compute.
+I have found this in dealing with a virtual machine:  I’ve
+wanted to place the code that assembles an instruction,
+the code that peephole optimises it, the code that encodes
+it into memory, and the code that interprets it into one
+place (involving different function), rather than organising
+it by function, thus scattering related information the
+length and breadth of the module.</p>
+
+<p>It may be clearest to start with an example.  The code
+in <code class="language-plaintext highlighter-rouge">erl_syntax.erl</code> reads:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">type</span> <span class="nf">syntaxTree</span><span class="p">()</span> <span class="p">::</span> <span class="nl">#tree</span><span class="p">{}</span> <span class="p">|</span> <span class="nl">#wrapper</span><span class="p">{}</span> <span class="p">|</span> <span class="nf">tuple</span><span class="p">().</span>
+
+<span class="c">%% All `erl_parse' tree nodes are represented by tuples
+%% whose second field is the position information (usually
+%% an integer), *with the exceptions of*
+%% `{error, ...}' (type `error_marker') and
+%% `{warning, ...}' (type `warning_marker'),
+%% which only contain the associated line number *of the
+%% error descriptor*; this is all handled transparently
+%% by `get_pos' and `set_pos'.
+</span>
+    <span class="nf">get_pos</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span>
+        <span class="nv">Attr</span><span class="nl">#attr.pos</span><span class="p">;</span>
+    <span class="nf">get_pos</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span>
+        <span class="nv">Attr</span><span class="nl">#attr.pos</span><span class="p">;</span>
+    <span class="nf">get_pos</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,</span> <span class="p">_,</span> <span class="p">_}})</span> <span class="o">-&gt;</span>
+        <span class="nv">Pos</span><span class="p">;</span>
+    <span class="nf">get_pos</span><span class="p">({</span><span class="n">warning</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,</span> <span class="p">_,</span> <span class="p">_}})</span> <span class="o">-&gt;</span>
+        <span class="nv">Pos</span><span class="p">;</span>
+    <span class="nf">get_pos</span><span class="p">(</span><span class="nv">Node</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="c">%% Here, we assume that we have an `erl_parse' node
+</span>        <span class="c">%% with position information in element 2.
+</span>        <span class="nb">element</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nv">Node</span><span class="p">).</span>
+
+    <span class="nf">set_pos</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="k">case</span> <span class="nv">Node</span> <span class="k">of</span>
+            <span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">-&gt;</span>
+                <span class="nv">Node</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">pos</span> <span class="o">=</span> <span class="nv">Pos</span><span class="p">}};</span>
+            <span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">-&gt;</span>
+                <span class="nv">Node</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">pos</span> <span class="o">=</span> <span class="nv">Pos</span><span class="p">}};</span>
+            <span class="p">_</span> <span class="o">-&gt;</span>
+                <span class="c">%% We then assume we have an `erl_parse' node,
+</span>                <span class="c">%% and create a wrapper around it to make
+</span>                <span class="c">%% things more uniform.
+</span>                <span class="nf">set_pos</span><span class="p">(</span><span class="nf">wrap</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span> <span class="nv">Pos</span><span class="p">)</span>
+        <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The type here is a little vague.  The additional tuples appear
+to be <code class="language-plaintext highlighter-rouge">{error,{Pos,_,_}}, {warning,{Pos,_,_}}</code>, and the
+<code class="language-plaintext highlighter-rouge">{Tag,Pos...}</code> tuples returned by <code class="language-plaintext highlighter-rouge">erl_parse</code>.  The thing here is
+that there are five different cases.  For some purposes,
+it would be better to write</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">discontiguous</span><span class="p">([</span><span class="n">get_pos</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="n">set_pos</span><span class="o">/</span><span class="mi">2</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_pos</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.pos</span><span class="p">.</span>
+<span class="nf">set_pos</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">=</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Node</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">pos</span> <span class="o">=</span> <span class="nv">Pos</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_pos</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.pos</span><span class="p">.</span>
+<span class="nf">set_pos</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">=</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Node</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">pos</span> <span class="o">=</span> <span class="nv">Pos</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_pos</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,_,_}})</span> <span class="o">-&gt;</span> <span class="nv">Pos</span><span class="p">.</span>
+<span class="c">% What should set_pos/2 do in this case?
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_pos</span><span class="p">({</span><span class="n">warning</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,_,_}})</span> <span class="o">-&gt;</span> <span class="nv">Pos</span><span class="p">.</span>
+<span class="c">% What should set_pos/2 do in this case?
+</span></code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_pos</span><span class="p">(</span><span class="nv">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">element</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nv">Node</span><span class="p">).</span>  <span class="c">% assume erl_parse node
+</span><span class="nf">set_pos</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>               <span class="c">% assume erl_parse node
+</span>    <span class="nf">set_pos</span><span class="p">(</span><span class="nf">wrap</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span> <span class="nv">Pos</span><span class="p">).</span>       <span class="c">% wrap it for uniformity
+</span></code></pre></div></div>
+
+<p>This brings out the parallel between the two functions,
+and the way the parallel fails, more clearly than any other
+possible layout.  It nags at you to either finish the
+parallel with the obvious</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">set_pos</span><span class="p">({</span><span class="n">error</span><span class="p">,</span> <span class="p">{_,</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}},</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}}.</span>
+</code></pre></div></div>
+<p>and</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">set_pos</span><span class="p">({</span><span class="n">warning</span><span class="p">,</span> <span class="p">{_,</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}),</span> <span class="nv">Pos</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="p">{</span><span class="n">warning</span><span class="p">,</span> <span class="p">{</span><span class="nv">Pos</span><span class="p">,</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<p>clauses or to at least change the comments to</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">% set_pos/2 falls through to the last case.
+</span></code></pre></div></div>
+
+<p>comments.</p>
+
+<p>We have the same pattern, without the failure of parallelism,
+in two more functions from that file:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_com</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.com</span><span class="p">;</span>
+<span class="nf">get_com</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.com</span><span class="p">;</span>
+<span class="nf">get_com</span><span class="p">(_)</span> <span class="o">-&gt;</span> <span class="n">none</span><span class="p">.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">set_com</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Com</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">Node</span> <span class="k">of</span>
+        <span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">-&gt;</span>
+            <span class="nv">Node</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">com</span> <span class="o">=</span> <span class="nv">Com</span><span class="p">}};</span>
+        <span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">-&gt;</span>
+            <span class="nv">Node</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">com</span> <span class="o">=</span> <span class="nv">Com</span><span class="p">}};</span>
+        <span class="p">_</span> <span class="o">-&gt;</span>
+            <span class="nf">set_com</span><span class="p">(</span><span class="nf">wrap</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span> <span class="nv">Com</span><span class="p">)</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>These could be</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">-</span><span class="ni">discontiguous</span><span class="p">([</span><span class="n">get_com</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span><span class="n">set_com</span><span class="o">/</span><span class="mi">1</span><span class="p">]).</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_com</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.com</span><span class="p">.</span>
+<span class="nf">set_com</span><span class="p">(</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">=</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Com</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Node</span><span class="nl">#tree</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">com</span> <span class="o">=</span> <span class="nv">Com</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_com</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nv">Attr</span><span class="nl">#attr.com</span><span class="p">.</span>
+<span class="nf">set_com</span><span class="p">(</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="p">}</span> <span class="o">=</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Com</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Node</span><span class="nl">#wrapper</span><span class="p">{</span><span class="n">attr</span> <span class="o">=</span> <span class="nv">Attr</span><span class="nl">#attr</span><span class="p">{</span><span class="n">com</span> <span class="o">=</span> <span class="nv">Com</span><span class="p">}}.</span>
+</code></pre></div></div>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">get_com</span><span class="p">(_)</span> <span class="o">-&gt;</span> <span class="n">none</span><span class="p">.</span>  <span class="c">% error, warning, erl_parse.
+</span><span class="nf">set_com</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Com</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nf">set_com</span><span class="p">(</span><span class="nf">wrap</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span> <span class="nv">Com</span><span class="p">).</span>
+</code></pre></div></div>
+
+<p>Well, once again the parallel is not quite perfect.
+The documentation for <code class="language-plaintext highlighter-rouge">wrap/1</code> says that it assumes
+its argument is a class <code class="language-plaintext highlighter-rouge">erl_parse</code> tuple, which here
+means that it appears that it should NOT be an error
+or warning.</p>
+
+<p>The point of interest here is that just looking at the
+existing functions didn’t ring any alarms; it was not
+until I said “these seem to be about the same data
+structure; I wonder if interleaving can make the
+connection clearer and make it easier to ensure that
+getters and setters are properly related?” that my
+attention was properly drawn to the differences.</p>
+
+<p>It’s particularly interesting that the very first Erlang/OTP
+source file I looked at provided examples.
+The third is like the second, but relates to code
+written by a computer, not a human.  For example, if
+generating a functional representation of some sort
+of state machine, it can be convenient to organise
+the output around the states, but the present scheme
+requires it to be organised around the functions that
+deal with the states.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>Prolog systems have supported a <code class="language-plaintext highlighter-rouge">:- discontiguous</code> declaration
+for 20+ years.  The approach is a proven one.  It is a simple
+generalisation of the language which can be hidden from all
+“downstream” tools.  Only tools that try to deal with Erlang
+syntax without fully parsing it could notice the difference,
+and they should largely ignore it.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>All existing Erlang code remains acceptable with unchanged
+semantics.  Existing language-processing tools are unaffected
+if they rely on <code class="language-plaintext highlighter-rouge">erl_parse</code>.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>None in this draft.</p>
+
+<h1 id="references">References</h1>
+
+<p>None.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

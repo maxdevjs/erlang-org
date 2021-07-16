@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Memory instrumentation in OTP 21 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Memory instrumentation in OTP 21 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-8 offset-lg-2">
+            <article class="card mb-4">
+    <div class="card-header">
+        <h3><a href="/erlang-org/blog/Memory-instrumentation-in-OTP-21/">Memory instrumentation in OTP 21</a></h3>
+        <div class="date">May 02, 2018
+             · by John Högberg
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        
+        
+        <p>The memory instrumentation module was rewritten for Erlang/OTP 21 to make it
+easier to use. In this post I’ll describe the rationale behind the new features
+and how to make use of them.</p>
+
+<p>One of the most important features that a diagnostic tool can have is the
+ability to work on the fly. If it requires a restart then the condition you’re
+trying to diagnose might vanish, and you can’t use it to troubleshoot issues on
+“production” systems.</p>
+
+<p>The previous implementation had a few major issues to this effect; you had to
+start the Erlang VM with a certain flag, accept considerable overhead, and
+worst of all suspend the VM while it collected all its data.</p>
+
+<p>The amount of data it collected was also quite problematic; with one entry for
+every single allocation it was difficult to tell what was hiding in all that
+information, and since there was no way to tell whether a gap between two
+allocations was mapped or not it was needlessly difficult to use when trying
+to troubleshoot memory fragmentation.</p>
+
+<p>The new implementation tackles these problems by scanning existing data
+structures to lower its overhead to the point it can be turned on by default,
+and tries to collect information in a manner that doesn’t harm the
+responsiveness of the system.</p>
+      <h2 id="carriers-and-memory-fragmentation">
+        
+        
+          Carriers and memory fragmentation <a href="#carriers-and-memory-fragmentation">#</a>
+        
+        
+      </h2>
+    
+
+<p>The VM allocates memory in large segments we call “carriers” and then allocates
+blocks within those. This has many benefits; since each carrier is completely
+separate from the others it’s easy to determine when they can be returned to
+the operating system, and they scale very well since we can guarantee that
+they’re only modified by per-thread instances which makes allocation and
+deallocation wait-free in most cases.</p>
+
+<p>There are two types of carriers; single-block which always contain one large
+block, and multi-block that can contain several smaller blocks. While both of
+these rely on the operating system to minimize address space fragmentation, the
+latter kind can also become internally fragmented which will result in new
+carriers being created if no existing multi-block carrier can satisfy an
+allocation, even if the amount of unused memory exceeds the request.</p>
+
+<p>While you can glean some information about average carrier utilization from
+<code class="language-plaintext highlighter-rouge">erlang:system_info({allocator, Alloc})</code> and use <code class="language-plaintext highlighter-rouge">pmap</code> (or similar) to get an
+idea of how fragmented the address space is, it has always been a pain to get
+information about the individual carriers. Starting in OTP 21 you can ask the
+system for a list of all carriers without having to start the VM with any
+particular flags. The list contains information about each carrier’s total
+size, combined allocation size, allocation count, whether it’s in the migration
+pool, and a histogram over free block sizes.</p>
+
+<p>We chose to represent the free blocks with histograms (log2, starting at 512 by
+default) as they make it easy to tell at a glance whether a carrier has
+fragmentation issues; if there’s a lot of free blocks clustered along the left
+side then it’s pretty safe to say there’s a problem.</p>
+
+<p>In the example below, the <code class="language-plaintext highlighter-rouge">ll_alloc</code> carrier has no free blocks at all, the
+<code class="language-plaintext highlighter-rouge">binary_alloc</code> and <code class="language-plaintext highlighter-rouge">eheap_alloc</code> ones look healthy with a few very large
+blocks, and the <code class="language-plaintext highlighter-rouge">fix_alloc</code> carrier is somewhat fragmented with ~3KB free split
+into 22 blocks smaller than 512 bytes (although this is not a problem for this
+allocator type).</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">&gt;</span> <span class="nn">instrument</span><span class="p">:</span><span class="nf">carriers</span><span class="p">().</span>
+<span class="p">{</span><span class="n">ok</span><span class="p">,{</span><span class="mi">512</span><span class="p">,</span>
+     <span class="p">[{</span><span class="n">ll_alloc</span><span class="p">,</span><span class="mi">1048576</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1048344</span><span class="p">,</span><span class="mi">71</span><span class="p">,</span><span class="n">false</span><span class="p">,{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+      <span class="p">{</span><span class="n">binary_alloc</span><span class="p">,</span><span class="mi">1048576</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">324640</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="n">false</span><span class="p">,{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+      <span class="p">{</span><span class="n">eheap_alloc</span><span class="p">,</span><span class="mi">2097152</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1037200</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="n">false</span><span class="p">,{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+      <span class="p">{</span><span class="n">fix_alloc</span><span class="p">,</span><span class="mi">32768</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">29544</span><span class="p">,</span><span class="mi">82</span><span class="p">,</span><span class="n">false</span><span class="p">,{</span><span class="mi">22</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+      <span class="p">{...}|...]}}</span>
+</code></pre></div></div>
+
+<p>(<code class="language-plaintext highlighter-rouge">instrument:carriers/1</code> can be used to tweak the histograms and which
+allocators to look in.)</p>
+      <h2 id="allocations-and-memory-utilization">
+        
+        
+          Allocations and memory utilization <a href="#allocations-and-memory-utilization">#</a>
+        
+        
+      </h2>
+    
+
+<p>Those who have used <code class="language-plaintext highlighter-rouge">erlang:memory()</code> are probably familiar with how annoyingly
+general the <code class="language-plaintext highlighter-rouge">system</code> category can be. It’s possible to get a bit more
+information by using <code class="language-plaintext highlighter-rouge">erlang:system_info({allocator, Alloc})</code> but the most it
+will do is tell you that it’s (say) <code class="language-plaintext highlighter-rouge">driver_alloc</code> that eats all that memory
+and leave you with no clue which one.</p>
+
+<p>While it’s often easy to tell which driver or NIF is causing problems while
+you’re developing, it’s not as easy when it’s used in anger alongside half a
+dozen others. The new “allocation tagging” feature will help you figure out
+where the memory went at the cost of one word per allocation. The allocations
+are presented as block size histograms (similar to carrier information)
+grouped by their origin and type:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">&gt;</span> <span class="nn">instrument</span><span class="p">:</span><span class="nf">allocations</span><span class="p">()</span>
+<span class="p">{</span><span class="n">ok</span><span class="p">,{</span><span class="mi">128</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span>
+     <span class="err">#</span><span class="p">{</span><span class="n">udp_inet</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">driver_event_state</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+       <span class="n">tty_sl</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">io_queue</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">drv_internal</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+       <span class="n">system</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">db_segment</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">heap</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">thr_prgr_data</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">38</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">db_term</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">271</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">52</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">code</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">binary</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">18</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">atom_entry</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">8681</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">message</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">78</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="p">...</span> <span class="p">}</span>
+       <span class="n">spawn_forker</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">driver_select_data_state</span> <span class="o">=&gt;</span>
+                 <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+       <span class="n">ram_file_drv</span> <span class="o">=&gt;</span> <span class="err">#</span><span class="p">{</span><span class="n">drv_binary</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+       <span class="n">prim_file</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">process_specific_data</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">nif_trap_export_entry</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">monitor_extended</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">drv_binary</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">binary</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+       <span class="n">prim_buffer</span> <span class="o">=&gt;</span>
+           <span class="err">#</span><span class="p">{</span><span class="n">nif_internal</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span>
+             <span class="n">binary</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}}}}}</span>
+</code></pre></div></div>
+
+<p>The above example was taken with allocation tagging turned on for all
+allocators (<code class="language-plaintext highlighter-rouge">+Muatags true</code> command line argument) to give you a better idea of
+what it can do. By default it will only be turned on for driver/NIF allocations
+and binaries since those are the most common culprits, and their allocations
+are generally so large that the overhead of a single word is a drop in the
+bucket.</p>
+
+<p>(As with carriers, <code class="language-plaintext highlighter-rouge">instrument:allocations/1</code> can be used to tweak the
+histograms and which allocators to look in.)</p>
+      <h2 id="further-reading">
+        
+        
+          Further reading <a href="#further-reading">#</a>
+        
+        
+      </h2>
+    
+
+<p>For those who’d like to know more about how our memory allocators work, Lukas
+Larsson’s <a href="https://erlangcentral.org/videos/euc-2014-lukas-larsson-memory-allocators-in-the-vm-memory-management-battle-stories/">talk at EUC 2014</a> is a good primer. Our internal
+documentation on <a href="https://github.com/erlang/otp/blob/master/erts/emulator/internal_doc/CarrierMigration.md">carrier migration</a> and <a href="https://github.com/erlang/otp/blob/master/erts/emulator/internal_doc/DelayedDealloc.md">inter-thread deallocation</a> may also be of interest.</p>
+
+<p>The PR implementing this change can be found <a href="https://github.com/erlang/otp/pull/1790">here</a>, and the documentation for the old instrumentation module can be found <a href="http://erlang.org/documentation/doc-9.3/lib/tools-2.11.2/doc/html/instrument.html">here</a>.</p>
+
+        
+    </div>
+</article>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-c.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-bash.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

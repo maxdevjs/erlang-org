@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Core Erlang by Example - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Core Erlang by Example - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-8 offset-lg-2">
+            <article class="card mb-4">
+    <div class="card-header">
+        <h3><a href="/erlang-org/blog/core-erlang-by-example/">Core Erlang by Example</a></h3>
+        <div class="date">May 07, 2018
+             · by Björn Gustavsson
+        </div>
+    </div>
+
+    <div class="card-body">
+        
+        
+        
+        <p>This blog post is the first about the Core Erlang format. In this
+blog post, we introduce the Core Erlang format through examples
+that compare Erlang code to the corresponding Core Erlang
+code.</p>
+
+<p>I used the following command to translate my example module to
+Core Erlang code:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ erlc +time +to_core core_example.erl
+Compiling "core_example"
+ parse_module                  :      0.000 s      10.8 kB
+ transform_module              :      0.000 s      10.8 kB
+ lint_module                   :      0.003 s      10.8 kB
+ expand_records                :      0.000 s      10.8 kB
+ core                          :      0.000 s      89.9 kB
+ sys_core_fold                 :      0.000 s      58.6 kB
+ core_transforms               :      0.000 s      58.6 kB
+ listing                       :      0.002 s      58.6 kB
+</code></pre></div></div>
+
+<p>The <a href="http://blog.erlang.org/compiler-lost-in-translation/">previous blog post</a>
+explored the passes from <code class="language-plaintext highlighter-rouge">parse_module</code> to <code class="language-plaintext highlighter-rouge">expand_records</code>. The
+<code class="language-plaintext highlighter-rouge">core</code> passes translates from the abstract code to Core Erlang. We
+will talk more about the Core Erlang passes in future blog posts.</p>
+
+<p>I have slightly edited the examples to make them somewhat easier to
+read. There will be an unedited example at the very end of this blog post.</p>
+
+<p>There’s a lot to cover, so let’s get started!</p>
+      <h2 id="the-simplest-function">
+        
+        
+          The simplest function <a href="#the-simplest-function">#</a>
+        
+        
+      </h2>
+    
+
+<p>Let start with the simplest possible function, a function with no
+arguments returning an atom:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">simplest</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">'ok'</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang, that will be:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'simplest'/0 =
+    fun () -&gt;
+	'ok'
+</code></pre></div></div>
+
+<p>From that example, we can work out the following principles:</p>
+
+<ul>
+  <li>
+    <p>Atoms are always quoted.</p>
+  </li>
+  <li>
+    <p>Naming of the function has been separated from implementation
+of the function.</p>
+  </li>
+  <li>
+    <p>The body of a <code class="language-plaintext highlighter-rouge">fun</code> is not followed by an <code class="language-plaintext highlighter-rouge">end</code> as in Erlang.</p>
+  </li>
+</ul>
+      <h2 id="slightly-less-simple">
+        
+        
+          Slightly less simple <a href="#slightly-less-simple">#</a>
+        
+        
+      </h2>
+    
+
+<p>Here is as slightly more complicated function:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">id</span><span class="p">(</span><span class="nv">I</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">I</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'id'/1 =
+    fun (_@c0) -&gt;
+	_@c0
+</code></pre></div></div>
+
+<p><strong>Note</strong>: All examples were compiled with OTP 20. The name of the
+generated variables will be different in the upcoming OTP 21.</p>
+
+<p>Essentially, variables are named as in Erlang. In the translation
+to Core Erlang, the compiler generates new variable names for the
+arguments in a function head. The following code is also valid
+Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'id'/1 =
+    fun (I) -&gt;
+	I
+</code></pre></div></div>
+      <h2 id="more-than-one-clause">
+        
+        
+          More than one clause <a href="#more-than-one-clause">#</a>
+        
+        
+      </h2>
+    
+
+<p>Here is a function with more than one clause:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">a</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ok</span><span class="p">;</span>
+<span class="nf">a</span><span class="p">(_)</span> <span class="o">-&gt;</span> <span class="n">error</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'a'/1 =
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  &lt;_@c2&gt; when 'true' -&gt;
+	      'error'
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>A <code class="language-plaintext highlighter-rouge">fun</code> can only have a single clause.</p>
+  </li>
+  <li>
+    <p>Pattern matching must be done in a <code class="language-plaintext highlighter-rouge">case</code>, not in the <code class="language-plaintext highlighter-rouge">fun</code> head.</p>
+  </li>
+  <li>
+    <p>Guards are mandatory for each clause in a <code class="language-plaintext highlighter-rouge">case</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">_</code> is <strong>not</strong> a valid variable name in Core Erlang. Uninteresting
+values must be bound to a new variable.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">&lt;</code> and <code class="language-plaintext highlighter-rouge">&gt;</code> around the patterns will be explained soon.</p>
+  </li>
+</ul>
+
+<p>In Erlang, multiple function clauses can also be written with a
+<code class="language-plaintext highlighter-rouge">case</code> like this:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">b</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">N</span> <span class="k">of</span>
+        <span class="mi">42</span> <span class="o">-&gt;</span> <span class="n">ok</span><span class="p">;</span>
+        <span class="p">_</span> <span class="o">-&gt;</span> <span class="n">error</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The Core Erlang code will be essentially the same as the Core Erlang
+code for <code class="language-plaintext highlighter-rouge">a/1</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'b'/1 =
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  &lt;_@c3&gt; when 'true' -&gt;
+	      'error'
+	end
+</code></pre></div></div>
+      <h2 id="two-clauses-three-arguments">
+        
+        
+          Two clauses, three arguments <a href="#two-clauses-three-arguments">#</a>
+        
+        
+      </h2>
+    
+
+<p>Let’s try multiple arguments:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">c</span><span class="p">(</span><span class="n">inc</span><span class="p">,</span> <span class="nv">Base</span><span class="p">,</span> <span class="nv">N</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">Base</span><span class="o">+</span><span class="nv">N</span><span class="p">;</span>
+<span class="nf">c</span><span class="p">(_,</span> <span class="nv">Base</span><span class="p">,</span> <span class="p">_)</span> <span class="o">-&gt;</span>
+    <span class="nv">Base</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'c'/3 =
+    fun (_@c2,_@c1,_@c0) -&gt;
+	case &lt;_@c2,_@c1,_@c0&gt; of
+	  &lt;'inc',Base,N&gt; when 'true' -&gt;
+	      call 'erlang':'+'(Base, N)
+	  &lt;_@c6,Base,_@c7&gt; when 'true' -&gt;
+	      Base
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">&lt;</code> and <code class="language-plaintext highlighter-rouge">&gt;</code> denote a <strong>value list</strong>. The patterns in each clause in
+the <code class="language-plaintext highlighter-rouge">case</code> are always part of a value list. The <code class="language-plaintext highlighter-rouge">case</code> expression is
+a value list unless there is only one expression.</p>
+  </li>
+  <li>
+    <p>Operators such as <code class="language-plaintext highlighter-rouge">+</code> are not part of the Core Erlang language,
+so the compiler has translated the use of <code class="language-plaintext highlighter-rouge">+</code> to a call to the
+BIF <code class="language-plaintext highlighter-rouge">erlang:'+'/2</code>.</p>
+  </li>
+</ul>
+      <h2 id="if">
+        
+        
+          If <a href="#if">#</a>
+        
+        
+      </h2>
+    
+
+<p>Let’s see how <code class="language-plaintext highlighter-rouge">if</code> is implemented:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">d</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span> <span class="nv">B</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">if</span>
+        <span class="nv">A</span> <span class="o">&gt;</span> <span class="nv">B</span> <span class="o">-&gt;</span>
+            <span class="n">greater</span><span class="p">;</span>
+        <span class="n">true</span> <span class="o">-&gt;</span>
+            <span class="n">not_greater</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'d'/2 =
+    fun (_@c1,_@c0) -&gt;
+	case &lt;&gt; of
+	  &lt;&gt; when call 'erlang':'&gt;'(_@c1, _@c0) -&gt;
+	      'greater'
+	  &lt;&gt; when 'true' -&gt;
+	      'not_greater'
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">case</code> expression and the patterns are each value lists with
+zero elements. All the action is in the guards.</li>
+</ul>
+      <h2 id="repeated-variables">
+        
+        
+          Repeated variables <a href="#repeated-variables">#</a>
+        
+        
+      </h2>
+    
+
+<p>In Erlang, a variable can be repeated in a clause or within a
+pattern to indicate that the values must be the same:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">cmp</span><span class="p">(</span><span class="nv">Same</span><span class="p">,</span> <span class="nv">Same</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">same</span><span class="p">;</span>
+<span class="nf">cmp</span><span class="p">(_,</span> <span class="p">_)</span> <span class="o">-&gt;</span> <span class="n">different</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>Core Erlang does not allow repeating a variable:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'cmp'/2 =
+    fun (_@c1,_@c0) -&gt;
+	case &lt;_@c1,_@c0&gt; of
+	  &lt;Same,_@c4&gt; when call 'erlang':'=:='(_@c4, Same) -&gt;
+	      'same'
+	  &lt;_@c5,_@c6&gt; when 'true' -&gt;
+	      'different'
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>Here the second occurence of the variable <code class="language-plaintext highlighter-rouge">Same</code> has been renamed to
+a new variable named <code class="language-plaintext highlighter-rouge">_@c4</code>, and a guard has been added to compare
+<code class="language-plaintext highlighter-rouge">Same</code> and <code class="language-plaintext highlighter-rouge">_@c4</code>.</li>
+</ul>
+      <h2 id="exceptions">
+        
+        
+          Exceptions <a href="#exceptions">#</a>
+        
+        
+      </h2>
+    
+
+<p>This function will fail with a <code class="language-plaintext highlighter-rouge">function_clause</code> exception if it is called
+with any other value than <code class="language-plaintext highlighter-rouge">42</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">e</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ok</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'e'/1 =
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  &lt;_@c1&gt; when 'true' -&gt;
+	      primop 'match_fail'({'function_clause',_@c1})
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>A <code class="language-plaintext highlighter-rouge">case</code> in Core Erlang must not fall off at the end, that is,
+there must always be a clause that will match.</p>
+  </li>
+  <li>
+    <p>In this example, the last clause with a variable pattern and
+a <code class="language-plaintext highlighter-rouge">true</code> guard is guaranteed to match.</p>
+  </li>
+  <li>
+    <p>The body for the last clause calls a <strong>primop</strong> to generate
+a function clause exception. Primops are primitive operations
+provided by the Erlang implementation, but not specified in the
+Core Erlang language specification.</p>
+  </li>
+</ul>
+
+<p>Here is a similar function excepts that is uses <code class="language-plaintext highlighter-rouge">case</code> and therefore
+will generate a <code class="language-plaintext highlighter-rouge">case_clause</code> exception if called with any other
+argument than <code class="language-plaintext highlighter-rouge">42</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">f</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">N</span> <span class="k">of</span>
+        <span class="mi">42</span> <span class="o">-&gt;</span> <span class="n">ok</span>
+    <span class="k">end</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>The Core Erlang code is similar to the code for <code class="language-plaintext highlighter-rouge">e/1</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'f'/1 =
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  &lt;_@c1&gt; when 'true' -&gt;
+	      primop 'match_fail'({'case_clause',_@c1})
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>The only difference is the argument for the <code class="language-plaintext highlighter-rouge">match_fail</code> primop.</li>
+</ul>
+
+<p>Let’s rewrite this function one more time:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">g</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="mi">42</span> <span class="o">=</span> <span class="nv">N</span><span class="p">,</span>
+    <span class="n">ok</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'g'/1 =
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  &lt;_@c1&gt; when 'true' -&gt;
+	      primop 'match_fail'({'badmatch',_@c1})
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>Again, the only difference is the argument for the <code class="language-plaintext highlighter-rouge">match_fail</code> primop.</li>
+</ul>
+      <h2 id="binding-variables-using-let">
+        
+        
+          Binding variables using ‘let’ <a href="#binding-variables-using-let">#</a>
+        
+        
+      </h2>
+    
+
+<p>Here is a function that binds the variable <code class="language-plaintext highlighter-rouge">I</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">h</span><span class="p">(</span><span class="nv">A</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nv">I</span> <span class="o">=</span> <span class="nf">id</span><span class="p">(</span><span class="nv">A</span><span class="p">),</span>
+    <span class="nv">I</span> <span class="o">+</span> <span class="nv">A</span><span class="p">.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'h'/1 =
+    fun (_@c0) -&gt;
+	let &lt;I&gt; =
+              apply 'id'/1(_@c0)
+	in
+              call 'erlang':'+'(I, _@c0)
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">apply</code> calls a fun or local function.</p>
+  </li>
+  <li>
+    <p>The return value of the <code class="language-plaintext highlighter-rouge">apply</code> is bound to the variable <code class="language-plaintext highlighter-rouge">I</code>.</p>
+  </li>
+  <li>
+    <p>The variable <code class="language-plaintext highlighter-rouge">I</code> can only be used in the code that follows the
+<code class="language-plaintext highlighter-rouge">in</code> keyword.</p>
+  </li>
+  <li>
+    <p>The variable name is in a value list. That is because <code class="language-plaintext highlighter-rouge">let</code>
+can bind several variables at once.</p>
+  </li>
+</ul>
+      <h2 id="binding-more-than-one-variable-in-a-let">
+        
+        
+          Binding more than one variable in a ‘let’ <a href="#binding-more-than-one-variable-in-a-let">#</a>
+        
+        
+      </h2>
+    
+
+<p>Erlang has essentially no scoping. When a variable has been bound,
+it remains bound to the end of the function. For example, variables bound
+in a <code class="language-plaintext highlighter-rouge">case</code> can be used after the <code class="language-plaintext highlighter-rouge">case</code>:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">i</span><span class="p">(</span><span class="nv">E</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nv">E</span> <span class="k">of</span>
+        <span class="n">a</span> <span class="o">-&gt;</span>
+            <span class="nv">X</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nv">Y</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="n">b</span> <span class="o">-&gt;</span>
+            <span class="nv">X</span> <span class="o">=</span> <span class="mi">23</span><span class="p">,</span>
+            <span class="nv">Y</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="k">end</span><span class="p">,</span>
+    <span class="p">{</span><span class="nv">X</span><span class="p">,</span><span class="nv">Y</span><span class="p">}.</span>
+</code></pre></div></div>
+
+<p>In Core Erlang:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'i'/1 =
+    fun (_@c0) -&gt;
+	let &lt;_@c7,X,Y&gt; =
+	    case _@c0 of
+	      &lt;'a'&gt; when 'true' -&gt;
+		  &lt;10,1,10&gt;
+	      &lt;'b'&gt; when 'true' -&gt;
+		  &lt;17,23,17&gt;
+	      &lt;_@c5&gt; when 'true' -&gt;
+		  primop 'match_fail'({'case_clause',_@c5})
+	    end
+	in
+	    {X,Y}
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>A <code class="language-plaintext highlighter-rouge">case</code> in Core Erlang does not export any variables. All variables
+that are to be used after the <code class="language-plaintext highlighter-rouge">case</code> must be explicitly returned.</p>
+  </li>
+  <li>
+    <p>In this example, the first two clauses of the <code class="language-plaintext highlighter-rouge">case</code> return a
+value list with <strong>three</strong> values. The first value is the return value
+of the case, which in this case is ignored. The other two values are
+the values assigned to the <code class="language-plaintext highlighter-rouge">X</code> and <code class="language-plaintext highlighter-rouge">Y</code> variables, respectively.</p>
+  </li>
+  <li>
+    <p>The values returned from the <code class="language-plaintext highlighter-rouge">case</code> is bound in the <code class="language-plaintext highlighter-rouge">let</code>. The ignored
+return value is bound to a new variable (<code class="language-plaintext highlighter-rouge">_@c7</code>), which is never used.
+The exported values are bound to the <code class="language-plaintext highlighter-rouge">X</code> and <code class="language-plaintext highlighter-rouge">Y</code> variables.</p>
+  </li>
+</ul>
+      <h2 id="the-unedited-core-erlang-code">
+        
+        
+          The unedited Core Erlang code <a href="#the-unedited-core-erlang-code">#</a>
+        
+        
+      </h2>
+    
+
+<p>So far all Core Erlang examples have been edited to make the points
+I am trying to make stand out clearer. Let’s have a look at the unedited
+version of a previous example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'e'/1 =
+    %% Line 33
+    fun (_@c0) -&gt;
+	case _@c0 of
+	  &lt;42&gt; when 'true' -&gt;
+	      'ok'
+	  ( &lt;_@c1&gt; when 'true' -&gt;
+		( primop 'match_fail'
+		      ({'function_clause',_@c1})
+		  -| [{'function_name',{'e',1}}] )
+	    -| ['compiler_generated'] )
+	end
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">-|</code> associates an annotation with a Core Erlang construct.
+The meaning of an annotation is not specified in the Core Erlang
+language specification.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">compiler_generated</code> annotation associated with the last clause
+is a hint added by the compiler that subsequent optimization passes should
+not generate a warning if the clause was found to never match and dropped.</p>
+  </li>
+  <li>
+    <p>The comment “Line 33” at the beginning is actually an annotation that
+the pretty printer has turned into a comment to avoid rendering the
+pretty-printed code unreadable.</p>
+  </li>
+</ul>
+      <h2 id="conclusion">
+        
+        
+          Conclusion <a href="#conclusion">#</a>
+        
+        
+      </h2>
+    
+
+<p>Core Erlang is less complicated than Erlang, and is therefore more
+suited than the abstract format for code analyzing tools (such as
+<a href="http://erlang.org/doc/apps/dialyzer/dialyzer_chapter.html">Dialyzer</a>) and optimizers.</p>
+      <h2 id="to-learn-more-about-core-erlang">
+        
+        
+          To learn more about Core Erlang <a href="#to-learn-more-about-core-erlang">#</a>
+        
+        
+      </h2>
+    
+
+<p>All details can be found in <a href="https://www.it.uu.se/research/group/hipe/cerl/doc/core_erlang-1.0.3.pdf">Core Erlang 1.0.3 language specification</a>.</p>
+
+        
+    </div>
+</article>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-c.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-bash.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

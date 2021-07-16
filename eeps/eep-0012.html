@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Allow pinning of website on windows -->
+    <meta name="application-name" content="Erlang.org">
+    <meta name="msapplication-tooltip" content="The official home of the Erlang Programming Language">
+    <meta name="msapplication-starturl" content="/erlang-org/" >
+
+    <!-- Make the site look nicer on facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Erlang.org">
+    <meta property="og:title" content="Welcome to Erlang.org">
+    <meta property="og:description" content="The official home of the Erlang Programming Language">
+    <meta property="og:image" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:image:secure_url" content="https://erlang.github.io/erlang-org/assets/img/erlang-228x200.png">
+    <meta property="og:url" content="https://erlang.github.io/erlang-org/">
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="Index" />
+    <meta name="twitter:site" content="@erlang_org" />
+
+    <!-- Rich data for google search -->
+    <script type="application/ld+json">
+{"@type":"WebSite","url":"https://erlang.org/","headline":"Eep 0012 - Erlang/OTP","name":"Erlang.org","sameAs":["https://twitter.com/erlang_org","https://github.com/erlang/otp"],"@context":"https://schema.org"}</script>
+
+    <title>Eep 0012 - Erlang/OTP</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- tells iOS browsers to not show telephone numbers as links -->
+    <meta name="format-detection" content="telephone=no">
+
+    <meta name="application-name" content="Erlang.org">
+    <meta name="description" content="The official home of the Erlang Programming Language">
+    <meta name="keywords" content="Erlang programming language functional parallel distributed documentation download community">
+    <!-- https://www.rssboard.org/rss-autodiscovery -->
+    <link rel="alternate" type="application/atom+xml" title="News Atom Feed" href="https://erlang.github.io/erlang-org/news.xml" />
+    <link rel="alternate" type="application/atom+xml" title="Blog Atom Feed" href="https://erlang.github.io/erlang-org/blog.xml" />
+    
+    <link rel="stylesheet" href="/erlang-org/assets/css/main.css">
+</head>
+
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-body">
+        <nav class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/erlang-org/"><img
+                    src="/erlang-org/assets/img/erlang.png" class="img-fluid" width="60" alt="Erlang.org main page"/></a>
+            <div class="collapse navbar-collapse fw-bold" id="navbarSupportedContent">
+                <ul class="navbar-nav text-uppercase me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/downloads">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/docs">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/community">Community</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/news">News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/eep">EEP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/erlang-org/about">About</a></li>
+                </ul>
+                <form class="d-flex" role="search" method="post" action="https://duckduckgo.com/?kg=p"
+                    onsubmit="document.getElementById('searchq').value = document.getElementById('searchfield').value + ' site:erlang.org'; return true;">
+                    <input type="hidden" id="searchq" name="q" class="hidden" />
+                    <input class="form-control me-2" id="searchfield" type="search" placeholder="Search erlang.org"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container border-top pt-4">
+    <div class="row-lg">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="mb-0 dl-single">
+                        <dt>Author:</dt>
+                        <dd>
+                            Richard A. O&#39;Keefe &lt;ok(at)cs(dot)otago(dot)ac(dot)nz&gt;
+                            
+                            
+                        </dd>
+                        
+                        <dt>Status:</dt>
+                        <dd>Draft </dd>
+                        <dt>Type:</dt>
+                        <dd>Standards Track</dd>
+                        
+                        
+                        <dt>Created:</dt>
+                        <dd>10-Jul-2008</dd>
+                        
+                        <dt>Erlang-Version:</dt>
+                        <dd>R12B-4</dd>
+                        
+                        
+                        
+                        
+                    </dl>
+                </div>
+            </div>
+            <div class="border-top mt-4">
+                <h2 id="eep-12-extensions-to-comprehensions">EEP 12: Extensions to comprehensions</h2>
+
+<h1 id="abstract">Abstract</h1>
+
+<p>Add tuple-valued comprehensions to go with list and binary
+comprehensions.</p>
+
+<p>Add tuple generators to go with list and binary generators.</p>
+
+<p>Fix a syntax botch in comprehension qualifiers by explicitly
+recognising pattern = value bindings and treating them in a
+way that makes sense.</p>
+
+<h1 id="specification">Specification</h1>
+
+<p>Currently, Erlang has</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">'['</span>  <span class="nv">Expr</span> <span class="n">'||'</span> <span class="nv">Generators</span><span class="o">-</span><span class="nv">And</span><span class="o">-</span><span class="nv">Tests</span> <span class="n">']'</span>
+    <span class="n">'&lt;&lt;'</span> <span class="nv">Expr</span> <span class="n">'||'</span> <span class="nv">Generators</span><span class="o">-</span><span class="nv">And</span><span class="o">-</span><span class="nv">Tests</span> <span class="n">'&gt;&gt;'</span>
+</code></pre></div></div>
+
+<p>for generating lists and binaries, but there is no corresponding
+form for generating tuples.  We add</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">'{'</span> <span class="nv">Expr</span> <span class="n">'||'</span> <span class="nv">Generators</span><span class="o">-</span><span class="nv">And</span><span class="o">-</span><span class="nv">Tests</span> <span class="n">'}'</span>
+</code></pre></div></div>
+
+<p>with the meaning that <code class="language-plaintext highlighter-rouge">{ E || G }</code> has the same behaviour as
+<code class="language-plaintext highlighter-rouge">erlang:list_to_tuple([E || G])</code> except that it need not call
+<code class="language-plaintext highlighter-rouge">erlang:list_to_tuple/1</code>.</p>
+
+<p>Currently, Erlang comprehensions allow</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="n">'&lt;-'</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+
+<p>to enumerate over list and</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="n">'&lt;='</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+
+<p>to enumerate over binaries.  The second of these forms is,
+I must say, not just asking for trouble, but screaming for it.
+This proposal adds three new forms:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="n">'['</span>  <span class="n">'&lt;-'</span> <span class="n">']'</span>  <span class="nv">Expr</span>
+    <span class="nv">Pattern</span> <span class="n">'{'</span>  <span class="n">'&lt;-'</span> <span class="n">'}'</span>  <span class="nv">Expr</span>
+    <span class="nv">Pattern</span> <span class="n">'&lt;&lt;'</span> <span class="n">'&lt;-'</span> <span class="n">'&gt;&gt;'</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+
+<p>for enumerating over lists, tuples, and binaries respectively,
+providing an iconic representation of what Expr should be.
+<code class="language-plaintext highlighter-rouge">[&lt;-]</code> and <code class="language-plaintext highlighter-rouge">&lt;&lt; &lt;- &gt;&gt;</code> have exactly the same semantics as the
+existing <code class="language-plaintext highlighter-rouge">&lt;-</code> and <code class="language-plaintext highlighter-rouge">&lt;=</code> do.  The semantics of Pattern <code class="language-plaintext highlighter-rouge">{&lt;=}</code> Expr
+is that of <code class="language-plaintext highlighter-rouge">Pattern &lt;- erlang:tuple_to_list(Expr)</code>, except that
+<code class="language-plaintext highlighter-rouge">erlang:tuple_to_list/1</code> need not be called.</p>
+
+<p>Currently the Generators-And-Tests part allows a sequence of
+generators and tests, where a test is any expression.  A test
+must evaluate to either ‘false’ or ‘true’.  The form <code class="language-plaintext highlighter-rouge">Pattern = Expr</code>
+is syntactically an expression, so is allowed as a test.
+However, in context, this makes no sense.  For a given Expr,
+there are four possible outcomes:</p>
+<ol>
+  <li>Expr raises an exception =&gt; an exception is raised.</li>
+  <li>Expr does not yield false or true =&gt; an exception is raised.</li>
+  <li>Expr yields false =&gt; the test fails;
+this might as well have been Expr without Pattern.</li>
+  <li>Expr yields true =&gt; the test succeeds;
+this might as well have been Expr without Pattern,
+and Pattern = true beforehand.
+======================================================================
+This proposal changes part of the description of comprehensions to
+each Qualifier is either a generator, a binder, or a filter.</li>
+</ol>
+
+<p>A generator is a list generator, a tuple generator,
+or a bit string generator.</p>
+
+<p>A list generator is written as</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="o">&lt;-</span> <span class="nv">List_Expr</span>
+</code></pre></div></div>
+<p>or as</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="p">[</span><span class="o">&lt;-</span><span class="p">]</span> <span class="nv">List_Expr</span>
+</code></pre></div></div>
+<p>where List_Expr is an expression which must evaluate to
+a list of terms.</p>
+
+<p>A tuple generator is written as</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Pattern</span> <span class="p">{</span><span class="o">&lt;-</span><span class="p">}</span> <span class="nv">Tuple_Expr</span>
+</code></pre></div></div>
+<p>where Tuple_Expr is an expression which must evaluate to
+a tuple of terms.</p>
+
+<p>A bit string generator is written as</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Bit_String_Pattern</span> <span class="o">&lt;=</span> <span class="nv">Bit_String_Expr</span>
+</code></pre></div></div>
+<p>or as</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nv">Bit_String_Pattern</span> <span class="o">&lt;&lt;</span> <span class="o">&lt;-</span> <span class="o">&gt;&gt;</span> <span class="nv">Bit_String_Expr</span>
+</code></pre></div></div>
+<p>where Bit_String_Expr is an expression which must
+evaluate to a bit string.</p>
+
+<p>The variables in the generator patterns shadow variables in the
+function clause surrounding the comprehension.  These variables
+are not visible outside the comprehension.</p>
+
+<p>A binder has the form</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Pattern</span> <span class="o">=</span> <span class="nv">Expr</span>
+</code></pre></div></div>
+<p>or</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">Pattern</span> <span class="o">=</span> <span class="nv">Binder</span>
+</code></pre></div></div>
+<p>This evaluates the Expr and matches the result against the
+Pattern, binding variables in it.
+The variables in the binder patterns shadow variables in the
+function clause surrounding the comprehension.  These variables
+are not visible outside the comprehension.</p>
+
+<p>A filter is an expression which evaluates to ‘true’ or ‘false’.
+They are not limited to being guard tests.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Using Clean as well as Erlang, the lack of tuple comprehensions
+and tuple generators is an irritation.  It is possible to get the
+desired effect in the existing language, but especially since
+bit string comprehensions were added to the language, the
+omission seems utterly pointless.  The new forms are easier to
+think of and easier to read than forms that go through list
+comprehensions.</p>
+
+<p>Haskell list comprehensions allow generators, filters, and
+‘let’ bindings.  The lack of let bindings in Erlang list
+comprehensions is difficult to understand; the fact that what
+LOOKS like Erlang’s equivalent of let bindings is allowed but
+misbehaves at run time is difficult to forgive.</p>
+
+<h1 id="rationale">Rationale</h1>
+
+<p>The syntax for tuple comprehensions is obvious; no other syntax
+would be tolerable.</p>
+
+<p>The syntax for tuple generators has a certain gawky charm;
+perhaps only a mother could love it.  I tried &lt;-[] &lt;-{} &lt;-«»
+but had trouble getting Yecc to like those.  If it can be
+squeezed past Yecc’s limited lookahead somehow, the forms with
+the arrow outside the brackets would be prettier.  Contrast</p>
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="nv">X</span><span class="o">+</span><span class="mi">1</span> <span class="p">||</span> <span class="nv">X</span> <span class="p">{</span><span class="o">&lt;-</span><span class="p">}</span> <span class="nv">Xs</span> <span class="p">}</span>
+<span class="p">{</span> <span class="nv">X</span><span class="o">+</span><span class="mi">1</span> <span class="p">||</span> <span class="nv">X</span> <span class="o">&lt;-</span><span class="p">{}</span> <span class="nv">Xs</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>The way Erlang currently allows Pattern = Expr in comprehension
+qualifiers but gives it a completely useless meaning is a syntax
+bug that needs urgent correction.  One approach is to recognise
+attempts to use the form and report them as syntax errors; to me
+it seems better to implement it so that it works as expected.</p>
+
+<p>All three of these extensions can be implemented by mapping to
+the current language:</p>
+
+<div class="language-erlang highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="nv">E</span> <span class="p">||</span> <span class="nv">GT</span> <span class="p">}</span>  <span class="o">=&gt;</span> <span class="nn">erlang</span><span class="p">:</span><span class="nb">list_to_tuple</span><span class="p">([</span><span class="nv">E</span> <span class="p">||</span> <span class="nv">GT</span><span class="p">])</span>
+<span class="nv">P</span> <span class="p">{</span><span class="o">&lt;-</span><span class="p">}</span> <span class="nv">E</span>     <span class="o">=&gt;</span> <span class="nv">P</span> <span class="o">&lt;-</span> <span class="nn">erlang</span><span class="p">:</span><span class="nb">tuple_to_list</span><span class="p">(</span><span class="nv">E</span><span class="p">)</span>
+<span class="nv">P</span> <span class="o">=</span> <span class="nv">E</span>        <span class="o">=&gt;</span> <span class="nv">P</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="nv">E</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>and the reference implementation does exactly that.  However,
+better implementations are possible, as for that matter are
+better implementations of list comprehension, and in the mean
+time at least the code will be no less efficient than what the
+programmer could have written and the source will be more
+intention-revealing.</p>
+
+<h1 id="backwards-compatibility">Backwards Compatibility</h1>
+
+<p>The new comprehension and generator forms are currently syntax
+errors, so no existing code can be affected by them.</p>
+
+<p>The new binder form (or rather, the newly correct recognition
+of binder forms) is currently allowed by the Erlang compiler.
+However, as explained above, it cannot possibly be USEFUL with
+its current reading.  It is conceivable that there might be
+test programs designed to elicit the bug which will stop working
+once the syntax bug is fixed, but it is not likely that any real
+code will be affected.</p>
+
+<h1 id="reference-implementation">Reference Implementation</h1>
+
+<p>The auxiliary file <a href="eep-0012-1.diff" title="Patch file to be applied to erl_parse.yrl"><code class="language-plaintext highlighter-rouge">eep-0012-1.diff</code></a> is a patch file to be
+applied to <code class="language-plaintext highlighter-rouge">erl_parse.yrl</code>. The patched file has been checked by <code class="language-plaintext highlighter-rouge">yecc</code>,
+which is happy with it. However, that’s all the testing that has been done.</p>
+
+<p>This implementation does the three source to source rewrites
+described in the previous section, entirely in the parser.
+The rest of the Erlang system needs no changes whatever.</p>
+
+<h1 id="copyright">Copyright</h1>
+
+<p>This document has been placed in the public domain.</p>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/erlang-org/assets/js/prismjs/prism.js"></script>
+<script src="/erlang-org/assets/js/prismjs/components/prism-erlang.js"></script>
+    <footer class="container-fluid footer text-center border-top border-bottom">
+        <div>
+            <a href="/erlang-org/downloads.html" title="DOWNLOAD"><img src="/erlang-org/assets/img/download.png"></a>
+        </div>
+        <div>
+            <a href="http://www.github.com/erlang/otp"><img
+                    src="/erlang-org/assets/img/GitHub-Mark-32px.png"></a>
+        </div>
+        
+        <div>
+            <a href="http://www.twitter.com/erlang_org"><img src="/erlang-org/assets/img/twitter.png"
+                    width="32"></a>
+        </div>
+    </footer>
+    <script src="/erlang-org/assets/js/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
